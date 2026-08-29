@@ -1,6 +1,6 @@
 关于我们的团队 / Things of our team 
   队员/crews：
-    开发者/developer ：Marco， Xiuxu
+    开发者/developer ：Marco， Xiuxiu
     代理人/agent： Kiki
 
 
