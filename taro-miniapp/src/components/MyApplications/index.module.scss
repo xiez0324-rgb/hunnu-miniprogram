@@ -1,0 +1,73 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  width: 100%;
+}
+
+.header {
+  margin-bottom: $spacing-md;
+}
+
+.title {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  font-family: $font-hand;
+}
+
+.chipsWrap {
+  width: 100%;
+  white-space: nowrap;
+  margin-bottom: $spacing-md;
+}
+
+.chips {
+  display: inline-flex;
+  gap: $spacing-sm;
+  padding-bottom: $spacing-xs;
+}
+
+.card {
+  @include torn-card(-0.6deg);
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  box-shadow: $shadow-paper;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.cardTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.cardMeta {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-top: $spacing-xs;
+}
+
+.cardFoot {
+  margin-top: $spacing-md;
+}
+
+.tipCard {
+  background-color: $color-mint;
+  border-radius: $radius-sm;
+  padding: $spacing-md;
+  margin-top: $spacing-sm;
+  transform: rotate(-0.4deg);
+}
+
+.tipText {
+  font-size: $font-size-xs;
+  color: $color-pine;
+  line-height: $line-height-normal;
+}

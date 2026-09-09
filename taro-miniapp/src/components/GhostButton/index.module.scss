@@ -1,0 +1,33 @@
+@use '@/styles/variables.scss' as *;
+
+.button {
+  @include button-reset;
+  width: 100%;
+  height: $button-height-md;
+  border-radius: $radius-button;
+  padding: 0 $spacing-lg;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  background-color: $color-bg-card;
+  border: 4rpx solid rgba(37, 92, 65, 0.45);
+  color: $color-text-primary;
+  box-shadow: 0 8rpx 0 rgba(37, 92, 65, 0.18);
+  transform: rotate(0.8deg);
+  transition: all $transition-fast;
+
+  &:active {
+    transform: rotate(0.8deg) translateY(4rpx);
+    box-shadow: 0 4rpx 0 rgba(37, 92, 65, 0.18);
+  }
+}
+
+.buttonText {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  white-space: nowrap;
+}
+
+.buttonDisabled {
+  opacity: 0.5;
+}

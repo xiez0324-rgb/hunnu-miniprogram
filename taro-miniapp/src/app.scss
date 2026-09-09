@@ -1,0 +1,9 @@
+@use '@/styles/variables.scss' as *;
+
+page {
+  background-color: $color-bg-page;
+  color: $color-text-primary;
+  font-size: $font-size-md;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}

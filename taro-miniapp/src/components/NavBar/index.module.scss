@@ -1,0 +1,34 @@
+@use '@/styles/variables.scss' as *;
+
+.navBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm 0;
+  margin-bottom: $spacing-sm;
+}
+
+.backBtn {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: $radius-round;
+  background-color: $color-bg-card;
+  border: 3rpx solid rgba(37, 92, 65, 0.4);
+  box-shadow: $shadow-paper-sm;
+  @include flex-center;
+}
+
+.backIcon {
+  font-size: 48rpx;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  line-height: 1;
+}
+
+.title {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  @include text-ellipsis;
+  max-width: 420rpx;
+}

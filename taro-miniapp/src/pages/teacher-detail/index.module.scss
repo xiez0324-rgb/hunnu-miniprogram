@@ -1,0 +1,145 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+}
+
+.headCard {
+  @include torn-card(-0.5deg);
+  padding: $spacing-lg;
+  box-shadow: $shadow-paper;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.avatarA,
+.avatarB {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: $radius-md;
+  @include flex-center;
+  border: 3rpx solid rgba(37, 92, 65, 0.3);
+  flex-shrink: 0;
+}
+
+.avatarA {
+  background-color: $color-mint;
+}
+
+.avatarB {
+  background-color: $color-sky;
+}
+
+.avatarText {
+  font-size: 52rpx;
+  font-weight: $font-weight-bold;
+  color: $color-pine;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.name {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.meta {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: $spacing-xs;
+  @include text-ellipsis;
+}
+
+.card {
+  @include torn-card(0.6deg);
+  padding: $spacing-lg;
+  margin-top: $spacing-lg;
+  box-shadow: $shadow-paper;
+}
+
+.cardTitle {
+  display: inline-block;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-pine;
+  font-family: $font-hand;
+  margin-bottom: $spacing-md;
+  padding: 4rpx 20rpx;
+  background-color: $color-mint;
+  transform: rotate(-1deg);
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.field {
+  margin-bottom: $spacing-md;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-text-tertiary;
+  margin-bottom: $spacing-sm;
+  font-family: $font-hand;
+}
+
+.chipStatic {
+  display: inline-flex;
+  align-items: center;
+  padding: 12rpx 28rpx;
+  height: 68rpx;
+  border-radius: $radius-button;
+  background-color: $color-bg-card;
+  border: 3rpx solid $color-border;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  white-space: nowrap;
+}
+
+.value {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+}
+
+.valueLine {
+  display: block;
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+  margin-bottom: 6rpx;
+}
+
+.intro {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  line-height: $line-height-loose;
+}
+
+.tip {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  text-align: center;
+  margin: $spacing-lg 0;
+}

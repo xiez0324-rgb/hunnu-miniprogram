@@ -1,0 +1,185 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+}
+
+.guideCard {
+  @include torn-card(-0.5deg);
+  padding: $spacing-lg;
+  box-shadow: $shadow-paper-sm;
+  margin-bottom: $spacing-md;
+}
+
+.guide {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: $line-height-normal;
+}
+
+.countRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: $spacing-sm;
+}
+
+.unreadCount {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.markAll {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  color: $color-leaf;
+  text-decoration: underline;
+}
+
+.item {
+  @include torn-card(0.7deg);
+  padding: $spacing-lg;
+  box-shadow: $shadow-paper-sm;
+  margin-bottom: $spacing-md;
+}
+
+.itemRead {
+  opacity: 0.7;
+}
+
+.itemHead {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+}
+
+.dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: $radius-round;
+  margin-top: 12rpx;
+  flex-shrink: 0;
+  background-color: $color-text-disabled;
+}
+
+.dotUnread {
+  background-color: $color-leaf;
+}
+
+.itemBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  display: block;
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.desc {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: $line-height-normal;
+  margin-top: 4rpx;
+}
+
+.time {
+  display: block;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: $spacing-xs;
+}
+
+/* ===== 系统通知 · 订阅授权管理 ===== */
+.subCard {
+  @include torn-card(0.4deg);
+  padding: $spacing-lg;
+  box-shadow: $shadow-paper-sm;
+  margin-bottom: $spacing-md;
+}
+
+.subTitle {
+  display: block;
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.subDesc {
+  display: block;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  line-height: $line-height-normal;
+  margin-top: $spacing-xs;
+}
+
+.subRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+  padding: $spacing-md 0;
+  border-bottom: 3rpx dashed $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.subInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.subName {
+  display: block;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.subHint {
+  display: block;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.subOnGroup {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-shrink: 0;
+}
+
+.subOnBtn {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-success;
+  border: 3rpx solid $color-success;
+  border-radius: $radius-button;
+  padding: 8rpx 20rpx;
+}
+
+.subTestBtn {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-skydeep;
+  border: 3rpx solid $color-skydeep;
+  border-radius: $radius-button;
+  padding: 8rpx 20rpx;
+}
+
+.subOffBtn {
+  flex-shrink: 0;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: #fff;
+  background-color: $color-primary;
+  border-radius: $radius-button;
+  padding: 8rpx 28rpx;
+}

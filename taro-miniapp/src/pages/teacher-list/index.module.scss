@@ -1,0 +1,14 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+}
+
+.tip {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  text-align: center;
+  margin: $spacing-md 0 $spacing-xl;
+}

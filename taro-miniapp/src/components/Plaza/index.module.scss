@@ -1,0 +1,205 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  width: 100%;
+}
+
+/* 问候 + 统计卡片 */
+.headerCard {
+  @include torn-card(-0.6deg);
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-paper;
+}
+
+.greet {
+  display: block;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-pine;
+  font-family: $font-hand;
+  line-height: $line-height-tight;
+}
+
+.today {
+  display: block;
+  margin-top: $spacing-xs;
+  font-size: $font-size-xs;
+  color: rgba(47, 69, 56, 0.55);
+}
+
+.todayNum {
+  font-weight: $font-weight-bold;
+  color: $color-leaf;
+}
+
+.stats {
+  display: flex;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+}
+
+.statItem {
+  flex: 1;
+  padding: $spacing-sm 0;
+  border-radius: $radius-md;
+  text-align: center;
+}
+
+.statMint {
+  background-color: rgba(205, 238, 218, 0.4);
+}
+
+.statSky {
+  background-color: rgba(207, 228, 247, 0.4);
+}
+
+.statAmber {
+  background-color: rgba(253, 236, 205, 0.6);
+}
+
+.statNum {
+  display: block;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  color: $color-text-primary;
+}
+
+.statLabel {
+  display: block;
+  margin-top: $spacing-xs;
+  font-size: 22rpx;
+  color: rgba(47, 69, 56, 0.5);
+}
+
+/* 筛选栏 */
+.filterBar {
+  white-space: nowrap;
+  background-color: $color-bg-card;
+  border: 3rpx solid $color-border;
+  border-radius: $radius-md;
+  padding: $spacing-xs $spacing-sm;
+  margin-bottom: $spacing-md;
+}
+
+.filterTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-sm;
+  margin-right: $spacing-xs;
+}
+
+.filterTabActive {
+  background-color: $color-primary;
+}
+
+.filterTabText {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-text-tertiary;
+  white-space: nowrap;
+}
+
+.filterTabTextActive {
+  color: $color-text-white;
+}
+
+.filterArrow {
+  font-size: 22rpx;
+  color: $color-text-tertiary;
+  transition: transform $transition-fast;
+}
+
+.filterArrowOpen {
+  transform: rotate(180deg);
+}
+
+/* 需求列表 */
+.listWrap {
+  width: 100%;
+}
+
+.empty {
+  padding: $spacing-xl 0;
+  text-align: center;
+}
+
+.emptyIcon {
+  display: block;
+  font-size: 64rpx;
+}
+
+.emptyTitle {
+  display: block;
+  margin-top: $spacing-sm;
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.emptyDesc {
+  display: block;
+  margin-top: $spacing-xs;
+  font-size: $font-size-xs;
+  color: rgba(47, 69, 56, 0.5);
+}
+
+/* 筛选弹层 */
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+.panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 70vh;
+  background-color: $color-bg-card;
+  border-radius: $radius-xl $radius-xl 0 0;
+  box-shadow: $shadow-popup;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.panelList {
+  max-height: 56vh;
+}
+
+.panelOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md $spacing-lg;
+  border-bottom: 2rpx dashed rgba(47, 69, 56, 0.1);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.panelOptionSelected {
+  background-color: rgba(62, 157, 111, 0.08);
+}
+
+.panelOptionText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-secondary;
+}
+
+.panelCheck {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+}

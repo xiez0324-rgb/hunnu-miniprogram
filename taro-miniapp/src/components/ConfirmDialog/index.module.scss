@@ -1,0 +1,47 @@
+@use '@/styles/variables.scss' as *;
+
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(37, 45, 40, 0.5);
+  z-index: 1000;
+  @include flex-center;
+}
+
+.dialog {
+  @include torn-card(-0.6deg);
+  width: 560rpx;
+  padding: $spacing-xl $spacing-lg;
+  box-shadow: $shadow-popup;
+}
+
+.title {
+  display: block;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  text-align: center;
+  font-family: $font-hand;
+}
+
+.content {
+  display: block;
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  text-align: center;
+  line-height: $line-height-normal;
+  margin-top: $spacing-md;
+}
+
+.actions {
+  display: flex;
+  gap: $spacing-md;
+  margin-top: $spacing-xl;
+}
+
+.btnWrap {
+  flex: 1;
+}

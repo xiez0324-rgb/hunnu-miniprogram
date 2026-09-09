@@ -1,0 +1,34 @@
+@use '@/styles/variables.scss' as *;
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 36rpx;
+  height: 72rpx;
+  border-radius: $radius-button;
+  background-color: $color-bg-card;
+  border: 3rpx solid rgba(37, 92, 65, 0.4);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all $transition-fast;
+  box-shadow: $shadow-paper-sm;
+}
+
+.chipActive {
+  background-color: $color-primary;
+  border-color: $color-primary-dark;
+  box-shadow: 0 6rpx 0 $color-primary-dark;
+  transform: rotate(-1deg);
+}
+
+.chipText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  white-space: nowrap;
+}
+
+.chipActive .chipText {
+  color: $color-text-white;
+}

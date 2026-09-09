@@ -1,0 +1,44 @@
+// ============================================
+// 主题配色变量 · 撕纸动漫手账风（延续网页原型）
+// ============================================
+
+// 纸张与墨色
+$color-paper-bg: #f4ecd9; // 米黄纸张背景
+$color-paper-card: #fffdf5; // 暖白卡片
+$color-ink: #2f4538; // 墨绿主文字
+$color-pine: #255c41; // 深松绿（标题强调/硬阴影）
+
+// 品牌主题色：撕纸贴纸绿
+$color-primary: #3e9d6f;
+$color-primary-light: #6cc390;
+$color-primary-dark: #2d7a54;
+
+// 功能色
+$color-success: #2f9e44;
+$color-warning: #f0a23a;
+$color-error: #f5524a;
+$color-info: #3e9d6f;
+
+// 辅助色（手账贴纸色系）
+$color-mint: #cdeeda; // 薄荷贴纸
+$color-sky: #cfe4f7; // 天空蓝贴纸
+$color-skydeep: #4a7fbf; // 深天空蓝
+$color-amber: #f0a23a; // 暖琥珀
+$color-amber-bg: #fdeccd; // 琥珀贴纸底
+$color-leaf: #3e9d6f; // 叶子绿
+
+// 背景色
+$color-bg-page: #f4ecd9;
+$color-bg-card: #fffdf5;
+$color-bg-hover: #f2e9d6;
+
+// 文本色
+$color-text-primary: #2f4538;
+$color-text-secondary: #54655a;
+$color-text-tertiary: #8a9588;
+$color-text-disabled: #c3c4b8;
+$color-text-white: #fffdf5;
+
+// 边框色（墨绿半透明，手绘感）
+$color-border: rgba(47, 69, 56, 0.18);
+$color-divider: rgba(47, 69, 56, 0.1);

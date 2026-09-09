@@ -1,0 +1,34 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+  padding-bottom: 160rpx;
+  position: relative;
+}
+
+/* 装饰贴纸圆点 */
+.deco {
+  position: absolute;
+  border-radius: $radius-round;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.decoA {
+  top: 24rpx;
+  right: -16rpx;
+  width: 56rpx;
+  height: 56rpx;
+  background-color: $color-mint;
+  transform: rotate(15deg);
+}
+
+.decoB {
+  top: 300rpx;
+  left: -18rpx;
+  width: 48rpx;
+  height: 48rpx;
+  background-color: $color-sky;
+  transform: rotate(-10deg);
+}

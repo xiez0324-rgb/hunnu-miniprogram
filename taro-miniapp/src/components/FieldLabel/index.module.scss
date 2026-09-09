@@ -1,0 +1,30 @@
+@use '@/styles/variables.scss' as *;
+
+.field {
+  margin-bottom: $spacing-md;
+}
+
+.label {
+  display: block;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-sm;
+  font-family: $font-hand;
+}
+
+.required {
+  color: $color-error;
+  font-weight: $font-weight-bold;
+}
+
+.hint {
+  display: block;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-bottom: $spacing-sm;
+}
+
+.content {
+  width: 100%;
+}

@@ -1,0 +1,66 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+  padding-top: 200rpx;
+}
+
+.title {
+  display: block;
+  text-align: center;
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  font-family: $font-hand;
+}
+
+.subtitle {
+  display: block;
+  text-align: center;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: $spacing-xs;
+}
+
+.grid {
+  display: flex;
+  gap: $spacing-md;
+  margin-top: $spacing-xl;
+}
+
+.roleCard {
+  flex: 1;
+  @include torn-card(-0.8deg);
+  padding: $spacing-xl $spacing-lg;
+  box-shadow: $shadow-paper;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &:nth-child(2) {
+    transform: rotate(0.8deg);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.roleIcon {
+  font-size: 88rpx;
+}
+
+.roleName {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  margin-top: $spacing-md;
+}
+
+.roleDesc {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: $spacing-xs;
+  font-family: $font-hand;
+}

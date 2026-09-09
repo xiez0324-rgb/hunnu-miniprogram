@@ -1,0 +1,86 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+}
+
+.card {
+  @include torn-card(0.5deg);
+  padding: $spacing-lg;
+  box-shadow: $shadow-paper;
+}
+
+.headRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-sm;
+}
+
+.demandNo {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-text-tertiary;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  padding: $spacing-sm 0;
+  border-bottom: 3rpx dashed $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.rowLabel {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  width: 160rpx;
+  flex-shrink: 0;
+}
+
+.rowValue {
+  flex: 1;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.tipCard {
+  @include torn-card(-0.5deg);
+  padding: $spacing-lg;
+  box-shadow: $shadow-paper-sm;
+  margin-top: $spacing-md;
+}
+
+.tipTitle {
+  display: block;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-pine;
+  font-family: $font-hand;
+}
+
+.tipText {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: $line-height-normal;
+  margin-top: $spacing-xs;
+}
+
+.footer {
+  margin-top: $spacing-xl;
+}
+
+.footerTip {
+  display: block;
+  text-align: center;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: $spacing-sm;
+}

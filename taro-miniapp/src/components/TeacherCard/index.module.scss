@@ -1,0 +1,106 @@
+@use '@/styles/variables.scss' as *;
+
+.card {
+  @include torn-card(0.6deg);
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  box-shadow: $shadow-paper;
+}
+
+.cardBody {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+}
+
+.avatarWrap {
+  flex-shrink: 0;
+}
+
+.avatarA,
+.avatarB {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: $radius-md;
+  @include flex-center;
+  border: 3rpx solid rgba(37, 92, 65, 0.3);
+}
+
+.avatarA {
+  background-color: $color-mint;
+}
+
+.avatarB {
+  background-color: $color-sky;
+}
+
+.avatarText {
+  font-size: 44rpx;
+  font-weight: $font-weight-bold;
+  color: $color-pine;
+}
+
+.cardInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  flex-wrap: wrap;
+}
+
+.name {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.recommendTag {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  color: $color-amber;
+  background-color: $color-amber-bg;
+  border: 3rpx solid rgba(240, 162, 58, 0.5);
+  padding: 4rpx 16rpx;
+  border-radius: $radius-round;
+  white-space: nowrap;
+}
+
+.meta {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-top: 6rpx;
+  @include text-ellipsis;
+}
+
+.quote {
+  display: block;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-pine;
+  margin-top: $spacing-sm;
+  font-family: $font-hand;
+}
+
+.resumeEntry {
+  margin-top: $spacing-md;
+  padding: $spacing-sm 0;
+  border-top: 3rpx dashed $color-divider;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.resumeEntryText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+  padding: 8rpx 0;
+}
+
+.footer {
+  margin-top: $spacing-lg;
+}

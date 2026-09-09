@@ -1,0 +1,121 @@
+@use '@/styles/variables.scss' as *;
+
+.field {
+  margin-bottom: $spacing-md;
+}
+
+.label {
+  display: block;
+  margin-bottom: $spacing-xs;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  color: rgba(47, 69, 56, 0.5);
+}
+
+.required {
+  color: $color-error;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 96rpx;
+  border-radius: $radius-md;
+  background-color: $color-bg-card;
+  border: 3rpx solid $color-border;
+  padding: 0 $spacing-md;
+}
+
+.triggerOpen {
+  border-color: $color-primary;
+}
+
+.value {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.placeholder {
+  font-size: $font-size-md;
+  color: $color-text-disabled;
+}
+
+.arrow {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+  transition: transform $transition-fast;
+}
+
+.arrowUp {
+  transform: rotate(180deg);
+}
+
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+.panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 70vh;
+  background-color: $color-bg-card;
+  border-radius: $radius-xl $radius-xl 0 0;
+  box-shadow: $shadow-popup;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.list {
+  max-height: 56vh;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md $spacing-lg;
+  border-bottom: 2rpx dashed rgba(47, 69, 56, 0.1);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.optionSelected {
+  background-color: rgba(62, 157, 111, 0.08);
+}
+
+.optionText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-secondary;
+}
+
+.check {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+}
+
+.confirm {
+  padding: $spacing-md;
+  background-color: $color-primary;
+  @include flex-center;
+}
+
+.confirmText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-text-white;
+}

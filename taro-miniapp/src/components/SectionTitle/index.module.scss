@@ -1,0 +1,19 @@
+@use '@/styles/variables.scss' as *;
+
+.title {
+  display: inline-block;
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-text-secondary;
+  margin: $spacing-lg 0 $spacing-md;
+  font-family: $font-hand;
+  padding: 4rpx 20rpx;
+  background-color: $color-mint;
+  transform: rotate(-1deg);
+}
+
+.titlePrimary {
+  color: $color-pine;
+  background-color: $color-amber-bg;
+  transform: rotate(0.8deg);
+}

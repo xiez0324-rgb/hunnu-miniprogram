@@ -1,0 +1,183 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+}
+
+.card {
+  @include torn-card(0.5deg);
+  padding: $spacing-lg;
+  box-shadow: $shadow-paper;
+}
+
+.benefit {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: $line-height-normal;
+  margin-bottom: $spacing-md;
+}
+
+.fieldBlock {
+  margin-bottom: $spacing-md;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-xs;
+}
+
+.input {
+  width: 100%;
+  height: 88rpx;
+  border-radius: $radius-md;
+  background-color: $color-bg-card;
+  border: 3rpx solid $color-border;
+  padding: 0 $spacing-md;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}
+
+.placeholder {
+  color: $color-text-disabled;
+}
+
+.authRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+}
+
+.checkbox {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: $radius-xs;
+  border: 3rpx solid $color-primary;
+  @include flex-center;
+  flex-shrink: 0;
+  background-color: $color-bg-card;
+}
+
+.checkboxMark {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+}
+
+.authText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  flex: 1;
+  line-height: $line-height-normal;
+}
+
+.authHint {
+  display: block;
+  margin-top: $spacing-sm;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  line-height: $line-height-normal;
+}
+
+.uploadGrid {
+  display: flex;
+  gap: $spacing-md;
+  margin-top: $spacing-lg;
+}
+
+.slotBox {
+  flex: 1;
+  min-width: 0;
+}
+
+.uploadBox {
+  aspect-ratio: 4 / 3;
+  border-radius: $radius-md;
+  border: 4rpx dashed $color-border;
+  @include flex-center;
+  flex-direction: column;
+  gap: 6rpx;
+  background-color: $color-bg-card;
+}
+
+.uploadPlus {
+  font-size: 64rpx;
+  font-weight: $font-weight-bold;
+  color: $color-text-disabled;
+  line-height: 1;
+}
+
+.uploadText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-text-tertiary;
+  text-align: center;
+}
+
+.uploadHint {
+  font-size: 22rpx;
+  color: $color-text-disabled;
+  text-align: center;
+  padding: 0 $spacing-sm;
+}
+
+.slotPreview {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: $radius-md;
+  overflow: hidden;
+  border: 3rpx solid $color-primary;
+}
+
+.slotImg {
+  width: 100%;
+  height: 100%;
+}
+
+.slotCheck {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: $radius-round;
+  background-color: $color-success;
+  color: #fff;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  @include flex-center;
+}
+
+.slotRemove {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 6rpx 0;
+  text-align: center;
+  font-size: $font-size-xs;
+  color: #fff;
+  background-color: rgba(47, 69, 56, 0.62);
+}
+
+.sizeHint {
+  display: block;
+  margin-top: $spacing-sm;
+  font-size: $font-size-xs;
+  color: $color-primary-dark;
+  font-weight: $font-weight-semibold;
+}
+
+.footer {
+  margin-top: $spacing-lg;
+}
+
+.statusRow {
+  margin-bottom: $spacing-md;
+}

@@ -1,0 +1,24 @@
+@use '@/styles/variables.scss' as *;
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6rpx 20rpx;
+  border-radius: $radius-round;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+}
+
+.tagVerified {
+  background-color: rgba(62, 157, 111, 0.16);
+  border: 3rpx solid rgba(62, 157, 111, 0.5);
+  color: $color-primary;
+}
+
+.tagUnverified {
+  background-color: $color-bg-hover;
+  color: $color-text-tertiary;
+}

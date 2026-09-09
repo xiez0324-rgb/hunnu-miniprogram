@@ -1,0 +1,20 @@
+@use '@/styles/variables.scss' as *;
+
+.wrap {
+  margin-bottom: $spacing-md;
+}
+
+.label {
+  display: block;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-sm;
+  font-family: $font-hand;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}

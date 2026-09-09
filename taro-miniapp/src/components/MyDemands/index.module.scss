@@ -1,0 +1,47 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  width: 100%;
+}
+
+.header {
+  margin-bottom: $spacing-md;
+}
+
+.title {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  font-family: $font-hand;
+}
+
+.card {
+  @include torn-card(0.6deg);
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  box-shadow: $shadow-paper;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.cardTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.cardMeta {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-top: $spacing-xs;
+}
+
+.cardFoot {
+  margin-top: $spacing-md;
+}

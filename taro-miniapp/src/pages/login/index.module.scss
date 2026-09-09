@@ -1,0 +1,93 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+/* 装饰贴纸圆点 */
+.deco {
+  position: absolute;
+  border-radius: $radius-round;
+  opacity: 0.7;
+}
+
+.decoA {
+  top: 120rpx;
+  left: -20rpx;
+  width: 72rpx;
+  height: 72rpx;
+  background-color: $color-mint;
+  transform: rotate(12deg);
+}
+
+.decoB {
+  top: 260rpx;
+  right: -16rpx;
+  width: 56rpx;
+  height: 56rpx;
+  background-color: $color-sky;
+  transform: rotate(-6deg);
+}
+
+.decoC {
+  bottom: 200rpx;
+  left: 40rpx;
+  width: 60rpx;
+  height: 60rpx;
+  background-color: $color-amber-bg;
+  transform: rotate(45deg);
+}
+
+.logoWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo {
+  width: 220rpx;
+  height: 220rpx;
+  border-radius: $radius-round;
+  border: 8rpx solid $color-bg-card;
+  box-shadow: $shadow-float;
+  transform: rotate(-3deg);
+}
+
+.title {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  margin-top: $spacing-lg;
+  font-family: $font-hand;
+}
+
+.card {
+  @include torn-card(0.7deg);
+  padding: $spacing-lg;
+  margin-top: $spacing-xl;
+  box-shadow: $shadow-paper;
+}
+
+.agreement {
+  display: flex;
+  justify-content: center;
+  margin-top: $spacing-md;
+}
+
+.agreementText {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  text-align: center;
+  line-height: $line-height-normal;
+}
+
+.link {
+  color: $color-primary;
+  font-weight: $font-weight-bold;
+  text-decoration: underline;
+}

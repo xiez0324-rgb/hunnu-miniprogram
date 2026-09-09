@@ -1,0 +1,72 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+}
+
+.card {
+  @include torn-card(0.5deg);
+  padding: $spacing-lg;
+  box-shadow: $shadow-paper;
+}
+
+.input {
+  width: 100%;
+  height: 96rpx;
+  border-radius: $radius-md;
+  background-color: $color-bg-card;
+  border: 3rpx solid $color-border;
+  padding: 0 $spacing-md;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 180rpx;
+  border-radius: $radius-md;
+  background-color: $color-bg-card;
+  border: 3rpx solid $color-border;
+  padding: $spacing-md;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+  line-height: $line-height-normal;
+}
+
+.placeholder {
+  color: $color-text-disabled;
+}
+
+.stageRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+}
+
+.stageLabel {
+  width: 96rpx;
+  flex-shrink: 0;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.stageInput {
+  flex: 1;
+  height: 88rpx;
+  border-radius: $radius-md;
+  background-color: $color-bg-card;
+  border: 3rpx solid $color-border;
+  padding: 0 $spacing-md;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}
+
+.stageSep {
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+}

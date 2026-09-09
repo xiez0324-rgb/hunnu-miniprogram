@@ -1,0 +1,24 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+  padding-bottom: 160rpx;
+  position: relative;
+}
+
+.deco {
+  position: absolute;
+  border-radius: $radius-round;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.decoA {
+  top: 24rpx;
+  left: -16rpx;
+  width: 52rpx;
+  height: 52rpx;
+  background-color: $color-amber-bg;
+  transform: rotate(20deg);
+}

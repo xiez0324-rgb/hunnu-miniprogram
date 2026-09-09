@@ -1,0 +1,37 @@
+@use '@/styles/variables.scss' as *;
+
+.button {
+  @include button-reset;
+  width: 100%;
+  height: $button-height-md;
+  border-radius: $radius-button;
+  padding: 0 $spacing-lg;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  transition: all $transition-fast;
+}
+
+.buttonPrimary {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  box-shadow: 0 8rpx 0 $color-primary-dark;
+  transform: rotate(-1deg);
+
+  &:active {
+    transform: rotate(-1deg) translateY(4rpx);
+    box-shadow: 0 4rpx 0 $color-primary-dark;
+  }
+}
+
+.buttonText {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-white;
+  white-space: nowrap;
+  letter-spacing: 2rpx;
+}
+
+.buttonDisabled {
+  background-color: $color-text-disabled;
+  box-shadow: 0 8rpx 0 rgba(195, 196, 184, 0.6);
+  opacity: 0.85;
+}

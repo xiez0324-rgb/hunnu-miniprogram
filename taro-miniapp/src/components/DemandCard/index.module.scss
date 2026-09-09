@@ -1,0 +1,80 @@
+@use '@/styles/variables.scss' as *;
+
+.card {
+  @include torn-card(-0.6deg);
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  box-shadow: $shadow-paper;
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+}
+
+.subjectBox {
+  width: 112rpx;
+  height: 112rpx;
+  @include flex-center;
+  flex-shrink: 0;
+  background-color: $color-mint;
+  border: 3rpx solid rgba(37, 92, 65, 0.3);
+  transform: rotate(-2deg);
+}
+
+.subjectText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-pine;
+  text-align: center;
+  @include text-ellipsis-multi(2);
+}
+
+.cardInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  @include text-ellipsis;
+  max-width: 340rpx;
+}
+
+.desc {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-top: 8rpx;
+  @include text-ellipsis;
+}
+
+.cardFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: $spacing-sm;
+  padding-top: $spacing-sm;
+  border-top: 3rpx dashed $color-divider;
+}
+
+.budget {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+}
+
+.applicants {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}

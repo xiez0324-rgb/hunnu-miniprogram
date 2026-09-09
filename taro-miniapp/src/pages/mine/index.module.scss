@@ -1,0 +1,95 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+  padding-bottom: 160rpx;
+}
+
+.profileCard {
+  @include torn-card(-0.6deg);
+  padding: $spacing-lg;
+  box-shadow: $shadow-paper;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.avatar {
+  width: 128rpx;
+  height: 128rpx;
+  @include flex-center;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, $color-mint 0%, $color-sky 100%);
+  border: 3rpx solid rgba(37, 92, 65, 0.3);
+  transform: rotate(-3deg);
+}
+
+.avatarText {
+  font-size: 52rpx;
+  font-weight: $font-weight-bold;
+  color: $color-pine;
+}
+
+.profileInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  display: block;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.desc {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: $spacing-xs;
+  @include text-ellipsis;
+}
+
+.group {
+  @include torn-card(0.4deg);
+  padding: 0 $spacing-lg;
+  box-shadow: $shadow-paper-sm;
+  margin-bottom: $spacing-lg;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md 0;
+  border-bottom: 3rpx dashed $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.menuLabel {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.menuRight {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.menuHint {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-amber;
+}
+
+.menuArrow {
+  font-size: $font-size-md;
+  color: $color-text-disabled;
+}

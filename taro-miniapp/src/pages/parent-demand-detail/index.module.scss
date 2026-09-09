@@ -1,0 +1,122 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+}
+
+.demandCard {
+  @include torn-card(0.5deg);
+  padding: $spacing-lg;
+  box-shadow: $shadow-paper;
+  margin-bottom: $spacing-md;
+}
+
+.demandHead {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.demandTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.demandMeta {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-top: $spacing-xs;
+}
+
+.demandHint {
+  display: block;
+  font-size: $font-size-xs;
+  color: $color-skydeep;
+  line-height: $line-height-normal;
+  margin-top: $spacing-xs;
+  padding: $spacing-sm;
+  background-color: $color-sky;
+  border-radius: $radius-sm;
+}
+
+.confirmNote {
+  background-color: $color-mint;
+  border-radius: $radius-sm;
+  padding: $spacing-md;
+  margin-top: $spacing-sm;
+  transform: rotate(-0.4deg);
+}
+
+.confirmNoteText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-pine;
+}
+
+.cancelRow {
+  margin-top: $spacing-sm;
+}
+
+.infoRow {
+  margin-top: $spacing-sm;
+}
+
+.contactCard {
+  @include torn-card(-0.3deg);
+  padding: $spacing-lg;
+  box-shadow: $shadow-paper-sm;
+  margin-top: $spacing-md;
+}
+
+.contactTitle {
+  display: block;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.contactDesc {
+  display: block;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  line-height: $line-height-normal;
+  margin-top: $spacing-xs;
+}
+
+.contactBtn {
+  margin-top: $spacing-md;
+}
+
+// open-type=contact 客服按钮（重置小程序 button 默认样式，呈现与主按钮一致）
+.customerBtn {
+  width: 100%;
+  height: 96rpx;
+  border-radius: $radius-button;
+  background-color: $color-primary;
+  color: #fff;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  line-height: 96rpx;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+.customerBtn::after {
+  border: none;
+}
+
+.bottomTip {
+  margin-top: $spacing-sm;
+}
+
+.bottomTipText {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  line-height: $line-height-normal;
+}

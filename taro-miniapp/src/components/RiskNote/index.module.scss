@@ -1,0 +1,28 @@
+@use '@/styles/variables.scss' as *;
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-lg;
+  border-radius: $radius-sm;
+  background-color: $color-amber-bg;
+  border: 3rpx dashed rgba(240, 162, 58, 0.6);
+  margin-bottom: $spacing-md;
+  transform: rotate(-0.6deg);
+}
+
+.icon {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-amber;
+  line-height: $line-height-normal;
+}
+
+.text {
+  flex: 1;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: #a86a1a;
+  line-height: $line-height-normal;
+}

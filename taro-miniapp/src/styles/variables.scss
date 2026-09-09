@@ -1,0 +1,156 @@
+// 必须转发和使用 theme.scss
+@forward './theme.scss';
+@use './theme.scss' as *;
+
+// ============================================
+// 全局 SCSS 变量（撕纸手账风）
+// ============================================
+
+// 屏幕适配（设计稿基准 750rpx）
+$screen-width: 750rpx;
+$page-padding: 40rpx; // 页面左右安全边距（加大，留白更舒展）
+$page-spacing: 40rpx;
+$max-content-width: 670rpx; // 750 - 40*2
+
+// 间距（8px 网格，整体放大让空间更舒展）
+$spacing-xs: 12rpx;
+$spacing-sm: 20rpx;
+$spacing-md: 32rpx;
+$spacing-lg: 40rpx;
+$spacing-xl: 56rpx;
+
+// 圆角（撕纸风尽量少用圆角，卡片用 clip-path 撕边）
+$radius-xs: 6rpx;
+$radius-sm: 10rpx;
+$radius-md: 14rpx;
+$radius-lg: 18rpx;
+$radius-xl: 24rpx;
+$radius-button: 56rpx; // 按钮全圆角胶囊
+$radius-round: 999rpx;
+
+// 按钮高度（加大，便于点击）
+$button-height-sm: 76rpx; // 小按钮
+$button-height-md: 104rpx; // 常规按钮（大，主操作）
+$button-height-lg: 112rpx; // 大按钮（底部固定操作）
+
+// 阴影（撕纸硬阴影：错位厚阴影，模拟贴纸感）
+$shadow-paper: 0 10rpx 0 rgba(37, 92, 65, 0.16);
+$shadow-paper-sm: 0 6rpx 0 rgba(37, 92, 65, 0.14);
+$shadow-card: 0 10rpx 0 rgba(37, 92, 65, 0.12);
+$shadow-float: 0 14rpx 0 rgba(37, 92, 65, 0.14);
+$shadow-popup: 0 18rpx 40rpx rgba(37, 92, 65, 0.2);
+
+// 字体大小（整体加大，确保可读）
+$font-size-xs: 28rpx;
+$font-size-sm: 32rpx;
+$font-size-md: 36rpx;
+$font-size-lg: 40rpx;
+$font-size-xl: 46rpx;
+$font-size-xxl: 58rpx;
+
+// 行高
+$line-height-tight: 1.3;
+$line-height-normal: 1.5;
+$line-height-loose: 1.8;
+
+// 字重
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 800;
+
+// 手写字体栈（撕纸手账风）
+$font-hand: 'Kaiti SC', 'STKaiti', 'KaiTi', 'Kaiti', cursive;
+
+// 过渡动画
+$transition-fast: 0.15s ease;
+$transition-base: 0.25s ease;
+$transition-slow: 0.35s ease;
+
+// ============================================
+// 常用 Mixin
+// ============================================
+
+// 单行文本省略
+@mixin text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 多行文本省略
+@mixin text-ellipsis-multi($lines: 2) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $lines;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// 水平垂直居中
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// 撕纸卡片（核心撕纸风格：不规则撕边 + 错位厚阴影 + 轻微旋转）
+// 撕边振幅已收敛到 ~2% 内凹，保留手撕感但不夸张、不遮挡内容
+@mixin torn-card($rotate: -1deg) {
+  background-color: $color-bg-card;
+  clip-path: polygon(
+    0% 1.6%, 9% 0.2%, 19% 1.2%, 29% 0.4%, 39% 1.5%, 49% 0.2%, 59% 1.3%, 69% 0.4%, 79% 1.5%, 89% 0.3%, 97% 1.3%, 100% 0.4%,
+    99% 24%, 100% 48%, 98% 72%, 100% 96%,
+    90% 100%, 80% 98.6%, 70% 100%, 60% 98.4%, 50% 100%, 40% 98.6%, 30% 100%, 20% 98.4%, 10% 100%, 1% 98.6%,
+    0.5% 74%, 1.8% 50%, 0.4% 28%, 1.4% 6%
+  );
+  transform: rotate($rotate);
+}
+
+// 撕纸卡片（底部撕边，用于 tabBar / 底部贴纸）
+@mixin torn-card-b($rotate: 0deg) {
+  background-color: $color-bg-card;
+  clip-path: polygon(
+    0% 98.6%, 8% 100%, 18% 98.6%, 28% 100%, 38% 98.8%, 48% 100%, 58% 98.6%, 68% 100%, 78% 98.8%, 88% 100%, 96% 98.6%, 100% 99.2%,
+    99% 74%, 100% 50%, 98% 26%, 100% 4%,
+    90% 0%, 80% 2.2%, 70% 0.4%, 60% 2%, 50% 0.4%, 40% 2.4%, 30% 0.6%, 20% 2%, 10% 0.4%, 1% 1.8%,
+    0.5% 26%, 1.8% 50%, 0.4% 74%
+  );
+  transform: rotate($rotate);
+}
+
+// 贴纸色块（彩色贴纸背景）
+@mixin sticker($bg, $color) {
+  background-color: $bg;
+  color: $color;
+}
+
+// 按钮样式重置与保护
+@mixin button-reset {
+  padding: 0;
+  margin: 0;
+  line-height: normal;
+  text-align: inherit;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+
+  &::after {
+    border: none;
+  }
+}
+
+// 横向滚动容器（微信小程序兼容）
+@mixin scroll-x-container {
+  white-space: nowrap;
+}
+
+// 横向滚动子项（必须配合 scroll-x-container）
+@mixin scroll-x-item($width) {
+  display: inline-block;
+  width: $width;
+  vertical-align: top;
+  white-space: normal;
+}

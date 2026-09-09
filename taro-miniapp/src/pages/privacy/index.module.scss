@@ -1,0 +1,47 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+  padding-bottom: 80rpx;
+}
+
+.card {
+  @include torn-card(0.5deg);
+  padding: $spacing-lg;
+  box-shadow: $shadow-paper;
+}
+
+/* 卡片主标题：下移三行（对齐二号最终版布局，避免撕边遮挡） */
+.title {
+  display: block;
+  margin-top: 96rpx;
+  margin-bottom: $spacing-sm;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-pine;
+}
+
+.body {
+  display: block;
+}
+
+.section {
+  margin-top: $spacing-md;
+}
+
+.sectionTitle {
+  display: block;
+  margin-bottom: $spacing-xs;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  color: $color-ink;
+}
+
+.paragraph {
+  display: block;
+  margin-top: $spacing-xs;
+  font-size: 24rpx;
+  line-height: $line-height-loose;
+  color: rgba(47, 69, 56, 0.65);
+}
