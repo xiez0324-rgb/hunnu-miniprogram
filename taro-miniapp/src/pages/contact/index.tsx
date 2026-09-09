@@ -54,10 +54,8 @@ export default function ProfilePage() {
 
     if (phone) {
       if (!/^1\d{10}$/.test(phone)) return '手机号需为 11 位数字且以 1 开头'
-    } else {
-      // 家长/老师联系电话均必填：客服/代理人需凭此联系确认人选
-      return '联系电话为必填项（代理人需凭此与您对接）'
     }
+    // 联系电话为选填：微信审核要求不得强制索取手机号；未填时代理人将通过微信与用户确认联系方式
 
     if (wechat.trim().length > 50) return '微信号过长（不超过 50 个字符）'
 
@@ -147,12 +145,12 @@ export default function ProfilePage() {
           </FieldLabel>
         ) : null}
 
-        <FieldLabel label="联系电话（必填）" required hint="代理人与客服将凭此电话与您联系，请填写常用手机号">
+        <FieldLabel label="联系电话（选填）" hint="建议填写常用手机号，便于代理人快速与您对接；未填写也可保存，代理人与您联系时会通过微信确认">
           <Input
             className={styles.input}
             value={phone}
             type="number"
-            placeholder="请输入 11 位手机号"
+            placeholder="选填：请输入 11 位手机号"
             placeholderClass={styles.placeholder}
             onInput={(e) => setPhone(onlyDigits(e.detail.value))}
           />

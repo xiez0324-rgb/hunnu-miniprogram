@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import Taro, { useDidShow, useDidHide } from '@tarojs/taro'
 import { UserProvider } from './store/user'
-import { ensureWechatPrivacy } from './services/privacy'
+import PrivacyGate from './components/PrivacyGate'
 // 全局样式
 import './app.scss'
 
@@ -10,8 +10,8 @@ function App(props) {
   useEffect(() => {
     if (process.env.TARO_ENV === 'weapp') {
       Taro.cloud.init({ env: '[环境 ID 见本地 .env]', traceUser: true })
-      // 提审合规：启动即检查并拉起微信官方「隐私保护指引」弹窗
-      ensureWechatPrivacy()
+      // 隐私授权由 PrivacyGate 统一管理：
+      // 首次启动先弹自定义隐私协议门，用户同意后再同步微信官方隐私授权（wx.requirePrivacyAuthorize）
     }
   }, [])
 
@@ -21,7 +21,12 @@ function App(props) {
   // 对应 onHide
   useDidHide(() => {})
 
-  return <UserProvider>{props.children}</UserProvider>
+  return (
+    <UserProvider>
+      {props.children}
+      <PrivacyGate />
+    </UserProvider>
+  )
 }
 
 export default App

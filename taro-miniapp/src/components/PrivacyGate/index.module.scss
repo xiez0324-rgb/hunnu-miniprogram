@@ -1,0 +1,60 @@
+@use '@/styles/variables.scss' as *;
+
+.mask {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: rgba(34, 42, 37, 0.55);
+  @include flex-center;
+  padding: $spacing-lg;
+}
+
+.card {
+  width: 100%;
+  max-width: 620rpx;
+  @include torn-card(0.6deg);
+  background-color: $color-bg-card;
+  padding: $spacing-xl $spacing-lg $spacing-lg;
+  box-shadow: $shadow-paper;
+}
+
+.title {
+  display: block;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  text-align: center;
+}
+
+.desc {
+  display: block;
+  margin-top: $spacing-md;
+  font-size: $font-size-sm;
+  line-height: $line-height-normal;
+  color: $color-text-secondary;
+}
+
+.link {
+  margin-top: $spacing-sm;
+}
+
+.linkText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+  text-decoration: underline;
+}
+
+.actions {
+  margin-top: $spacing-lg;
+  display: flex;
+  gap: $spacing-md;
+}
+
+.version {
+  display: block;
+  margin-top: $spacing-md;
+  font-size: 22rpx;
+  color: $color-text-disabled;
+  text-align: center;
+}

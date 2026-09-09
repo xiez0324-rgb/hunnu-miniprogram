@@ -89,7 +89,7 @@ export default function RoleSelectPage() {
       <ConfirmDialog
         visible={guideVisible}
         title="完善个人资料"
-        content="欢迎使用小小陪伴帮！为方便代理人尽快为您匹配合适老师，请先进入「我的」页完善称呼、性别、联系电话等基础信息。"
+        content="欢迎使用小小陪伴帮！为方便代理人尽快为您匹配合适老师，建议先进入「我的」页完善称呼、性别等基础信息（联系电话可在需要对接时再补充，非必填）。"
         confirmText="去完善资料"
         cancelText="稍后再说"
         onConfirm={goGuide}

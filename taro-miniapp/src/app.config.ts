@@ -50,4 +50,6 @@ export default defineAppConfig({
       },
     ],
   },
-})
+  // 微信隐私能力开关（2023-10-17 后默认启用；保留显式配置以兼容低版本基础库的提审调试）
+  __usePrivacyCheck__: true,
+} as any)

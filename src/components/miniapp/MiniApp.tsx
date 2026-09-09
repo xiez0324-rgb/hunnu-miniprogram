@@ -487,7 +487,7 @@ function PrivacyPolicyBody() {
           1.2 家长端：为完成需求发布与对接，我们会收集您的称呼、联系电话、上课地址（可能精确至小区及楼栋）及需求描述等信息。
         </p>
         <p className="mt-1">
-          1.3 我们仅收集您主动填写或上传、且与提供服务相关的必要信息，不超出上述范围收集与服务无关的信息。
+          1.3 我们仅收集您主动填写或上传、且与提供服务相关的必要信息，不超出上述范围收集与服务无关的信息。其中「联系电话」为选填项：您可以先浏览或发布需求而不填写，平台仅会在需要与您对接时通过微信征询；我们不会在您首次使用时强制索取手机号等个人信息。
         </p>
       </div>
 
@@ -1341,7 +1341,7 @@ function Publish({ onSubmit }: { onSubmit: () => void }) {
             onChange={(e) => setLocation(e.target.value)}
           />
         </Field>
-        <RiskNote>⚠ 联系电话和上课地点很重要！请务必填写真实信息，否则无法与老师对接。</RiskNote>
+        <RiskNote>上课地点很重要，请填写真实信息；联系电话为选填，未填写时平台代理人会通过微信与您确认。</RiskNote>
         <Field label="预算范围（元/时）"
           hint={
             stage
@@ -1776,7 +1776,7 @@ function ParentContact({ onBack }: { onBack: () => void }) {
   const [name, setName] = useState("王女士");
   const [area, setArea] = useState("岳麓区");
   const onlyDigits = (v: string) => v.replace(/\D/g, "");
-  const canSave = phone && name && area;
+  const canSave = name && area; // 联系电话选填：不得强制索取手机号
 
   return (
     <div>
@@ -1793,12 +1793,12 @@ function ParentContact({ onBack }: { onBack: () => void }) {
               placeholder="请输入称呼，如：王女士"
             />
           </Field>
-          <Field label="联系电话">
+          <Field label="联系电话（选填）">
             <TextInput
               value={phone}
               onChange={(e) => setPhone(onlyDigits(e.target.value))}
               inputMode="tel"
-              placeholder="请输入手机号"
+              placeholder="选填：请输入手机号"
             />
           </Field>
           <Field label="微信号（选填）">
@@ -1839,7 +1839,7 @@ function TeacherContact({ onBack }: { onBack: () => void }) {
   const [name, setName] = useState("张同学");
   const [area, setArea] = useState("");
   const onlyDigits = (v: string) => v.replace(/\D/g, "");
-  const canSave = phone && area;
+  const canSave = area; // 联系电话选填，所在区域用于判断上门距离（必填）
 
   return (
     <div>
@@ -1856,12 +1856,12 @@ function TeacherContact({ onBack }: { onBack: () => void }) {
               placeholder="请输入称呼，如：张同学"
             />
           </Field>
-          <Field label="联系电话（必填）">
+          <Field label="联系电话（选填）">
             <TextInput
               value={phone}
               onChange={(e) => setPhone(onlyDigits(e.target.value))}
               inputMode="tel"
-              placeholder="请输入手机号（必填）"
+              placeholder="选填：请输入手机号"
             />
           </Field>
           <Field label="微信号（选填）">
@@ -1879,7 +1879,7 @@ function TeacherContact({ onBack }: { onBack: () => void }) {
             />
           </Field>
         </div>
-        <RiskNote>⚠ 手机号和所在区域为必填，否则代理人无法与您对接。联系方式仅用于平台代理人对接，不会在广场公开展示。</RiskNote>
+        <RiskNote>所在区域用于代理人判断上门距离（必填）；联系电话为选填，未填写时代理人会通过微信与您确认。联系方式仅用于平台代理人对接，不会公开展示。</RiskNote>
         <div className="mt-4">
           <PrimaryButton onClick={() => setSaved(true)} disabled={!canSave}>
             {saved ? "已保存" : "保存联系方式"}

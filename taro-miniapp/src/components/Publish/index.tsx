@@ -1,6 +1,6 @@
 import { View, Text, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { callFunction } from '@/services/cloud'
 import { districts, genders } from '@/data/shared'
 import { onlyDigits } from '@/utils'
@@ -53,6 +53,21 @@ export default function Publish() {
   const [phone, setPhone] = useState('')
   const [note, setNote] = useState('')
   const budgetDirty = useRef(false)
+  const [loadingProfile, setLoadingProfile] = useState(true)
+
+  // 预填个人资料里已填写的联系电话（选填）：已填则无需重复输入，代理人可直接联系
+  useEffect(() => {
+    callFunction<{ profile: { phone?: string } | null }>('getProfile', { role: 'parent' })
+      .then((res) => {
+        const p = res.profile
+        if (p && p.phone) setPhone(p.phone)
+      })
+      .catch(() => {
+        /* 读取失败不阻塞发布 */
+      })
+      .finally(() => setLoadingProfile(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const stage = stageOf(grade)
 
@@ -77,9 +92,14 @@ export default function Publish() {
   }
 
   const budgetValid = !(budgetMin && budgetMax && Number(budgetMin) > Number(budgetMax))
-  const canSubmit = agreed && grade && subject.length > 0 && goal && location && phone && budgetValid
+  // 联系电话为选填（微信审核要求不得强制索取）：填了则校验格式，未填可先发布，代理人后续通过微信与您确认
+  const canSubmit = agreed && grade && subject.length > 0 && goal && location && budgetValid
 
   const submit = async () => {
+    if (phone && !/^1\d{10}$/.test(phone)) {
+      Taro.showToast({ title: '手机号需为 11 位数字且以 1 开头', icon: 'none' })
+      return
+    }
     const subjectMain = subject[0] || ''
     const category = MAIN_SUBJECTS.includes(subjectMain)
       ? '主科'
@@ -171,7 +191,7 @@ export default function Publish() {
           />
         </FieldLabel>
 
-        <RiskNote>⚠ 联系电话和上课地点很重要！请务必填写真实信息，否则无法与老师对接。</RiskNote>
+        <RiskNote>联系电话为选填，方便代理人第一时间联系您；未填写也可先发布，代理人会通过微信与您确认。</RiskNote>
 
         <FieldLabel
           label="预算范围（元/时）"
@@ -208,13 +228,13 @@ export default function Publish() {
           )}
         </FieldLabel>
 
-        <FieldLabel label="联系电话" required>
+        <FieldLabel label="联系电话（选填）" hint="建议填写常用手机号，便于代理人快速与您对接；代理人仅用于对接，不会公开展示">
           <Input
             className={styles.input}
             type="number"
             maxlength={11}
             value={phone}
-            placeholder="请输入手机号"
+            placeholder={loadingProfile ? '读取个人资料中…' : '选填：请输入 11 位手机号'}
             placeholderClass={styles.placeholder}
             onInput={(e) => setPhone(onlyDigits(e.detail.value))}
           />

@@ -18,9 +18,8 @@ function validate(data, role) {
 
   if (!nickname || nickname.length > 20) return '姓名必填且不超过 20 字'
   if (gender && gender !== '男' && gender !== '女') return '性别参数不正确'
+  // 联系电话为选填：仅校验格式；未填允许保存（微信审核要求不得强制索取手机号，代理人可后续通过微信补充确认）
   if (phone && !/^1\d{10}$/.test(phone)) return '手机号格式不正确'
-  // 家长/老师联系电话均必填：代理人/客服需凭此与用户对接，避免联系不上
-  if (!phone) return '联系电话为必填项'
   if (wechat.length > 50) return '微信号过长（不超过 50 字符）'
   if (role === 'teacher' && !area) return '老师所在区域为必填项'
   if (area.length > 50) return '所在区域过长（不超过 50 字符）'
