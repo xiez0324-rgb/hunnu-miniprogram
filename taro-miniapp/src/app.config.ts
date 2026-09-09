@@ -9,7 +9,6 @@ export default defineAppConfig({
     'pages/apply-success/index',
     'pages/resume/index',
     'pages/verify/index',
-    'pages/fee-records/index',
     'pages/publish-success/index',
     'pages/parent-demand-detail/index',
     'pages/teacher-list/index',

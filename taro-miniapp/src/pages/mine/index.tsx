@@ -80,13 +80,6 @@ export default function MinePage() {
             <Text className={styles.menuLabel}>个人信息</Text>
             <Text className={styles.menuArrow}>›</Text>
           </View>
-          <View className={styles.menuItem} onClick={() => go('/pages/fee-records/index')}>
-            <Text className={styles.menuLabel}>费用状态</Text>
-            <View className={styles.menuRight}>
-              <Text className={styles.menuHint}>待付 1 单</Text>
-              <Text className={styles.menuArrow}>›</Text>
-            </View>
-          </View>
           <View className={styles.menuItem} onClick={() => go('/pages/notifications/index')}>
             <Text className={styles.menuLabel}>消息通知</Text>
             <View className={styles.menuRight}>

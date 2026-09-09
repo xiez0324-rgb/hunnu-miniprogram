@@ -8,7 +8,6 @@ import StatusTag from '@/components/StatusTag'
 import RiskNote from '@/components/RiskNote'
 import { ensureWechatPrivacy } from '@/services/privacy'
 import { pickAndUploadMaterial, formatMB, type UploadedMaterial } from '@/utils/verifyUpload'
-import { PARTNER_SCHOOL, SCHOOL_LOCK_HINT } from '@/constants/partner'
 import styles from './index.module.scss'
 
 // 认证材料槽位：真实提交会对应生成一张照片（相册选图，压缩到 1~2MB）
@@ -134,14 +133,6 @@ export default function VerifyPage() {
         </View>
 
         <View className={styles.fieldBlock}>
-          <Text className={styles.fieldLabel}>在读学校</Text>
-          <View className={styles.schoolFixed}>
-            <Text className={styles.schoolFixedName}>{PARTNER_SCHOOL}</Text>
-            <Text className={styles.schoolFixedHint}>{SCHOOL_LOCK_HINT}</Text>
-          </View>
-        </View>
-
-        <View className={styles.fieldBlock}>
           <Text className={styles.fieldLabel}>学院名称</Text>
           <Input
             className={styles.input}
@@ -205,7 +196,7 @@ export default function VerifyPage() {
         </Text>
 
         <RiskNote>
-          隐私提示：上传前请对学生证号、学号、身份证号等敏感信息进行打码处理，仅保留学校名称与姓名。照片仅用于学籍真实性核验，平台不会对外公开。
+          隐私提示：上传前请对学生证号、学号、身份证号等敏感信息进行打码处理。照片仅用于平台核验身份真实性，不会对外公开。
         </RiskNote>
 
         <View className={styles.footer}>

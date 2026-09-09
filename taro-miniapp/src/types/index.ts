@@ -127,10 +127,3 @@ export interface Verification {
   authorized: boolean
   rejectReason: string
 }
-
-// 费用状态记录（普通用户可见项）：不含任何金额字段，金额仅在管理员端维护
-export interface FeeRecord {
-  id: string
-  demand: string
-  status: '待付' | '已付'
-}

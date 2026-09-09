@@ -127,7 +127,22 @@ export async function callAdmin<T = any>(
         clearSession();
         throw new Error("登录已失效，请重新登录");
       }
-      throw new Error(msg.includes("cloudbase") ? "云函数调用失败，请检查安全域名配置与登录态" : msg);
+      // 云函数不存在 / 未部署 / 被旧版本覆盖
+      if (/not\s*found|not\s*exist|不存在|未找到|FunctionName|function\s*not|not\s*deployed/i.test(msg)) {
+        throw new Error(
+          `云函数「${name}」不存在或未部署：请在云开发控制台对该函数执行「上传并部署：云端安装依赖」后再刷新（底层错误：${msg.slice(0, 160)}）`
+        );
+      }
+      // 权限不足类（登录成功但非管理员/安全规则拒绝）
+      if (/forbidden|denied|no\s*permission|无权|invalid\s*token|签名|signature/i.test(msg)) {
+        throw new Error(`访问被拒绝：请确认当前账号为管理员且已重新登录（${msg.slice(0, 160)}）`);
+      }
+      // 域名白名单 / 网络 / 登录态缺失等通用云环境问题
+      throw new Error(
+        msg.includes("cloudbase")
+          ? `云函数调用失败，请检查安全域名配置与登录态（${name}）`
+          : `云函数「${name}」调用失败：${msg.slice(0, 160)}`
+      );
     }
     const result = res.result as { code: number; message: string; data: T };
     if (result.code !== 0) {

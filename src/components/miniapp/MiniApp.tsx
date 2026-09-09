@@ -5,7 +5,6 @@ import tutor2 from "@/assets/tutor-2.jpg";
 import {
   demands,
   myApplies,
-  myFees,
   teachers,
   applicantsByDemand,
   allSubjects,
@@ -65,7 +64,6 @@ type Screen =
   | "parentMe"
   | "parentContact"
   | "teacherList"
-  | "feeRecords"
   | "notifications"
   | "teacherContact"
   | "teacherResume";
@@ -286,7 +284,6 @@ export default function MiniApp() {
 
           {screen === "resume" && <Resume onBack={() => go("teacherMe")} />}
           {screen === "verify" && <Verify onBack={() => go("teacherMe")} />}
-          {screen === "feeRecords" && <FeeRecords onBack={() => go("teacherMe")} />}
           {screen === "teacherContact" && <TeacherContact onBack={() => go("teacherMe")} />}
           {screen === "notifications" && (
             <Notifications
@@ -484,7 +481,7 @@ function PrivacyPolicyBody() {
       <div>
         <p className="font-extrabold text-ink/80">一、信息收集范围</p>
         <p className="mt-1">
-          1.1 老师端：为完成身份核验与信息展示，我们会收集您的姓名、学院、专业、可授课科目与时段、期望时薪、可服务区域、自我介绍，以及用于学籍/学历证明的学生证、学信网截图等证明材料。平台仅面向湖南师范大学在校学生开展老师端合作，就读学校由平台统一核验，无需另行填写。
+          1.1 老师端：为完成身份核验与信息展示，我们会收集您的姓名、学院、专业、可授课科目与时段、期望时薪、可服务区域、自我介绍，以及用于学籍/学历证明的学生证、学信网截图等证明材料。
         </p>
         <p className="mt-1">
           1.2 家长端：为完成需求发布与对接，我们会收集您的称呼、联系电话、上课地址（可能精确至小区及楼栋）及需求描述等信息。
@@ -1032,7 +1029,6 @@ function TeacherMe({ onGo, onSwitch, unread }: { onGo: (s: Screen) => void; onSw
         <ListItem label="简历管理" onClick={() => onGo("resume")} />
         <ListItem label="实名 + 学籍认证" hint="去认证" onClick={() => onGo("verify")} />
         <ListItem label="我的联系方式" onClick={() => onGo("teacherContact")} />
-        <ListItem label="信息费记录" hint="待付 1 单" onClick={() => onGo("feeRecords")} />
         <ListItem label="消息通知" hint={unread > 0 ? `${unread} 条未读` : ""} onClick={() => onGo("notifications")} />
       </TornCard>
       <TornCard className="mt-4" tilt="rotate-[-0.7deg]">
@@ -1045,37 +1041,6 @@ function TeacherMe({ onGo, onSwitch, unread }: { onGo: (s: Screen) => void; onSw
           我们珍视每一位学生、每一笔交易，绝不克扣任何一笔信息费；我们始终与学生群体站在同一战线，用人工核验守护真实与信任。若有任何疑问或问题，请第一时间联系我们的代理人 Kiki，我们将负责到底。
         </p>
       </TornCard>
-    </div>
-  );
-}
-
-function FeeRecords({ onBack }: { onBack: () => void }) {
-  return (
-    <div>
-      <NavBar title="信息费记录" onBack={onBack} />
-      <TornCard tilt="rotate-[0.5deg]" className="mb-4">
-        <p className="text-[11px] text-ink/50 leading-relaxed">
-          成交后按总课时费 8% 一次性收取信息费，由代理人通过微信私信线下收取。本页仅作记录，无支付入口。
-        </p>
-      </TornCard>
-      {myFees.map((f, i) => (
-        <TornCard key={f.id} className="mb-4" tilt={i % 2 ? "rotate-[-0.8deg]" : "rotate-[0.7deg]"}>
-          <div className="flex items-center gap-1.5 flex-wrap mb-2">
-            <h3 className="text-base font-extrabold">#{f.demandId} · {f.title}</h3>
-          </div>
-          <Row label="家长" value={f.parent} />
-          <Row label="总课时费" value={`${f.totalFee} 元`} />
-          <Row label="信息费 8%" value={`${f.fee8} 元`} />
-          <Row
-            label="状态"
-            value={
-              <span className={f.status === "已付" ? "text-leaf font-extrabold" : "text-amber font-extrabold"}>
-                {f.status}
-              </span>
-            }
-          />
-        </TornCard>
-      ))}
     </div>
   );
 }
@@ -1235,13 +1200,9 @@ function Verify({ onBack }: { onBack: () => void }) {
       <NavBar title="实名 + 学籍认证" onBack={onBack} />
       <TornCard tilt="rotate-[-0.6deg]">
         <p className="text-xs text-ink/60 leading-relaxed">
-          认证权益：通过后展示「已认证」标签，被代理人推荐的概率更高。在读学校为平台固定合作院校（湖南师范大学），
-          无需填写，仅需补充学院与专业。
+          认证权益：通过后展示「已认证」标签，被代理人推荐的概率更高。请如实补充学院与专业，材料将用于平台人工核验。
         </p>
         <div className="grid grid-cols-1 gap-3 mt-4">
-          <Field label="在读学校（固定）">
-            <TextInput defaultValue="湖南师范大学" readOnly />
-          </Field>
           <Field label="学院名称">
             <TextInput defaultValue="" placeholder="如：数学与统计学院" />
           </Field>

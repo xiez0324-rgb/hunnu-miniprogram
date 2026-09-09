@@ -188,47 +188,6 @@ export const myApplies: {
   },
 ];
 
-/** 老师端「信息费记录」：成交订单的具体信息（无支付入口，收款走代理人微信私信） */
-export type FeeRecord = {
-  id: string;
-  demandId: string;
-  title: string;
-  parent: string;
-  totalFee: number;
-  fee8: number;
-  status: "待付" | "已付";
-};
-
-export const myFees: FeeRecord[] = [
-  {
-    id: "mf1",
-    demandId: "1018",
-    title: "高二 · 英语 · 阅读专项",
-    parent: "刘先生",
-    totalFee: 1500,
-    fee8: 120,
-    status: "待付",
-  },
-  {
-    id: "mf2",
-    demandId: "1015",
-    title: "五年级 · 数学 · 奥数培优",
-    parent: "赵先生",
-    totalFee: 800,
-    fee8: 64,
-    status: "已付",
-  },
-  {
-    id: "mf3",
-    demandId: "1012",
-    title: "初三 · 数学 · 中考冲刺",
-    parent: "张女士",
-    totalFee: 1200,
-    fee8: 96,
-    status: "已付",
-  },
-];
-
 export const teachers: Teacher[] = [
   {
     id: "t1",

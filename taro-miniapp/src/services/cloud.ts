@@ -7,7 +7,6 @@ import createDemand from '@/data/createDemand'
 import getApplicants from '@/data/getApplicants'
 import getDemandDetail from '@/data/getDemandDetail'
 import getDemands from '@/data/getDemands'
-import getFeeRecords from '@/data/getFeeRecords'
 import getMyData from '@/data/getMyData'
 import getMyResume from '@/data/getMyResume'
 import getProfile from '@/data/getProfile'
@@ -24,7 +23,7 @@ const isWeapp = process.env.TARO_ENV === 'weapp'
 // 静态引入所有 mock（仅非小程序环境 / H5 预览使用）
 const mockModules: Record<string, (data?: any) => any> = {
   applyDemand, cancelApplication, cancelConfirm, confirmMatch, createDemand,
-  getApplicants, getDemandDetail, getDemands, getFeeRecords, getMyData,
+  getApplicants, getDemandDetail, getDemands, getMyData,
   getMyResume, getProfile, getTeacherDetail, getTeachers, login, requestTeacherInfo, saveResume,
   submitVerification, updateProfile,
 }

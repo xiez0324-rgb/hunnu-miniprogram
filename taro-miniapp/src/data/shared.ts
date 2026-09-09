@@ -1,4 +1,4 @@
-import type { Demand, Teacher, Applicant, Application, FeeRecord, Resume } from '@/types'
+import type { Demand, Teacher, Applicant, Application, Resume } from '@/types'
 
 // 长沙服务区域（发布需求滑动选项卡）
 export const districts = [
@@ -317,20 +317,6 @@ export const myApplies: Application[] = [
     meta: '周三周五晚 · 北辰三角洲',
     status: '已报名',
     createTime: '2026-08-29 19:10',
-  },
-]
-
-// 费用状态记录（演示数据：不含金额，金额仅管理员后台可见）
-export const feeRecords: FeeRecord[] = [
-  {
-    id: 'f1',
-    demand: '#1026 高二 · 英语',
-    status: '待付',
-  },
-  {
-    id: 'f2',
-    demand: '#1012 初三 · 数学',
-    status: '已付',
   },
 ]
 

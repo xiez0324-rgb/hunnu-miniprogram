@@ -87,6 +87,11 @@ export default function VerifyTab() {
     if (m.url) setPreview({ material: m, scale: 1, broken: false });
   };
 
+  // 历史纯文本材料（无云存储图）：也能点击查看说明内容
+  const openTextPreview = (m: VerifyMaterial) => {
+    if (m.text) setPreview({ material: m, scale: 1, broken: false });
+  };
+
   const cycleScale = () => {
     setPreview((p) => (p ? { ...p, scale: p.scale >= 2 ? 1 : p.scale + 0.5 } : p));
   };
@@ -191,13 +196,29 @@ export default function VerifyTab() {
                             <span className="text-[10px] text-stone-500">链接已过期</span>
                             <span className="text-[10px] text-emerald-600 underline">点击刷新</span>
                           </button>
+                        ) : m.fileID ? (
+                          <button
+                            key={idx}
+                            title={`${m.name || "材料"}（预览地址获取失败）`}
+                            className="flex h-24 w-28 flex-col items-center justify-center gap-1 rounded border border-dashed border-amber-300 bg-amber-50 p-1"
+                            onClick={() => load(true)}
+                          >
+                            <span className="text-[10px] font-semibold text-amber-700">{m.name || "照片"}</span>
+                            <span className="text-[10px] text-stone-500">预览获取失败</span>
+                            <span className="text-[10px] text-emerald-600 underline">点击重试</span>
+                          </button>
                         ) : m.text ? (
-                          <span key={idx} className="rounded bg-stone-100 px-2 py-1 text-xs text-stone-500">
-                            {m.text}
-                          </span>
+                          <button
+                            key={idx}
+                            title="历史文本记录，点击查看说明"
+                            className="rounded bg-stone-100 px-2 py-1 text-xs text-stone-600 underline decoration-dotted underline-offset-2 hover:bg-stone-200"
+                            onClick={() => openTextPreview(m)}
+                          >
+                            {m.text}（查看）
+                          </button>
                         ) : (
                           <span key={idx} className="rounded bg-stone-100 px-2 py-1 text-xs text-stone-400">
-                            {m.name || "材料"}（图片加载失败）
+                            {m.name || "材料"}（无图片内容）
                           </span>
                         )
                       )}
@@ -206,7 +227,12 @@ export default function VerifyTab() {
                       提示：图片临时链接约 2 小时后过期，若显示空白请点击右上角「刷新图片链接」。
                     </p>
                   </div>
-                ) : null}
+                ) : (
+                  <div className="mt-3 rounded-lg border border-dashed border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                    该记录没有可预览的学籍材料图片（历史数据可能仅登记文本或上传未成功）。如需继续核验，
+                    可先点「驳回」，通知老师重新上传清晰照片后再审核。
+                  </div>
+                )}
 
                 {v.rejectReason ? (
                   <p className="mt-2 text-xs text-red-600">驳回原因：{v.rejectReason}</p>
@@ -248,7 +274,14 @@ export default function VerifyTab() {
             </div>
 
             <div className="max-h-[70vh] max-w-full overflow-hidden rounded">
-              {preview.broken ? (
+              {!preview.material.url && preview.material.text ? (
+                <div className="max-w-[560px] rounded bg-stone-100 px-4 py-6 text-sm leading-relaxed text-stone-700">
+                  <p className="whitespace-pre-wrap">{preview.material.text}</p>
+                  <p className="mt-3 text-xs text-stone-500">
+                    此条为历史文本记录，无云存储图片。如需继续核验，请先「驳回」，要求老师重新上传清晰照片。
+                  </p>
+                </div>
+              ) : preview.broken ? (
                 <div className="flex h-64 w-[420px] max-w-full flex-col items-center justify-center gap-2 bg-stone-800 text-sm text-stone-300">
                   <span>图片加载失败（临时链接可能已过期）</span>
                   <button
