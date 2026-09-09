@@ -35,6 +35,18 @@ import {
   VerifyTag,
 } from "./ui";
 
+// 老师身份行文案：平台合作院校固定为湖南师范大学，前端不展示学校名，只展示「学院 · 专业」。
+// 兼容旧 mock 数据「中南大学 · 数学系」这类校名+院系混写串：去掉首段校名仅保留后半段。
+function collegeMajorText(p?: { college?: string; major?: string; school?: string }): string {
+  const college = (p?.college || "").trim();
+  const major = (p?.major || "").trim();
+  if (college || major) return [college, major].filter(Boolean).join(" · ");
+  const school = (p?.school || "").trim();
+  if (!school || school === "在读大学生") return "";
+  const parts = school.split("·").map((s) => s.trim()).filter(Boolean);
+  return parts.length > 1 ? parts.slice(1).join(" · ") : "";
+}
+
 type Screen =
   | "login"
   | "role"
@@ -472,7 +484,7 @@ function PrivacyPolicyBody() {
       <div>
         <p className="font-extrabold text-ink/80">一、信息收集范围</p>
         <p className="mt-1">
-          1.1 老师端：为完成身份核验与信息展示，我们会收集您的姓名、就读学校、专业、年级、可授课科目与时段、期望时薪、可服务区域、自我介绍，以及用于学籍/学历证明的学生证、学信网截图等证明材料。
+          1.1 老师端：为完成身份核验与信息展示，我们会收集您的姓名、学院、专业、可授课科目与时段、期望时薪、可服务区域、自我介绍，以及用于学籍/学历证明的学生证、学信网截图等证明材料。平台仅面向湖南师范大学在校学生开展老师端合作，就读学校由平台统一核验，无需另行填写。
         </p>
         <p className="mt-1">
           1.2 家长端：为完成需求发布与对接，我们会收集您的称呼、联系电话、上课地址（可能精确至小区及楼栋）及需求描述等信息。
@@ -1015,7 +1027,7 @@ function TeacherMe({ onGo, onSwitch, unread }: { onGo: (s: Screen) => void; onSw
   return (
     <div>
       <Header sub="老师端 · 个人中心" title="我的" />
-      <ProfileHead name="张同学" desc="湖南大学 · 数学系 大三" avatar={tutor1} verified={false} />
+      <ProfileHead name="张同学" desc="大学生家教 · 在读大三" avatar={tutor1} verified={false} />
       <TornCard tilt="rotate-[0.6deg]">
         <ListItem label="简历管理" onClick={() => onGo("resume")} />
         <ListItem label="实名 + 学籍认证" hint="去认证" onClick={() => onGo("verify")} />
@@ -1203,7 +1215,7 @@ function Resume({ onBack }: { onBack: () => void }) {
               setIntro(e.target.value);
               autoGrow(e.target);
             }}
-            placeholder="请尽量写全：① 就读学校 / 专业 / 年级；② 家教经历（带过哪些年级、科目）；③ 提分效果或教学成果。"
+            placeholder="请尽量写全：① 学院 / 专业 / 年级；② 家教经历（带过哪些年级、科目）；③ 提分效果或教学成果。"
             className="w-full rounded-xl bg-paper border border-ink/10 px-3 py-2 text-sm font-semibold outline-none focus:border-leaf/50 resize-none overflow-hidden"
           />
         </Field>
@@ -1223,8 +1235,20 @@ function Verify({ onBack }: { onBack: () => void }) {
       <NavBar title="实名 + 学籍认证" onBack={onBack} />
       <TornCard tilt="rotate-[-0.6deg]">
         <p className="text-xs text-ink/60 leading-relaxed">
-          认证权益：通过后展示「已认证」标签，被代理人推荐的概率更高。
+          认证权益：通过后展示「已认证」标签，被代理人推荐的概率更高。在读学校为平台固定合作院校（湖南师范大学），
+          无需填写，仅需补充学院与专业。
         </p>
+        <div className="grid grid-cols-1 gap-3 mt-4">
+          <Field label="在读学校（固定）">
+            <TextInput defaultValue="湖南师范大学" readOnly />
+          </Field>
+          <Field label="学院名称">
+            <TextInput defaultValue="" placeholder="如：数学与统计学院" />
+          </Field>
+          <Field label="专业名称">
+            <TextInput defaultValue="" placeholder="如：数学与应用数学" />
+          </Field>
+        </div>
         <div className="grid grid-cols-2 gap-3 mt-4">
           <div className="aspect-4/3 rounded-xl border-2 border-dashed border-ink/15 grid place-items-center text-xs font-bold text-ink/40">
             + 学生证
@@ -1234,7 +1258,7 @@ function Verify({ onBack }: { onBack: () => void }) {
           </div>
         </div>
         <label className="flex items-center justify-between mt-4 text-xs font-bold">
-          授权在简历中展示学校名称
+          授权在简历中展示学院与专业信息
           <input type="checkbox" defaultChecked className="accent-leaf size-4" />
         </label>
         <div className="mt-4">
@@ -1624,7 +1648,7 @@ function ApplicantCard({
             )}
           </div>
           <p className="text-xs text-ink/55 mt-0.5">
-            {applicant.school} · {applicant.rate}
+            {collegeMajorText(applicant) || "在读大学生"} · {applicant.rate}
           </p>
           <p className="text-xs text-ink/55 mt-0.5">
             {applicant.subject} · {applicant.meta}
@@ -1699,7 +1723,7 @@ function TeacherResume({ teacher, onBack }: { teacher: Teacher; onBack: () => vo
               <h3 className="text-base font-extrabold">{teacher.name} 老师</h3>
               <VerifyTag verified={teacher.verified} />
             </div>
-            <p className="text-xs text-ink/55 mt-0.5">{teacher.school}</p>
+            <p className="text-xs text-ink/55 mt-0.5">{collegeMajorText(teacher) || "在读大学生"}</p>
           </div>
         </div>
       </TornCard>
@@ -1770,7 +1794,7 @@ function TeacherList({ onBack }: { onBack: () => void }) {
                 <VerifyTag verified={t.verified} />
               </div>
               <p className="text-xs text-ink/55 mt-0.5">
-                {t.school} · {t.rate}
+                {collegeMajorText(t) || "在读大学生"} · {t.rate}
               </p>
               <p className="font-hand text-lg text-pine mt-2 leading-none">“{t.quote}”</p>
             </div>

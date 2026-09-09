@@ -14,6 +14,21 @@ export function parentFallbackName(gender?: string): string {
   return gender === '男' || gender === '女' ? parentGenderLabel(gender) : '家长'
 }
 
+// 老师身份展示文本：平台合作院校固定为湖南师范大学，对家长统一不展示学校名称，
+// 只展示老师认证时录入的「学院 · 专业」。
+// 兼容历史数据：旧记录 school 形如「湖南大学 · 数学系」（校名+院系混写），
+// 这里去掉首段校名仅保留后半段；纯校名或「在读大学生」等占位则返回空串。
+export function teacherCollegeMajorText(p?: { college?: string; major?: string; school?: string }): string {
+  const college = (p?.college || '').trim()
+  const major = (p?.major || '').trim()
+  if (college || major) return [college, major].filter(Boolean).join(' · ')
+  const school = (p?.school || '').trim()
+  if (!school || school === '在读大学生') return ''
+  const parts = school.split('·').map((s) => s.trim()).filter(Boolean)
+  if (parts.length > 1) return parts.slice(1).join(' · ')
+  return ''
+}
+
 // 简单时间格式化
 export function formatTime(timestamp: number): string {
   const d = new Date(timestamp)

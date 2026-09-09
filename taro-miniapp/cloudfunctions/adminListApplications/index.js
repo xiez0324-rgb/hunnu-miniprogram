@@ -46,6 +46,8 @@ exports.main = async (event, context) => {
         teacher: {
           name: a.name || '',
           school: a.school || '',
+          college: a.college || '',
+          major: a.major || '',
           subject: a.subject || '',
         },
         demand: {

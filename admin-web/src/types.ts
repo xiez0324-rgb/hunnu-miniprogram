@@ -14,6 +14,8 @@ export interface OrderDemand {
 export interface OrderTeacher {
   name?: string;
   school?: string;
+  college?: string;
+  major?: string;
   subject?: string;
   rate?: string;
   verified?: boolean;
@@ -54,6 +56,8 @@ export interface DeliveryDemand {
 export interface DeliveryTeacher {
   name?: string;
   school?: string;
+  college?: string;
+  major?: string;
   subject?: string;
   rate?: string;
   verified?: boolean;
@@ -102,7 +106,7 @@ export interface ApplicationRow {
   rate?: string;
   rateByStage?: unknown;
   createTime?: string | null;
-  teacher?: { name?: string; school?: string; subject?: string };
+  teacher?: { name?: string; school?: string; college?: string; major?: string; subject?: string };
   demand?: { grade?: string; subject?: string; title?: string; area?: string; budget?: string };
 }
 
@@ -113,6 +117,7 @@ export interface TeacherResume {
   gender?: string;
   avatar?: string;
   school?: string;
+  college?: string;
   major?: string;
   degree?: string;
   verified?: boolean;
@@ -141,6 +146,8 @@ export interface VerifyRow {
   openid?: string;
   name?: string;
   school?: string;
+  college?: string;
+  major?: string;
   authorized?: boolean;
   materials?: VerifyMaterial[];
   status?: string;

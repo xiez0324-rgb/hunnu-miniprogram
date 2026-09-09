@@ -75,6 +75,10 @@ export interface Teacher {
   id: string
   name: string
   school: string
+  // 合作院校固定（湖南师范大学），前端不展示学校名；身份行统一展示「学院 · 专业」。
+  // 旧数据可能无 college/major，前端会解析 school 后缀作兼容展示。
+  college?: string
+  major?: string
   subject: string
   rate: string
   meta: string
@@ -115,6 +119,9 @@ export type VerifyMaterial = { name: string; fileID: string } | string
 export interface Verification {
   name: string
   school: string
+  // 学院 / 专业：学籍认证时录入，作为老师卡与简历页的身份展示（前端不展示学校名）
+  college?: string
+  major?: string
   materials: VerifyMaterial[]
   status: VerifyStatus
   authorized: boolean

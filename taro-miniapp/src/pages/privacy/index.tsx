@@ -19,7 +19,7 @@ export default function PrivacyPage() {
           <View className={styles.section}>
             <Text className={styles.sectionTitle}>一、信息收集范围</Text>
             <Text className={styles.paragraph}>
-              1.1 老师端：为完成身份核验与信息展示，我们会收集您的姓名、就读学校、专业、年级、可授课科目与时段、期望时薪、可服务区域、自我介绍，以及用于学籍/学历证明的学生证、学信网截图等证明材料。
+              1.1 老师端：为完成身份核验与信息展示，我们会收集您的姓名、学院、专业、可授课科目与时段、期望时薪、可服务区域、自我介绍，以及用于学籍/学历证明的学生证、学信网截图等证明材料。平台仅面向湖南师范大学在校学生开展老师端合作，就读学校由平台统一核验，无需另行填写。
             </Text>
             <Text className={styles.paragraph}>
               1.2 家长端：为完成需求发布与对接，我们会收集您的称呼、联系电话、上课地址（可能精确至小区及楼栋）及需求描述等信息。

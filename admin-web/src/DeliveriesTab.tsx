@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react
 import { callAdmin, invalidateAdminCache } from "./api";
 import { groupDeliveries, type DeliveryGroup } from "./lib/deliveryAgg";
 import type { DeliveryRow, TeacherResume } from "./types";
+import { teacherCollegeMajorText } from "./lib/teacherIdentity";
 
 function fmt(t?: string | null): string {
   if (!t) return "—";
@@ -134,7 +135,7 @@ export default function DeliveriesTab() {
                 <span className="text-xs text-stone-400">{fmt(row.createTime)}</span>
               </div>
               <p className="mt-1 text-xs text-stone-500">
-                {row.teacher?.school ? `${row.teacher.school} · ` : ""}
+                {teacherCollegeMajorText(row.teacher) ? `${teacherCollegeMajorText(row.teacher)} · ` : ""}
                 {row.teacher?.subject || ""} · {row.teacher?.rate || "时薪待议"}
                 <span className="text-emerald-600"> · 点击查看完整简历 →</span>
               </p>
@@ -249,8 +250,8 @@ function TeacherDetailPage({ teacherId, group, onBack }: { teacherId: string; gr
 
           <div className="mt-4 rounded-lg bg-stone-50 p-4">
             <p className="mb-2 text-xs font-bold uppercase tracking-wide text-emerald-700">基本信息</p>
-            <Field k="学校" v={teacher.school} />
-            <Field k="专业" v={teacher.major} />
+            <Field k="学籍院校" v="湖南师范大学（平台唯一合作院校）" />
+            <Field k="学院 / 专业" v={teacherCollegeMajorText(teacher) || "—"} />
             <Field k="学历" v={teacher.degree} />
             <Field k="性别" v={teacher.gender} />
             <Field k="教龄" v={teacher.years} />

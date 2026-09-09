@@ -66,6 +66,7 @@ exports.main = async (event, context) => {
       gender: base.gender || seed.gender || '',
       avatar: base.avatar || seed.avatar || '',
       school: base.school || seed.school || '',
+      college: base.college || seed.college || '',
       major: base.major || seed.major || '',
       degree: base.degree || seed.degree || '',
       verified: !!(verification.authorized || snapshot.verified || seed.verified),

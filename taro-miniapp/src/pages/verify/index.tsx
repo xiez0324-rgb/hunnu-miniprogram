@@ -8,6 +8,7 @@ import StatusTag from '@/components/StatusTag'
 import RiskNote from '@/components/RiskNote'
 import { ensureWechatPrivacy } from '@/services/privacy'
 import { pickAndUploadMaterial, formatMB, type UploadedMaterial } from '@/utils/verifyUpload'
+import { PARTNER_SCHOOL, SCHOOL_LOCK_HINT } from '@/constants/partner'
 import styles from './index.module.scss'
 
 // 认证材料槽位：真实提交会对应生成一张照片（相册选图，压缩到 1~2MB）
@@ -20,7 +21,8 @@ type SlotKey = (typeof SLOTS)[number]['key']
 
 export default function VerifyPage() {
   const [name, setName] = useState('')
-  const [school, setSchool] = useState('')
+  const [college, setCollege] = useState('')
+  const [major, setMajor] = useState('')
   const [authorized, setAuthorized] = useState(true)
   // 材料上传结果：云存储 fileID（admin 端可据此取临时 URL 查看原图）
   const [materials, setMaterials] = useState<Record<SlotKey, UploadedMaterial | null>>({
@@ -78,7 +80,8 @@ export default function VerifyPage() {
   const canSubmit = () => {
     const slotsFilled = Object.values(materials).filter(Boolean).length
     if (!name.trim()) return '请填写真实姓名'
-    if (!school.trim()) return '请填写学校名称'
+    if (!college.trim()) return '请填写学院名称'
+    if (!major.trim()) return '请填写专业名称'
     if (slotsFilled < 1) return '请至少上传 1 张学籍材料照片'
     return null
   }
@@ -92,9 +95,11 @@ export default function VerifyPage() {
     setSubmitting(true)
     try {
       const list = Object.values(materials).filter(Boolean) as UploadedMaterial[]
+      // 学校字段由后端统一锁定为平台合作院校（湖南师范大学），前端不再采集
       await callFunction('submitVerification', {
         name: name.trim(),
-        school: school.trim(),
+        college: college.trim(),
+        major: major.trim(),
         materials: list.map((m) => ({ name: m.name, fileID: m.fileID })),
         authorized,
       })
@@ -129,13 +134,32 @@ export default function VerifyPage() {
         </View>
 
         <View className={styles.fieldBlock}>
-          <Text className={styles.fieldLabel}>学校名称</Text>
+          <Text className={styles.fieldLabel}>在读学校</Text>
+          <View className={styles.schoolFixed}>
+            <Text className={styles.schoolFixedName}>{PARTNER_SCHOOL}</Text>
+            <Text className={styles.schoolFixedHint}>{SCHOOL_LOCK_HINT}</Text>
+          </View>
+        </View>
+
+        <View className={styles.fieldBlock}>
+          <Text className={styles.fieldLabel}>学院名称</Text>
           <Input
             className={styles.input}
-            value={school}
-            placeholder="请输入学校全称，如：湖南师范大学"
+            value={college}
+            placeholder="请输入所在学院全称，如：数学与统计学院"
             placeholderClass={styles.placeholder}
-            onInput={(e) => setSchool(e.detail.value)}
+            onInput={(e) => setCollege(e.detail.value)}
+          />
+        </View>
+
+        <View className={styles.fieldBlock}>
+          <Text className={styles.fieldLabel}>专业名称</Text>
+          <Input
+            className={styles.input}
+            value={major}
+            placeholder="请输入所学专业，如：数学与应用数学"
+            placeholderClass={styles.placeholder}
+            onInput={(e) => setMajor(e.detail.value)}
           />
         </View>
 
@@ -172,12 +196,12 @@ export default function VerifyPage() {
           <View className={styles.checkbox}>
             {authorized ? <Text className={styles.checkboxMark}>✓</Text> : null}
           </View>
-          <Text className={styles.authText}>授权在简历中展示学校名称</Text>
+          <Text className={styles.authText}>授权在简历中展示学院与专业信息</Text>
         </View>
         <Text className={styles.authHint}>
           {authorized
-            ? '已授权：审核通过后学校名称将展示在简历中，便于家长核验您的身份。'
-            : '未授权：学校名称仅用于平台内部核验，不会展示在简历中。'}
+            ? '已授权：审核通过后您的学院与专业将展示在简历中，便于家长了解您的学业背景。'
+            : '未授权：学院与专业仅用于平台内部核验，不会展示在简历中。'}
         </Text>
 
         <RiskNote>

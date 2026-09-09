@@ -6,6 +6,7 @@ import NavBar from '@/components/NavBar'
 import VerifyTag from '@/components/VerifyTag'
 import RiskNote from '@/components/RiskNote'
 import EmptyState from '@/components/EmptyState'
+import { teacherCollegeMajorText } from '@/utils'
 import type { Teacher, Resume } from '@/types'
 import styles from './index.module.scss'
 
@@ -65,7 +66,7 @@ export default function TeacherDetailPage() {
               <Text className={styles.name}>{teacher.name} 老师</Text>
               <VerifyTag verified={teacher.verified} />
             </View>
-            <Text className={styles.meta}>{teacher.school}</Text>
+            <Text className={styles.meta}>{teacherCollegeMajorText(teacher) || '在读大学生'}</Text>
             <Text className={styles.meta}>{teacher.subject} · {teacher.meta}</Text>
           </View>
         </View>
@@ -94,7 +95,7 @@ export default function TeacherDetailPage() {
             <Text className={styles.name}>{teacher.name} 老师</Text>
             <VerifyTag verified={teacher.verified} />
           </View>
-          <Text className={styles.meta}>{teacher.school}</Text>
+          <Text className={styles.meta}>{teacherCollegeMajorText(teacher) || '在读大学生'}</Text>
           <Text className={styles.meta}>{teacher.subject} · {teacher.meta}</Text>
         </View>
       </View>

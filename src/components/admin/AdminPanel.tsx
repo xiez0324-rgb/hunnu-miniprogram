@@ -58,13 +58,13 @@ type VerifyItem = {
   status: "待审核" | "已通过" | "已驳回";
   studentCard?: string;      // 学生证照片
   chsiScreenshot?: string;   // 学信网截图
-  showSchool: boolean;       // 授权在简历中展示学校名称
+  showSchool: boolean;       // 授权在简历中展示学院与专业信息
 };
 
 const initialVerify: VerifyItem[] = [
-  { id: "v1", name: "周杰", school: "中南大学 · 数学系", submittedAt: "今天 11:02", status: "待审核", studentCard: "学生证照片.jpg", chsiScreenshot: "学信网学籍截图.png", showSchool: true },
-  { id: "v2", name: "赵敏", school: "湖南师大 · 体育学院", submittedAt: "今天 08:41", status: "待审核", studentCard: "学生证照片.jpg", chsiScreenshot: "学信网学籍截图.png", showSchool: true },
-  { id: "v3", name: "陈晨", school: "湖南大学 · 艺术系", submittedAt: "昨天 18:20", status: "待审核", studentCard: "学生证照片.jpg", chsiScreenshot: "学信网学籍截图.png", showSchool: false },
+  { id: "v1", name: "周杰", school: "数学与统计学院 · 数学与应用数学", submittedAt: "今天 11:02", status: "待审核", studentCard: "学生证照片.jpg", chsiScreenshot: "学信网学籍截图.png", showSchool: true },
+  { id: "v2", name: "赵敏", school: "体育学院 · 体育教育", submittedAt: "今天 08:41", status: "待审核", studentCard: "学生证照片.jpg", chsiScreenshot: "学信网学籍截图.png", showSchool: true },
+  { id: "v3", name: "陈晨", school: "音乐学院 · 音乐表演", submittedAt: "昨天 18:20", status: "待审核", studentCard: "学生证照片.jpg", chsiScreenshot: "学信网学籍截图.png", showSchool: false },
 ];
 
 type Unresponded = {
@@ -126,10 +126,10 @@ const initialRecommend: RecommendItem[] = [
 ];
 
 const deliveryData = [
-  { teacher: "王晨", school: "湖南大学", count: 9, recent: ["#1024 初三·数学 · 已推荐", "#1025 五年级·数学 · 已报名", "#1026 高二·英语 · 已取消"] },
-  { teacher: "李思", school: "湖南师大", count: 7, recent: ["#1024 初三·英语 · 已成交", "#1025 五年级·数学 · 已推荐", "#1027 四年级·编程 · 已报名"] },
-  { teacher: "周杰", school: "中南大学", count: 14, recent: ["#1018 高二·英语 · 已取消", "#1019 初一·数学 · 已取消", "#1021 高一·数学 · 已成交"] },
-  { teacher: "赵敏", school: "湖南师大", count: 3, recent: ["#1028 六年级·羽毛球 · 已报名"] },
+  { teacher: "王晨", school: "数学与统计学院", count: 9, recent: ["#1024 初三·数学 · 已推荐", "#1025 五年级·数学 · 已报名", "#1026 高二·英语 · 已取消"] },
+  { teacher: "李思", school: "外国语学院", count: 7, recent: ["#1024 初三·英语 · 已成交", "#1025 五年级·数学 · 已推荐", "#1027 四年级·编程 · 已报名"] },
+  { teacher: "周杰", school: "数学与统计学院", count: 14, recent: ["#1018 高二·英语 · 已取消", "#1019 初一·数学 · 已取消", "#1021 高一·数学 · 已成交"] },
+  { teacher: "赵敏", school: "体育学院", count: 3, recent: ["#1028 六年级·羽毛球 · 已报名"] },
 ];
 
 const matchRecords = [
@@ -686,7 +686,7 @@ export default function AdminPanel({ externalOrders = [], onOrderStatusChange, p
                     <thead className="bg-[color:var(--sky)]/25">
                       <tr>
                         <Th>老师</Th>
-                        <Th>学校</Th>
+                        <Th>学院 · 专业</Th>
                         <Th>提交时间</Th>
                         <Th>材料</Th>
                         <Th>状态</Th>
@@ -1039,10 +1039,10 @@ export default function AdminPanel({ externalOrders = [], onOrderStatusChange, p
 
             <HandTitle className="text-xl">🪪 实名 + 学籍认证</HandTitle>
             <p className="text-xs text-[color:var(--ink)]/60 font-body mt-1">
-              {previewTarget.name} · {previewTarget.school}
+              {previewTarget.name} 老师（{previewTarget.school}）
             </p>
             <p className="text-[10px] text-[color:var(--ink)]/40 font-body mt-0.5">
-              提交于 {previewTarget.submittedAt}
+              学籍院校（固定）：湖南师范大学 · 提交于 {previewTarget.submittedAt}
             </p>
 
             {/* 与教师端一致：学生证 + 学信网截图 */}
@@ -1071,9 +1071,9 @@ export default function AdminPanel({ externalOrders = [], onOrderStatusChange, p
               </div>
             </div>
 
-            {/* 授权展示学校 */}
+            {/* 授权展示学院/专业 */}
             <div className="flex items-center justify-between mt-4 px-1">
-              <span className="text-xs font-bold font-body">授权在简历中展示学校名称</span>
+              <span className="text-xs font-bold font-body">授权在简历中展示学院与专业信息</span>
               <span className={`text-xs font-extrabold font-body ${previewTarget.showSchool ? "text-[color:var(--leaf)]" : "text-[color:var(--ink)]/30"}`}>
                 {previewTarget.showSchool ? "✓ 已授权" : "✗ 未授权"}
               </span>

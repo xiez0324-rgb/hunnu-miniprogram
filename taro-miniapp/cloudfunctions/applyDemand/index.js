@@ -65,7 +65,9 @@ exports.main = async (event, context) => {
       await db.collection('applications').doc(cancelled._id).update({
         data: {
           name: (verify && verify.name) || '大学生老师',
-          school: (verify && verify.school) || '在读大学生',
+          school: '湖南师范大学', // 平台唯一合作院校，前端不展示；身份行用 college/major
+          college: (verify && verify.college) || '',
+          major: (verify && verify.major) || '',
           subject: (resume && resume.subjects && resume.subjects[0]) || '科目待完善',
           rate: rateSnapshot,
           meta: (resume && resume.grades && resume.grades[0]) ? resume.grades[0] + ' · 一对一' : '一对一',
@@ -88,7 +90,9 @@ exports.main = async (event, context) => {
         demandId,
         teacherId,
         name: (verify && verify.name) || '大学生老师',
-        school: (verify && verify.school) || '在读大学生',
+        school: '湖南师范大学', // 平台唯一合作院校，前端不展示；身份行用 college/major
+        college: (verify && verify.college) || '',
+        major: (verify && verify.major) || '',
         subject: (resume && resume.subjects && resume.subjects[0]) || '科目待完善',
         rate: rateSnapshot,
         meta: (resume && resume.grades && resume.grades[0]) ? resume.grades[0] + ' · 一对一' : '一对一',

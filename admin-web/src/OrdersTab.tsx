@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { callAdmin, invalidateAdminCache } from "./api";
 import type { OrderRow } from "./types";
+import { teacherCollegeMajorText } from "./lib/teacherIdentity";
 import { OrderDetailPage } from "./components/MetricPages";
 
 const FILTERS = ["全部", "待联系", "已联系", "已成交", "已取消"];
@@ -120,7 +121,7 @@ export default function OrdersTab({ initialStatus = "全部" }: Props) {
                 <span>
                   🧑‍🏫 老师：{row.teacher?.name || "—"}
                   {row.teacher?.verified ? "（已认证）" : ""}
-                  {row.teacher?.school ? ` · ${row.teacher.school}` : ""}
+                  {teacherCollegeMajorText(row.teacher) ? ` · ${teacherCollegeMajorText(row.teacher)}` : ""}
                 </span>
                 <span>🧑‍🏠 家长：{row.parent?.nickname || "—"} {row.parent?.phone || ""}</span>
                 <span className="text-emerald-600">📍 {row.demand?.area || "—"} · 点击查看完整详情 →</span>

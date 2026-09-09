@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { callAdmin } from "../api";
 import type { DemandRow, ApplicationRow, OrderRow } from "../types";
+import { teacherCollegeMajorText } from "../lib/teacherIdentity";
 
 // ============ 通用小组件 ============
 
@@ -83,7 +84,8 @@ export function OrderDetailPage({ orderId, fallback, onBack }: OrderDetailProps)
             <div className="rounded-lg bg-stone-50 p-4">
               <p className="mb-2 text-xs font-bold uppercase tracking-wide text-emerald-700">老师</p>
               <Row k="姓名" v={`${order.teacher?.name || "—"}${order.teacher?.verified ? "（已认证）" : ""}`} />
-              <Row k="学校" v={order.teacher?.school} />
+              <Row k="学院" v={order.teacher?.college} />
+              <Row k="专业" v={order.teacher?.major} />
               <Row k="可教科目" v={order.teacher?.subject} />
               <Row k="期望时薪" v={order.teacher?.rate} />
             </div>
@@ -252,7 +254,8 @@ export function ApplicationListPage({ onBack }: ApplicationListProps) {
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="text-sm font-bold text-stone-800">
                   🧑‍🏫 {a.teacher?.name || "—"}
-                  {a.verified ? "（已认证）" : ""} · {a.teacher?.school || ""}
+                  {a.verified ? "（已认证）" : ""}
+                  {teacherCollegeMajorText(a.teacher) ? ` · ${teacherCollegeMajorText(a.teacher)}` : ""}
                 </span>
                 <span className="text-xs text-stone-400">{fmt(a.createTime)}</span>
               </div>
@@ -272,7 +275,8 @@ export function ApplicationListPage({ onBack }: ApplicationListProps) {
             <div className="mt-3 rounded-lg bg-stone-50 p-4">
               <p className="mb-2 text-xs font-bold uppercase tracking-wide text-emerald-700">老师</p>
               <Row k="姓名" v={`${selected.teacher?.name || "—"}${selected.verified ? "（已认证）" : ""}`} />
-              <Row k="学校" v={selected.teacher?.school} />
+              <Row k="学院" v={selected.teacher?.college} />
+              <Row k="专业" v={selected.teacher?.major} />
               <Row k="科目" v={selected.teacher?.subject} />
               <Row k="状态" v={selected.status} />
               <Row k="期望时薪" v={selected.rate} />

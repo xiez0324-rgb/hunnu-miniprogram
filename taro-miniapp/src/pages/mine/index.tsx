@@ -33,7 +33,9 @@ export default function MinePage() {
   const area = (user?.area || '').trim()
 
   const desc = isTeacher
-    ? '湖南大学 · 数学系 大三'
+    ? area
+      ? `${area} · 大学生家教`
+      : '大学生家教 · 完善个人信息后展示所在区域'
     : area
       ? `${area} · 家长`
       : '完善个人资料后展示所在区域'

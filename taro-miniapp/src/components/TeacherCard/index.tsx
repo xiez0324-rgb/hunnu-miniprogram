@@ -2,6 +2,7 @@ import { View, Text } from '@tarojs/components'
 import classnames from 'classnames'
 import type { Applicant } from '@/types'
 import VerifyTag from '@/components/VerifyTag'
+import { teacherCollegeMajorText } from '@/utils'
 import styles from './index.module.scss'
 
 interface TeacherCardProps {
@@ -14,6 +15,8 @@ interface TeacherCardProps {
 export default function TeacherCard({ applicant, index, footer, onViewResume }: TeacherCardProps) {
   const bgList = ['avatarA', 'avatarB']
   const bg = bgList[index % bgList.length] || 'avatarA'
+  // 身份行：只展示「学院 · 专业」（合作院校固定，不展示学校名称）
+  const identity = teacherCollegeMajorText(applicant) || '在读大学生'
   return (
     <View className={styles.card}>
       <View className={styles.cardBody}>
@@ -29,7 +32,7 @@ export default function TeacherCard({ applicant, index, footer, onViewResume }: 
             {applicant.recommended && <Text className={styles.recommendTag}>平台推荐</Text>}
           </View>
           <Text className={styles.meta}>
-            {applicant.school} · {applicant.rate}
+            {identity} · {applicant.rate}
           </Text>
           <Text className={styles.meta}>
             {applicant.subject} · {applicant.meta}

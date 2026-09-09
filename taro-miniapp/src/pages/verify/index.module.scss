@@ -31,6 +31,31 @@
   margin-bottom: $spacing-xs;
 }
 
+// 在读学校固定展示（平台唯一合作院校，不可编辑、不采集）
+.schoolFixed {
+  border-radius: $radius-md;
+  background-color: $color-bg-card;
+  border: 3rpx solid $color-border;
+  padding: 0 $spacing-md;
+  min-height: 88rpx;
+  @include flex-center;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.schoolFixedName {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.schoolFixedHint {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: $color-text-tertiary;
+}
+
 .input {
   width: 100%;
   height: 88rpx;

@@ -34,6 +34,9 @@ export type Teacher = {
   id: string;
   name: string;
   school: string;
+  // 合作院校固定为湖南师范大学（school 字段恒为该值）；前端身份行只展示「学院 · 专业」
+  college?: string;
+  major?: string;
   subject: string;
   rate: string;
   meta: string;
@@ -230,7 +233,9 @@ export const teachers: Teacher[] = [
   {
     id: "t1",
     name: "王晨",
-    school: "湖南大学 · 数学系",
+    school: "湖南师范大学",
+    college: "数学与统计学院",
+    major: "数学与应用数学",
     subject: "数学",
     rate: "120 元/时",
     meta: "初三 · 一对一",
@@ -241,13 +246,15 @@ export const teachers: Teacher[] = [
       grades: ["初中", "高中"],
       times: ["周六全天", "周日全天"],
       area: "岳麓区",
-      intro: "湖南大学数学系大三在读，带过 3 届中考数学冲刺，学生平均提分 20+，讲解耐心、善于归纳题型。",
+      intro: "数学与应用数学专业大三在读，带过 3 届中考数学冲刺，学生平均提分 20+，讲解耐心、善于归纳题型。",
     },
   },
   {
     id: "t2",
     name: "李思",
-    school: "湖南师大 · 英语系",
+    school: "湖南师范大学",
+    college: "外国语学院",
+    major: "英语",
     subject: "英语",
     rate: "110 元/时",
     meta: "初三 · 小班",
@@ -258,13 +265,15 @@ export const teachers: Teacher[] = [
       grades: ["初中", "高中"],
       times: ["周一至周五晚", "周日全天"],
       area: "岳麓区 · 开福区",
-      intro: "湖南师大英语系，专四专八高分通过，擅长阅读与写作专项，带过高考英语冲刺班。",
+      intro: "英语专业在读，专四专八高分通过，擅长阅读与写作专项，带过高考英语冲刺班。",
     },
   },
   {
     id: "t3",
     name: "刘洋",
-    school: "中南大学 · 计算机系",
+    school: "湖南师范大学",
+    college: "信息科学与工程学院",
+    major: "计算机科学与技术",
     subject: "少儿编程",
     rate: "130 元/时",
     meta: "四年级 · 一对一",
@@ -275,13 +284,15 @@ export const teachers: Teacher[] = [
       grades: ["小学", "初中"],
       times: ["周三、周五晚", "周六全天"],
       area: "岳麓区 · 长沙县",
-      intro: "中南大学计算机系，熟悉 Scratch / Python 少儿编程，曾指导学生完成多个创意项目并获奖。",
+      intro: "计算机科学与技术专业，熟悉 Scratch / Python 少儿编程，曾指导学生完成多个创意项目并获奖。",
     },
   },
   {
     id: "t4",
     name: "赵敏",
-    school: "湖南师大 · 体育学院",
+    school: "湖南师范大学",
+    college: "体育学院",
+    major: "体育教育",
     subject: "羽毛球",
     rate: "100 元/时",
     meta: "六年级 · 一对二",
@@ -292,13 +303,15 @@ export const teachers: Teacher[] = [
       grades: ["小学", "初中"],
       times: ["周六上午", "周日下午"],
       area: "岳麓区 · 大学城体育馆",
-      intro: "湖南师大体育学院，羽毛球国家二级运动员，擅长零基础启蒙与基础步法教学。",
+      intro: "体育教育专业，羽毛球国家二级运动员，擅长零基础启蒙与基础步法教学。",
     },
   },
   {
     id: "t5",
     name: "陈晨",
-    school: "湖南大学 · 艺术系",
+    school: "湖南师范大学",
+    college: "音乐学院",
+    major: "音乐表演",
     subject: "钢琴",
     rate: "140 元/时",
     meta: "三年级 · 上门",
@@ -309,13 +322,15 @@ export const teachers: Teacher[] = [
       grades: ["小学", "初中"],
       times: ["周六下午", "周日全天"],
       area: "岳麓区 · 芙蓉区",
-      intro: "湖南大学艺术系，钢琴十级，擅长少儿钢琴启蒙与陪练，教学有亲和力。",
+      intro: "音乐表演专业（钢琴方向），钢琴十级，擅长少儿钢琴启蒙与陪练，教学有亲和力。",
     },
   },
   {
     id: "t6",
     name: "周杰",
-    school: "中南大学 · 数学系",
+    school: "湖南师范大学",
+    college: "数学与统计学院",
+    major: "数学与应用数学",
     subject: "数学",
     rate: "110 元/时",
     meta: "初三 · 一对一",
@@ -325,8 +340,8 @@ export const teachers: Teacher[] = [
       subjects: ["数学"],
       grades: ["初中", "高中"],
       times: ["周一至周五晚", "周末均可"],
-      area: "岳麓区 · 中南大学附近",
-      intro: "中南大学数学系，带过两届中考冲刺与一届高考一轮复习，注重基础巩固与拔高。",
+      area: "岳麓区 · 麓山南路",
+      intro: "数学与应用数学专业，带过两届中考冲刺与一届高考一轮复习，注重基础巩固与拔高。",
     },
   },
 ];

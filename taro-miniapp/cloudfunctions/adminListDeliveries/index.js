@@ -105,6 +105,8 @@ exports.main = async (event, context) => {
         teacher: {
           name: app.name || '',
           school: app.school || '',
+          college: app.college || '',
+          major: app.major || '',
           subject: app.subject || '',
           rate: app.rate || '',
           verified: !!app.verified,

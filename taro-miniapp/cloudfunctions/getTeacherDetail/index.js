@@ -34,6 +34,8 @@ exports.main = async (event, context) => {
         id: teacherId,
         name: (verify && verify.name) || app.name || '大学生老师',
         school: (verify && verify.school) || app.school || '在读大学生',
+        college: (verify && verify.college) || app.college || '',
+        major: (verify && verify.major) || app.major || '',
         subject: (resumeDoc && resumeDoc.subjects && resumeDoc.subjects[0]) || app.subject || '科目待完善',
         rate: (resumeDoc && resumeDoc.rate) || app.rate || '时薪待协商',
         meta: (resumeDoc && resumeDoc.grades && resumeDoc.grades[0])
