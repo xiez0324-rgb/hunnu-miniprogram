@@ -163,3 +163,25 @@ export async function callAdmin<T = any>(
   }
   return req;
 }
+
+// 管理端直连云存储换取可预览的临时 URL（不依赖云函数返回值）。
+// 用于云函数返回里 url 为空 / 已过期 / 获取失败时的兜底：只要有 fileID 就能现场换新链接。
+export async function fetchFilePreviewUrls(fileList: string[]): Promise<Record<string, string>> {
+  const ids = [...new Set((fileList || []).filter(Boolean))];
+  if (ids.length === 0) return {};
+  try {
+    const res = (await app.getTempFileURL({
+      fileList: ids.map((fileID) => ({ fileID, maxAge: 1800 * 1000 })),
+    })) as unknown as {
+      fileList?: Array<{ fileID?: string; tempFileURL?: string }>;
+    };
+    const map: Record<string, string> = {};
+    for (const it of res?.fileList || []) {
+      if (it?.fileID && it?.tempFileURL) map[it.fileID] = it.tempFileURL;
+    }
+    return map;
+  } catch (err) {
+    console.warn("[fetchFilePreviewUrls] 云存储换链接失败", err);
+    return {};
+  }
+}

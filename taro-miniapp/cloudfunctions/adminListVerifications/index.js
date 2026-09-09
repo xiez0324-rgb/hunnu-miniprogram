@@ -65,7 +65,8 @@ async function batchGetTempFileURL(fileIDs, chunkSize = 50) {
     try {
       const r = await cloud.getTempFileURL({ fileList: chunk })
       for (const item of r.fileList || []) {
-        if (item.fileID && item.tempFileURL && item.status === 0) {
+        // 只要返回了可预览地址即采用（部分网关/运行时对 status 字段类型不一致，不再强依赖 status===0）
+        if (item.fileID && item.tempFileURL) {
           urlMap[item.fileID] = item.tempFileURL
         }
       }

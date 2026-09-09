@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { callAdmin, invalidateAdminCache } from "./api";
+import { callAdmin, invalidateAdminCache, fetchFilePreviewUrls } from "./api";
 import type { VerifyRow, VerifyMaterial } from "./types";
 import { teacherCollegeMajorText } from "./lib/teacherIdentity";
 
@@ -41,20 +41,46 @@ export default function VerifyTab() {
   const [preview, setPreview] = useState<PreviewState | null>(null);
   const [brokenUrls, setBrokenUrls] = useState<string[]>([]);
 
+  // 有 fileID 但服务端没带回可预览地址（或链接过期/获取失败）时：
+  // 管理端直连云存储现换临时链接，保证「记录在就能看到图」
+  const fillMissing = useCallback(async (rows: VerifyRow[], refreshAll = false) => {
+    const ids: string[] = [];
+    for (const v of rows) {
+      for (const m of v.materials || []) {
+        if (m.fileID && (refreshAll || !m.url)) ids.push(m.fileID);
+      }
+    }
+    const map = await fetchFilePreviewUrls(ids);
+    const keys = Object.keys(map);
+    if (!keys.length) return;
+    setList((prev) =>
+      prev.map((v) => ({
+        ...v,
+        materials: (v.materials || []).map((m) =>
+          m.fileID && map[m.fileID] ? { ...m, url: map[m.fileID] } : m
+        ),
+      }))
+    );
+  }, []);
+
   const load = useCallback(
     (force = false) => {
       if (force) invalidateAdminCache("adminListVerifications");
       setLoading(true);
       setError("");
       callAdmin<{ list: VerifyRow[] }>("adminListVerifications", { status: tab })
-        .then((r) => setList(r.list || []))
+        .then((r) => {
+          const rows = r.list || [];
+          setList(rows);
+          fillMissing(rows, force);
+        })
         .catch((err) => setError((err as Error).message))
         .finally(() => {
           setLoading(false);
           if (force) setBrokenUrls([]); // 已重新换取链接，清空失败标记
         });
     },
-    [tab]
+    [tab, fillMissing]
   );
 
   useEffect(() => {
