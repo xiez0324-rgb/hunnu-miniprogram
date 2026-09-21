@@ -3,7 +3,7 @@
   "cloudfunctionRoot": "cloudfunctions/",
   "projectname": "小小陪伴帮",
   "description": "小小陪伴帮（家教服务平台小程序）",
-  "appid": "[AppID 见本地 .env]",
+  "appid": "touristappid",
   "setting": {
     "urlCheck": true,
     "es6": false,

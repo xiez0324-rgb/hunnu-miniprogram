@@ -3,14 +3,20 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
 const crypto = require('crypto')
 
-// 与 adminInit 种子账号使用同一盐值算法
-const SALT = '[盐值改为云函数环境变量 ADMIN_PASSWORD_SALT]'
+// 与 adminInit / adminChangePassword 使用同一盐值算法。
+// 盐值从云函数环境变量读取，禁止写死（配置说明见 adminInit/index.js 顶部注释）。
+const SALT = process.env.ADMIN_PASSWORD_SALT
 function hashPassword(pw) {
   return crypto.createHash('sha256').update(String(pw) + SALT).digest('hex')
 }
 
 exports.main = async (event, context) => {
   try {
+    if (!SALT) {
+      console.error('[adminLogin] 缺少 ADMIN_PASSWORD_SALT 环境变量')
+      return { code: -1, message: '服务端未配置 ADMIN_PASSWORD_SALT，暂时无法登录，请联系维护者', data: null }
+    }
+
     // 兼容两种调用形态：直传业务参数 / 工具按 { name, data } 包装传参
     const body = event && event.data && typeof event.data === 'object' ? event.data : event || {}
     const { username, password } = body

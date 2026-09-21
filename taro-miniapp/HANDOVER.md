@@ -2,7 +2,7 @@
 
 > 工程：二号开发版本 / taro-miniapp
 > 产品：**小小陪伴帮**（大学城家教匹配小程序，微信小程序 + 云开发）
-> 云环境：微信云开发 `[环境 ID 见本地 .env]`
+> 云环境：微信云开发（环境 ID 属于私有配置，见下方「环境变量与本地配置」，不写入仓库）
 > 交接对象：二次开发执行者（人 / AI harness）
 > 更新时间：2026-09-21
 
@@ -34,13 +34,38 @@
 ## 3. 启动与构建
 
 ```bash
+cp .env.example .env        # 首次：填入自己的云环境 ID 与 AppID（.env 不入库）
 npm install                # node_modules 已在仓库，换机才需要重装
 npm run dev:weapp          # 监听编译到 dist/（开发用）
 npm run build:weapp        # 生产构建
 ```
 
-然后在**微信开发者工具**里打开本项目根目录（`miniprogramRoot` 指向 `dist/`），appid `[AppID 见本地 .env]`。
+然后在**微信开发者工具**里打开本项目根目录（`miniprogramRoot` 指向 `dist/`）。
+`project.config.json` 中的 appid 是占位值 `touristappid`，请用真实 AppID 开发：
+把 AppID 填进 `.env` 的 `TARO_APP_ID`（Taro 会自动注入构建产物），
+并在开发者工具里用你自己的微信登录并选择该 AppID。
 云函数在 `cloudfunctions/`，改完需在开发者工具里右键「上传并部署：云端安装依赖」。
+
+### 3.1 环境变量与私有配置（本仓库为公开仓库，务必先读）
+
+真实的环境 ID、AppID、管理员口令盐值**都不在代码里**，分两处维护：
+
+| 配置项 | 存放位置 | 读取方 |
+|---|---|---|
+| 云环境 ID | `taro-miniapp/.env` 的 `TARO_APP_CLOUD_ENV_ID` | `src/config/env.ts` → `app.tsx` 的 `Taro.cloud.init` |
+| 小程序 AppID | `taro-miniapp/.env` 的 `TARO_APP_ID` | Taro 构建时自动注入产物 |
+| 管理端云环境 ID | `admin-web/.env` 的 `VITE_CLOUD_ENV_ID` | `admin-web/src/env.ts` |
+| 管理员口令盐值 | **云开发控制台** → 云函数 → `adminInit`/`adminLogin`/`adminChangePassword` → 配置 → 环境变量 `ADMIN_PASSWORD_SALT` | 三个函数内的 `hashPassword` |
+
+`.env` 系列文件已被 `.gitignore` 忽略；仓库里只保留 `.env.example` 模板。
+
+> **⚠️ 部署 admin* 云函数前必须先在控制台配好 `ADMIN_PASSWORD_SALT`，否则管理员无法登录。**
+> 该变量必须与数据库中已有 `passwordHash` 所用的盐值**完全一致**——
+> 数据库中现存口令是用历史盐值算出来的，换值等于所有管理员账号全部失效。
+> 若确实要轮换盐值，必须先用旧盐值校验旧口令、再用新盐值重算 `passwordHash`（写一个一次性迁移函数），不能只改环境变量。
+
+> 另注：`adminInit` 已**不再内置任何默认口令**，首次初始化必须由调用方传入 `initialPassword`（≥ 8 位）。
+> 初始化完成后请在控制台停用或删除该函数。
 
 ---
 
@@ -49,14 +74,14 @@ npm run build:weapp        # 生产构建
 ```
 src/
 ├── app.tsx / app.config.ts   # 入口；app.config.ts 注册全部 27 个页面 + tabBar
-├── pages/                    # 21 个业务页面（首页/进度/我的 三个 tab）
-│   └── admin/                # 管理端 9 个页面（隐藏入口）
+├── pages/                    # 16 个业务页面（首页/进度/我的 三个 tab）
+│   └── admin/                # 管理端 11 个页面（隐藏入口）
 ├── components/               # 24 个自写组件（DemandCard/TeacherCard/Plaza/MyDemands...）
 ├── services/                 # 云函数调用封装：cloud.ts / admin.ts / privacy.ts / subscribe.ts
 ├── store/user.tsx            # 全局用户态（openid / role / profile）
 ├── utils/                    # 工具：imageUtil / teacherProfile / verifyUpload / adminDelivery...
 ├── constants/  data/  hooks/  styles/  types/
-cloudfunctions/              # 45 个云函数（命名见第 6 节）
+cloudfunctions/              # 44 个云函数（命名见第 6 节）
 config/                       # Taro 构建配置
 ```
 
@@ -85,7 +110,7 @@ config/                       # Taro 构建配置
 
 ---
 
-## 6. 云函数分组（45 个）
+## 6. 云函数分组（44 个）
 
 - **账号/档案**：`login` / `getProfile` / `updateProfile` / `notifyPref` / `saveResume` / `submitVerification` / `getMyResume` / `getMyVerification`
 - **撮合流程**：`createDemand` / `applyDemand` / `cancelApplication` / `getDemands`(广场) / `getDemandDetail` / `getApplicants` / `confirmMatch` / `cancelConfirm` / `requestTeacherInfo` / `cancelConfirm` / `getMyData`
@@ -102,6 +127,7 @@ config/                       # Taro 构建配置
 3. **role 显式传参**：任何按角色查档案的调用都要带 `role`，禁止隐式默认。
 4. **敏感数据不下发**：`phone`、`_openid` 等字段在详情接口按归属决定是否置空。
 5. 改完云函数记得**右键上传部署**，改完前端记得重新 `dev:weapp`。
+6. **本仓库是公开仓库，严禁提交任何真实凭据**：环境 ID、AppID、盐值、口令、密钥、真实手机号/邮箱一律走 `.env` 或云函数环境变量；提交前用 `git diff --cached | grep -iE "secret|password|cloud1-|wx[0-9a-f]{16}"` 自查一遍。
 
 ---
 
