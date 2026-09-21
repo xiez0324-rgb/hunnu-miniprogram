@@ -22,6 +22,3 @@ project.private.config.json
 # Vercel 本地项目链接元数据（vercel.json / .vercelignore 仍需入库）
 .vercel/
 
-# 第三方调研材料（不入公开仓库）
-家教小程序市场调研报告.pdf
-三校家教市场报告.docx
