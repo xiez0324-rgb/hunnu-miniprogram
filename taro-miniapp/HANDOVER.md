@@ -56,6 +56,7 @@ npm run build:weapp        # 生产构建
 | 小程序 AppID | `taro-miniapp/.env` 的 `TARO_APP_ID` | Taro 构建时自动注入产物 |
 | 管理端云环境 ID | `admin-web/.env` 的 `VITE_CLOUD_ENV_ID` | `admin-web/src/env.ts` |
 | 管理员口令盐值 | **云开发控制台** → 云函数 → `adminInit`/`adminLogin`/`adminChangePassword` → 配置 → 环境变量 `ADMIN_PASSWORD_SALT` | 三个函数内的 `hashPassword` |
+| 运维密钥 | **云开发控制台** → 云函数 → `adminInit`/`initDatabase`/`migrateSeedData` → 配置 → 环境变量 `SETUP_KEY` | 这三个一次性运维函数的闸门；**未配置则一律拒绝执行**（失败关闭） |
 
 `.env` 系列文件已被 `.gitignore` 忽略；仓库里只保留 `.env.example` 模板。
 
@@ -66,6 +67,9 @@ npm run build:weapp        # 生产构建
 
 > 另注：`adminInit` 已**不再内置任何默认口令**，首次初始化必须由调用方传入 `initialPassword`（≥ 8 位）。
 > 初始化完成后请在控制台停用或删除该函数。
+
+> **上线安全核查请看《安全自查清单.md》**——云函数与数据库/云存储权限是两套独立机制，
+> 集合权限设错会让云函数里的归属校验全部失效，且该项只能在控制台核查。
 
 ---
 
@@ -160,6 +164,7 @@ config/                       # Taro 构建配置
 
 | 文档 | 内容 |
 |---|---|
+| `安全自查清单.md` | **上线后必读**：数据库/云存储权限、无鉴权云函数、环境变量、管理员口令的逐项核查清单（含只有控制台能做的项） |
 | `账号与数据隔离说明.md` | 身份体系、分表设计、读写流程、归属校验、已知风险（**最重要**） |
 | `功能迭代测试报告.md` | 上一轮迭代的变更点与 23 项离线测试结果 |
 | 本文档 | 速查导航，AI 接手入口 |

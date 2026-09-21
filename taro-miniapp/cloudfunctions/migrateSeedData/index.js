@@ -1,6 +1,24 @@
 const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
+const crypto = require('crypto')
+
+// ── 运维密钥闸门 ──────────────────────────────────────────────
+// 本函数并非业务链路，原实现无需任何身份即可被调用，任何人都能批量改写 demands
+// 的 createTime。这里用 SETUP_KEY 兜底：**未配置该环境变量时一律拒绝执行**。
+const SETUP_KEY = process.env.SETUP_KEY
+function checkSetupKey(event) {
+  if (!SETUP_KEY) {
+    return '服务端未配置 SETUP_KEY 环境变量，本函数默认拒绝执行；如确需迁移请先在云函数配置中设置'
+  }
+  const body = event && event.data && typeof event.data === 'object' ? event.data : event || {}
+  const provided = String(body.setupKey || '')
+  if (!provided) return '缺少 setupKey 参数'
+  const a = Buffer.from(provided)
+  const b = Buffer.from(SETUP_KEY)
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return 'setupKey 不正确'
+  return null
+}
 
 // 解析种子字符串时间（兼容 '2026-08-30 10:24' 与 ISO 字符串），返回本地时区 Date
 function parseSeedTime(str) {
@@ -11,6 +29,9 @@ function parseSeedTime(str) {
 
 exports.main = async (event, context) => {
   try {
+    const denied = checkSetupKey(event)
+    if (denied) return { code: -1, message: denied, data: null }
+
     const only = event && event.demandIds // 可选：只迁移指定单号（数组），便于定向修复
     const col = db.collection('demands')
 

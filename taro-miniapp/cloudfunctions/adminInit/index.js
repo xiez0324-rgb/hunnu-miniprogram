@@ -15,6 +15,24 @@ function hashPassword(pw) {
 
 const MIN_INITIAL_PASSWORD_LENGTH = 8
 
+// ── 运维密钥闸门 ──────────────────────────────────────────────
+// 本函数不属于业务链路，原实现无需任何身份即可被调用：云环境 ID 打包在小程序客户端内、
+// 并非秘密，任何人都能调用云函数，故 admins 集合一旦为空，任何人都能创建一个自己的
+// root 管理员。这里用 SETUP_KEY 兜底：**未配置该环境变量时一律拒绝执行**。
+const SETUP_KEY = process.env.SETUP_KEY
+function checkSetupKey(event) {
+  if (!SETUP_KEY) {
+    return '服务端未配置 SETUP_KEY 环境变量，本函数默认拒绝执行；如确需初始化请先在云函数配置中设置'
+  }
+  const body = event && event.data && typeof event.data === 'object' ? event.data : event || {}
+  const provided = String(body.setupKey || '')
+  if (!provided) return '缺少 setupKey 参数'
+  const a = Buffer.from(provided)
+  const b = Buffer.from(SETUP_KEY)
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return 'setupKey 不正确'
+  return null
+}
+
 // 初始化云函数（一次性/幂等）：
 // 1. 创建 admins、audit_logs 集合（已存在则跳过）
 // 2. admins 为空时创建超级管理员，账号取 event.username（默认 admin），
@@ -22,6 +40,9 @@ const MIN_INITIAL_PASSWORD_LENGTH = 8
 // ⚠️ 初始化完成后请在控制台停用或删除本函数，避免被反复调用。
 exports.main = async (event, context) => {
   try {
+    const denied = checkSetupKey(event)
+    if (denied) return { code: -1, message: denied, data: null }
+
     if (!SALT) {
       return {
         code: -1,

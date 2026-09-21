@@ -1,6 +1,26 @@
 const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
+const crypto = require('crypto')
+
+// ── 运维密钥闸门 ──────────────────────────────────────────────
+// 本函数不属于业务链路，原实现无需任何身份即可被调用。云环境 ID 打包在小程序
+// 客户端内、并非秘密，任何人都能调用云函数：只要 demands / teachers / resumes /
+// fee_records 中有集合为空，本函数就会把演示数据重新灌进生产环境（广场出现假老师、
+// 假需求）。这里用 SETUP_KEY 兜底：**未配置该环境变量时一律拒绝执行**。
+const SETUP_KEY = process.env.SETUP_KEY
+function checkSetupKey(event) {
+  if (!SETUP_KEY) {
+    return '服务端未配置 SETUP_KEY 环境变量，本函数默认拒绝执行；如确需初始化请先在云函数配置中设置'
+  }
+  const body = event && event.data && typeof event.data === 'object' ? event.data : event || {}
+  const provided = String(body.setupKey || '')
+  if (!provided) return '缺少 setupKey 参数'
+  const a = Buffer.from(provided)
+  const b = Buffer.from(SETUP_KEY)
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return 'setupKey 不正确'
+  return null
+}
 
 // 需要创建的集合
 const COLLECTIONS = [
@@ -68,8 +88,11 @@ async function seed(collection, list) {
   return `已灌入 ${list.length} 条`
 }
 
-exports.main = async () => {
+exports.main = async (event, context) => {
   const result = { created: [], skipped: [], seeded: {} }
+
+  const denied = checkSetupKey(event)
+  if (denied) return { code: -1, message: denied, data: null }
 
   // 1. 创建集合（幂等：已存在则跳过）
   for (const name of COLLECTIONS) {
