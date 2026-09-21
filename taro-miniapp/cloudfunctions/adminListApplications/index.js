@@ -31,8 +31,45 @@ exports.main = async (event, context) => {
       }
     }
 
+    // 老师完整联系方式与专属编号（仅管理员可见）
+    const teacherOpenids = [...new Set(apps.map((a) => a.openid || a._openid).filter(Boolean))]
+    const contactMap = {}
+    if (teacherOpenids.length) {
+      const [tuRes, tvRes] = await Promise.all([
+        db.collection('teacher_users').where({ _openid: _.in(teacherOpenids) }).limit(200).get().catch(() => ({ data: [] })),
+        db.collection('verifications').where({ _openid: _.in(teacherOpenids) }).limit(200).get().catch(() => ({ data: [] })),
+      ])
+      tuRes.data.forEach((u) => {
+        contactMap[u._openid] = { phone: u.phone || '', teacherNo: u.teacherNo || '' }
+      })
+      tvRes.data.forEach((v) => {
+        if (v.status !== '已通过' || !v.teacherNo) return
+        const cur = contactMap[v._openid] || {}
+        contactMap[v._openid] = { phone: cur.phone || '', teacherNo: cur.teacherNo || v.teacherNo }
+      })
+    }
+
+    // 家长联系方式（仅管理员可见）：需求单所属家长（parentOpenid 优先，历史数据用 _openid 兜底），
+    // 家长档案缺失手机号时回退需求单发布时填写的联系电话
+    const parentOpenids = [...new Set(
+      apps.map((a) => {
+        const d = demandMap[a.demandId] || {}
+        return d.parentOpenid || d._openid
+      }).filter(Boolean),
+    )]
+    const parentMap = {}
+    if (parentOpenids.length) {
+      const pRes = await db.collection('parent_users')
+        .where({ _openid: _.in(parentOpenids) })
+        .limit(200)
+        .get()
+        .catch(() => ({ data: [] }))
+      pRes.data.forEach((u) => { parentMap[u._openid] = u })
+    }
+
     const list = apps.map((a) => {
       const d = demandMap[a.demandId] || {}
+      const p = parentMap[d.parentOpenid || d._openid] || {}
       return {
         id: a._id,
         teacherId: a.teacherId || '',
@@ -49,6 +86,8 @@ exports.main = async (event, context) => {
           college: a.college || '',
           major: a.major || '',
           subject: a.subject || '',
+          phone: contactMap[a.openid || a._openid] ? contactMap[a.openid || a._openid].phone : '',
+          teacherNo: contactMap[a.openid || a._openid] ? contactMap[a.openid || a._openid].teacherNo : '',
         },
         demand: {
           grade: d.grade || '',
@@ -56,6 +95,12 @@ exports.main = async (event, context) => {
           title: d.title || '',
           area: d.area || '',
           budget: d.budget || '',
+        },
+        parent: {
+          nickname: p.nickname || '',
+          phone: p.phone || d.phone || '',
+          wechat: p.wechat || '',
+          area: p.area || '',
         },
       }
     })

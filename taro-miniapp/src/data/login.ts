@@ -5,7 +5,7 @@ export default function login(data: { role: string; nickname?: string }): UserIn
   const role = data.role === 'parent' ? 'parent' : 'teacher'
   return {
     openid: `openid_${Date.now()}`,
-    nickname: data.nickname || (role === 'parent' ? '家长用户' : '老师用户'),
+    nickname: data.nickname || (role === 'parent' ? '家长用户' : '同学'),
     avatar: '',
     role,
     phone: '',

@@ -1,4 +1,5 @@
 import { View, Text } from '@tarojs/components'
+import classnames from 'classnames'
 import Taro from '@tarojs/taro'
 import { useEffect, useState } from 'react'
 import { ensureWechatPrivacy } from '@/services/privacy'
@@ -19,6 +20,8 @@ const POLICY_VERSION = '2026-09'
 export default function PrivacyGate() {
   const [needAgree, setNeedAgree] = useState(false)
   const [checked, setChecked] = useState(false)
+  // 协议勾选：必须由用户主动勾选，默认不勾选（不得默认强制同意）
+  const [policyChecked, setPolicyChecked] = useState(false)
 
   useEffect(() => {
     if (process.env.TARO_ENV !== 'weapp') {
@@ -75,6 +78,19 @@ export default function PrivacyGate() {
     Taro.navigateTo({ url: '/pages/privacy/index' })
   }
 
+  const openAgreement = () => {
+    Taro.navigateTo({ url: '/pages/agreement/index' })
+  }
+
+  // 必须勾选协议后才能同意并继续
+  const agreeRequired = () => {
+    if (!policyChecked) {
+      Taro.showToast({ title: '请先勾选同意《用户服务协议》和《隐私与风险说明》', icon: 'none' })
+      return
+    }
+    agree()
+  }
+
   // 非微信端或无需弹窗时，不渲染
   if (!checked || !needAgree) return null
 
@@ -83,15 +99,39 @@ export default function PrivacyGate() {
       <View className={styles.card}>
         <Text className={styles.title}>隐私保护提示</Text>
         <Text className={styles.desc}>
-          「小小陪伴帮」尊重并保护您的个人信息。我们仅收集提供服务所必需的信息，联系电话为选填项，不会强制索取；
-          您的信息仅用于平台代理人与您对接，不会公开展示。
+          「小小陪伴帮」尊重并保护您的个人信息。您首次进入小程序时，我们不会收集任何个人信息；
+          仅在您主动登记需求信息或完善个人资料、需要平台与您对接时，才会请您填写联系电话等信息，且仅用于平台工作人员与您对接，不会公开展示。
         </Text>
-        <View className={styles.link} onClick={openPolicy}>
-          <Text className={styles.linkText}>查看《用户信息采集与隐私保护声明》 ›</Text>
+        <View className={styles.agreeRow} onClick={() => setPolicyChecked(!policyChecked)}>
+          <View className={classnames(styles.checkbox, policyChecked && styles.checkboxChecked)}>
+            {policyChecked ? <Text className={styles.checkboxMark}>✓</Text> : null}
+          </View>
+          <Text className={styles.agreeText}>
+            我已阅读并同意
+            <Text
+              className={styles.linkText}
+              onClick={(e) => {
+                e.stopPropagation()
+                openAgreement()
+              }}
+            >
+              《用户服务协议》
+            </Text>
+            和
+            <Text
+              className={styles.linkText}
+              onClick={(e) => {
+                e.stopPropagation()
+                openPolicy()
+              }}
+            >
+              《隐私与风险说明》
+            </Text>
+          </Text>
         </View>
         <View className={styles.actions}>
           <GhostButton onClick={reject}>不同意</GhostButton>
-          <PrimaryButton onClick={agree}>同意并继续</PrimaryButton>
+          <PrimaryButton onClick={agreeRequired}>同意并继续</PrimaryButton>
         </View>
         <Text className={styles.version}>版本：{POLICY_VERSION}（后续更新将在小程序内重新公示）</Text>
       </View>

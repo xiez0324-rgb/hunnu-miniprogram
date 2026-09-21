@@ -73,16 +73,44 @@
   box-shadow: $shadow-paper;
 }
 
-.agreement {
+// 协议同意：默认为未勾选状态，需用户主动勾选
+.agreeRow {
   display: flex;
-  justify-content: center;
+  align-items: flex-start;
   margin-top: $spacing-md;
+  padding: 0 $spacing-xs;
+}
+
+.checkbox {
+  flex-shrink: 0;
+  width: 34rpx;
+  height: 34rpx;
+  margin-top: 4rpx;
+  margin-right: $spacing-xs;
+  border: 2rpx solid $color-border;
+  border-radius: 8rpx;
+  background-color: $color-bg-card;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkboxChecked {
+  border-color: $color-primary;
+  background-color: $color-primary;
+}
+
+.checkboxMark {
+  font-size: 22rpx;
+  color: #ffffff;
+  line-height: 1;
 }
 
 .agreementText {
+  flex: 1;
   font-size: $font-size-xs;
   color: $color-text-tertiary;
-  text-align: center;
+  text-align: left;
   line-height: $line-height-normal;
 }
 
@@ -90,4 +118,27 @@
   color: $color-primary;
   font-weight: $font-weight-bold;
   text-decoration: underline;
+}
+
+// 管理后台入口：置于“隐私与风险说明”文案最底部，绿色字体加亮（管理员一眼可见）
+.adminEntry {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: $spacing-sm;
+  padding-top: $spacing-xs;
+  border-top: 2rpx dashed $color-divider;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.adminEntryText {
+  font-size: 28rpx;
+  color: $color-primary-dark;
+  font-weight: $font-weight-bold;
+  text-decoration: underline;
+  text-underline-offset: 6rpx;
+  text-decoration-color: rgba(45, 122, 84, 0.45);
 }

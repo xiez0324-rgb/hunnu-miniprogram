@@ -1,4 +1,5 @@
 import { View, Text, Input } from '@tarojs/components'
+import classnames from 'classnames'
 import Taro from '@tarojs/taro'
 import { useEffect, useRef, useState } from 'react'
 import { callFunction } from '@/services/cloud'
@@ -10,6 +11,7 @@ import FieldLabel from '@/components/FieldLabel'
 import SelectField from '@/components/SelectField'
 import PrimaryButton from '@/components/PrimaryButton'
 import RiskNote from '@/components/RiskNote'
+import PlatformRecordNotice from '@/components/PlatformRecordNotice'
 import styles from './index.module.scss'
 
 const gradeOptions = [
@@ -17,12 +19,8 @@ const gradeOptions = [
   '初一', '初二', '初三', '高一', '高二', '高三',
 ]
 
-const subjectOptions = [
-  '语文', '数学', '英语', '物理', '化学', '生物', '历史', '地理', '政治',
-  '音乐', '美术', '少儿编程', '羽毛球', '篮球', '钢琴',
-]
-
-const goalOptions = ['0基础学新课', '巩固基础', '培优拔高']
+// 需求类型（贴近家政 / 陪伴服务的选择）
+const goalOptions = ['长期固定需求', '短期临时需求', '假期集中需求', '灵活按需']
 
 const timeSlots = ['周一至周五晚', '周六全天', '周日全天', '周末均可']
 
@@ -45,7 +43,7 @@ export default function Publish() {
   const [budgetMin, setBudgetMin] = useState('100')
   const [budgetMax, setBudgetMax] = useState('150')
   const [grade, setGrade] = useState('')
-  const [subject, setSubject] = useState<string[]>([])
+  const [subject, setSubject] = useState('')
   const [goal, setGoal] = useState('')
   const [location, setLocation] = useState('')
   const [timePicked, setTimePicked] = useState<string[]>([timeSlots[0]!])
@@ -55,7 +53,7 @@ export default function Publish() {
   const budgetDirty = useRef(false)
   const [loadingProfile, setLoadingProfile] = useState(true)
 
-  // 预填个人资料里已填写的联系电话（选填）：已填则无需重复输入，代理人可直接联系
+  // 预填个人资料里已填写的联系电话：平台需电话与家长对接核实，已填则无需重复输入
   useEffect(() => {
     callFunction<{ profile: { phone?: string } | null }>('getProfile', { role: 'parent' })
       .then((res) => {
@@ -63,7 +61,7 @@ export default function Publish() {
         if (p && p.phone) setPhone(p.phone)
       })
       .catch(() => {
-        /* 读取失败不阻塞发布 */
+        /* 读取失败不影响后续填写 */
       })
       .finally(() => setLoadingProfile(false))
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -84,33 +82,47 @@ export default function Publish() {
     if (s) applyRefBudget(s, false)
   }
 
-  const handleSubjectChange = (v: string[]) => {
-    setSubject(v)
-    if (!budgetDirty.current && stage) {
-      applyRefBudget(stage, v.some((x) => EXTRA_SUBJECTS.includes(x)))
-    }
-  }
-
   const budgetValid = !(budgetMin && budgetMax && Number(budgetMin) > Number(budgetMax))
-  // 联系电话为选填（微信审核要求不得强制索取）：填了则校验格式，未填可先发布，代理人后续通过微信与您确认
-  const canSubmit = agreed && grade && subject.length > 0 && goal && location && budgetValid
+  const phoneValid = /^1\d{10}$/.test(phone)
+  const subjectTrimmed = subject.trim()
+  const [submitting, setSubmitting] = useState(false)
+
+  // 逐项校验并返回「第一条未满足项」的明确提示：按钮不再静默禁用，点一下就知道差什么
+  const validate = (): string | null => {
+    if (!grade) return '请选择孩子年级'
+    if (!subjectTrimmed) return '请填写孩子的需求'
+    if (!goal) return '请选择需求类型'
+    if (!location.trim()) return '请填写服务地点（精确到小区）'
+    if (!budgetValid) return '最低预算不能高于最高预算，请调整'
+    if (!phone) return '请填写联系电话，便于平台工作人员及时与您对接'
+    if (!phoneValid) return `手机号需为 11 位数字，当前已填 ${phone.length} 位`
+    if (!agreed) return '请先阅读并勾选同意《用户服务协议》和《隐私与风险说明》'
+    return null
+  }
+  // 实时提示：让用户在点击前也能看到还差什么
+  const pendingHint = submitting ? null : validate()
 
   const submit = async () => {
-    if (phone && !/^1\d{10}$/.test(phone)) {
-      Taro.showToast({ title: '手机号需为 11 位数字且以 1 开头', icon: 'none' })
+    if (submitting) return
+    const msg = validate()
+    if (msg) {
+      Taro.showToast({ title: msg, icon: 'none' })
       return
     }
-    const subjectMain = subject[0] || ''
-    const category = MAIN_SUBJECTS.includes(subjectMain)
+    const main = MAIN_SUBJECTS.find((s) => subjectTrimmed.includes(s))
+    const extra = EXTRA_SUBJECTS.find((s) => subjectTrimmed.includes(s))
+    const category = main
       ? '主科'
-      : ['羽毛球', '篮球', '足球'].includes(subjectMain)
+      : ['羽毛球', '篮球'].includes(extra || '')
       ? '体育'
-      : ['音乐', '美术', '钢琴'].includes(subjectMain)
+      : ['音乐', '美术', '钢琴'].includes(extra || '')
       ? '艺术'
-      : '编程'
+      : extra
+      ? '编程'
+      : '主科'
     const payload = {
       grade,
-      subject: subjectMain,
+      subject: subjectTrimmed,
       category,
       title: goal,
       goal,
@@ -121,21 +133,27 @@ export default function Publish() {
       phone,
       note,
     }
+    setSubmitting(true)
     try {
       await callFunction('createDemand', payload)
       Taro.redirectTo({ url: '/pages/publish-success/index' })
     } catch (err) {
-      console.error('[Publish] 发布需求失败', err)
-      Taro.showToast({ title: (err as Error)?.message || '发布失败，请重试', icon: 'none' })
+      console.error('[Publish] 提交需求信息失败', err)
+      Taro.showToast({ title: (err as Error)?.message || '提交失败，请重试', icon: 'none' })
+    } finally {
+      setSubmitting(false)
     }
   }
 
   return (
     <View className={styles.page}>
       <View className={styles.header}>
-        <Text className={styles.title}>发布需求</Text>
-        <Text className={styles.headerTip}>填写孩子的基本信息，平台会匹配合适的老师</Text>
+        <Text className={styles.title}>登记需求信息</Text>
+        <Text className={styles.headerTip}>填写孩子的基本信息，信息由平台录入核验后为您匹配合适的老师</Text>
       </View>
+
+      {/* 合规提示：平台为信息的唯一收集者与发布者 */}
+      <PlatformRecordNotice desc="您填写的信息由平台工作人员统一录入、审核后发布，您不会直接对外发布任何内容；信息仅用于为您匹配与对接服务。" />
 
       <View className={styles.card}>
         <SelectField
@@ -146,17 +164,17 @@ export default function Publish() {
           onChange={(v) => handleGradeChange(v as string)}
           required
         />
+        <FieldLabel label="孩子的需求" hint="请填写孩子/家庭的真实需求，例如：陪伴写作业、陪读、日常照护、接送、兴趣活动陪伴等" required>
+          <Input
+            className={styles.input}
+            value={subject}
+            placeholder="请填写具体需求，如：放学后陪伴写作业"
+            placeholderClass={styles.placeholder}
+            onInput={(e) => setSubject(e.detail.value)}
+          />
+        </FieldLabel>
         <SelectField
-          label="辅导科目（可多选）"
-          value={subject}
-          placeholder="请选择科目"
-          options={subjectOptions}
-          onChange={(v) => handleSubjectChange(v as string[])}
-          required
-          multiple
-        />
-        <SelectField
-          label="辅导类型"
+          label="需求类型"
           value={goal}
           placeholder="请选择类型"
           options={goalOptions}
@@ -175,11 +193,11 @@ export default function Publish() {
         </FieldLabel>
 
         <MultiPick label="期望时段（可多选）" options={timeSlots} value={timePicked} onChange={setTimePicked} />
-        <MultiPick label="上课区域（行政区 · 可多选）" options={districts} value={areaPicked} onChange={setAreaPicked} />
+        <MultiPick label="服务区域（行政区 · 可多选）" options={districts} value={areaPicked} onChange={setAreaPicked} />
 
         <FieldLabel
-          label="上课地点（精确到小区，必填）"
-          hint="选择行政区后，请在此填写小区/地标与楼栋，便于老师判断通勤距离"
+          label="服务地点（精确到小区）"
+          hint="选择行政区后，请在此填写小区/地标与楼栋，便于服务人员判断通勤距离"
           required
         >
           <Input
@@ -191,13 +209,28 @@ export default function Publish() {
           />
         </FieldLabel>
 
-        <RiskNote>联系电话为选填，方便代理人第一时间联系您；未填写也可先发布，代理人会通过微信与您确认。</RiskNote>
+        <FieldLabel label="联系电话" hint="便于平台工作人员与您电话对接核实；由平台录入保管，不会公开展示">
+          <Input
+            className={styles.input}
+            type="number"
+            maxlength={11}
+            value={phone}
+            placeholder={loadingProfile ? '读取个人资料中…' : '请输入 11 位手机号'}
+            placeholderClass={styles.placeholder}
+            onInput={(e) => setPhone(onlyDigits(e.detail.value))}
+          />
+          {phone.length > 0 && !phoneValid ? (
+            <Text className={styles.budgetError}>
+              手机号需为 11 位数字，当前已填 {phone.length} 位，请补全后再提交。
+            </Text>
+          ) : null}
+        </FieldLabel>
 
         <FieldLabel
           label="预算范围（元/时）"
           hint={
             stage
-              ? `已按「${stage}学段${subject.some((x) => EXTRA_SUBJECTS.includes(x)) ? ' · 兴趣特长类' : ' · 学科类'}」自动带入市场参考区间，可自行微调`
+              ? `已按「${stage}学段${EXTRA_SUBJECTS.some((x) => subjectTrimmed.includes(x)) ? ' · 兴趣特长类' : ' · 综合服务类'}」自动带入市场参考区间，可自行微调`
               : undefined
           }
         >
@@ -228,18 +261,6 @@ export default function Publish() {
           )}
         </FieldLabel>
 
-        <FieldLabel label="联系电话（选填）" hint="建议填写常用手机号，便于代理人快速与您对接；代理人仅用于对接，不会公开展示">
-          <Input
-            className={styles.input}
-            type="number"
-            maxlength={11}
-            value={phone}
-            placeholder={loadingProfile ? '读取个人资料中…' : '选填：请输入 11 位手机号'}
-            placeholderClass={styles.placeholder}
-            onInput={(e) => setPhone(onlyDigits(e.detail.value))}
-          />
-        </FieldLabel>
-
         <FieldLabel label="补充说明（选填）">
           <Input
             className={styles.input}
@@ -251,17 +272,40 @@ export default function Publish() {
         </FieldLabel>
       </View>
 
-      <RiskNote>本平台仅做信息撮合、不代收课时费。老师的身份与学籍信息由平台代理人亲自人工核验，如发现信息不实，请立即联系代理人 Kiki，我们将承担责任并跟进处理。</RiskNote>
+      <RiskNote>本平台仅提供信息录入、核验与对接协助，不代收课时费。信息由平台统一录入后发布，用户不直接对外发布内容。老师的身份与学籍信息由平台工作人员人工核验，如发现信息不实，请立即联系平台客服 Kiki，我们将承担责任并跟进处理。</RiskNote>
 
       <View className={styles.agreeRow} onClick={() => setAgreed(!agreed)}>
-        <View className={styles.checkbox}>
+        <View className={classnames(styles.checkbox, agreed && styles.checkboxChecked)}>
           {agreed ? <Text className={styles.checkboxMark}>✓</Text> : null}
         </View>
-        <Text className={styles.agreeText}>我已阅读并同意风险提示与隐私说明</Text>
+        <Text className={styles.agreeText}>
+          我已阅读并同意
+          <Text
+            className={styles.link}
+            onClick={(e) => {
+              e.stopPropagation()
+              Taro.navigateTo({ url: '/pages/agreement/index' })
+            }}
+          >
+            《用户服务协议》
+          </Text>
+          和
+          <Text
+            className={styles.link}
+            onClick={(e) => {
+              e.stopPropagation()
+              Taro.navigateTo({ url: '/pages/privacy/index' })
+            }}
+          >
+            《隐私与风险说明》
+          </Text>
+        </Text>
       </View>
 
-      <PrimaryButton onClick={submit} disabled={!canSubmit}>
-        提交需求（提交即上架）
+      {pendingHint ? <Text className={styles.pendingHint}>{pendingHint}</Text> : null}
+
+      <PrimaryButton onClick={submit} disabled={submitting}>
+        {submitting ? '提交中…' : '提交登记（由平台审核后统一发布）'}
       </PrimaryButton>
     </View>
   )

@@ -51,6 +51,18 @@
   transform: rotate(-0.4deg);
 }
 
+.confirmedBadge {
+  display: block;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-pine;
+  line-height: $line-height-normal;
+  margin-top: $spacing-sm;
+  padding: $spacing-sm;
+  background-color: $color-mint;
+  border-radius: $radius-sm;
+}
+
 .confirmNoteText {
   font-size: $font-size-sm;
   font-weight: $font-weight-bold;

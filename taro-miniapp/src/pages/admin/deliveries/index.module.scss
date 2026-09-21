@@ -1,0 +1,55 @@
+@use '@/styles/variables.scss' as *;
+
+.groupLine {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: $color-text-tertiary;
+  line-height: 1.6;
+  @include text-ellipsis;
+}
+
+.badgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.backBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-sm;
+}
+
+.demandNote {
+  margin-top: 8rpx;
+  font-size: 26rpx;
+  color: $color-text-primary;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.riskLine {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: $color-error;
+  line-height: 1.6;
+}
+
+.rateLine {
+  margin-top: 4rpx;
+  font-size: 24rpx;
+  color: $color-text-secondary;
+  line-height: 1.7;
+}
+
+.phoneLine {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 26rpx;
+  color: $color-primary;
+  font-weight: 600;
+  line-height: 1.6;
+}

@@ -4,6 +4,8 @@ import { UserProvider } from './store/user'
 import PrivacyGate from './components/PrivacyGate'
 // 全局样式
 import './app.scss'
+// 管理后台全局样式（adm-* 通用类）
+import './styles/admin.scss'
 
 function App(props) {
   // 云开发初始化（仅微信小程序）

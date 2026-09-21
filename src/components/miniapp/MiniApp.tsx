@@ -419,7 +419,7 @@ function Login({ onNext, onPrivacy }: { onNext: () => void; onPrivacy: () => voi
       <h1 className="text-2xl font-extrabold mt-4">小小陪伴帮</h1>
 
       <TornCard className="mt-10 text-left" tilt="rotate-[0.7deg]">
-        <PrimaryButton onClick={onNext}>微信一键登录</PrimaryButton>
+        <PrimaryButton onClick={onNext}>进入小程序</PrimaryButton>
         <p className="text-[11px] text-ink/50 mt-3 text-center leading-relaxed">
           登录即代表同意《用户协议》与
           <button onClick={onPrivacy} className="text-leaf font-bold underline">
@@ -487,7 +487,7 @@ function PrivacyPolicyBody() {
           1.2 家长端：为完成需求发布与对接，我们会收集您的称呼、联系电话、上课地址（可能精确至小区及楼栋）及需求描述等信息。
         </p>
         <p className="mt-1">
-          1.3 我们仅收集您主动填写或上传、且与提供服务相关的必要信息，不超出上述范围收集与服务无关的信息。其中「联系电话」为选填项：您可以先浏览或发布需求而不填写，平台仅会在需要与您对接时通过微信征询；我们不会在您首次使用时强制索取手机号等个人信息。
+          1.3 我们仅收集您主动填写或上传、且与提供服务直接相关的必要信息，不超出上述范围收集与服务无关的信息。您首次进入小程序及浏览广场时，我们不会收集任何个人信息；「联系电话」属于平台与您对接所必需的信息，仅在您主动执行需要对接的功能（如发布需求、完善个人资料）时请您填写，不会在登录、浏览等环节索取或强制弹出。
         </p>
       </div>
 
@@ -1244,6 +1244,7 @@ function Publish({ onSubmit }: { onSubmit: () => void }) {
   const [subject, setSubject] = useState<string[]>([]);
   const [goal, setGoal] = useState("");
   const [location, setLocation] = useState("");
+  const [phone, setPhone] = useState("138****6688"); // 演示：个人资料已预填联系电话（发布需求必填）
   const budgetDirty = useRef(false); // 用户手动改过预算后，不再被推荐区间覆盖
   const onlyDigits = (v: string) => v.replace(/\D/g, "");
   const genders = ["不限", "男", "女"];
@@ -1281,7 +1282,8 @@ function Publish({ onSubmit }: { onSubmit: () => void }) {
   };
 
   const budgetValid = !(budgetMin && budgetMax && Number(budgetMin) > Number(budgetMax));
-  const canSubmit = agreed && grade && subject.length > 0 && goal && location && budgetValid;
+  // 联系电话为必填：平台需通过电话与您对接试课及后续安排
+  const canSubmit = agreed && grade && subject.length > 0 && goal && location && budgetValid && phone;
 
   return (
     <div>
@@ -1341,7 +1343,7 @@ function Publish({ onSubmit }: { onSubmit: () => void }) {
             onChange={(e) => setLocation(e.target.value)}
           />
         </Field>
-        <RiskNote>上课地点很重要，请填写真实信息；联系电话为选填，未填写时平台代理人会通过微信与您确认。</RiskNote>
+        <RiskNote>上课地点请填写真实信息；联系电话为必填项，平台需通过电话与您确认试课及对接老师。</RiskNote>
         <Field label="预算范围（元/时）"
           hint={
             stage
@@ -1377,8 +1379,8 @@ function Publish({ onSubmit }: { onSubmit: () => void }) {
             <p className="text-[11px] font-bold text-red-500 mt-1.5">最低预算不能高于最高预算，请调整。</p>
           )}
         </Field>
-        <Field label="联系电话">
-          <TextInput defaultValue="138****6688" inputMode="tel" />
+        <Field label="联系电话（必填）" hint="已预填个人资料中的手机号，发布后平台将通过电话与您对接">
+          <TextInput value={phone} onChange={(e) => setPhone(onlyDigits(e.target.value))} inputMode="tel" placeholder="请输入 11 位手机号" />
         </Field>
         <Field label="补充说明（选填）">
           <TextInput placeholder="如：孩子性格、其他要求及备注等" />
@@ -1776,7 +1778,7 @@ function ParentContact({ onBack }: { onBack: () => void }) {
   const [name, setName] = useState("王女士");
   const [area, setArea] = useState("岳麓区");
   const onlyDigits = (v: string) => v.replace(/\D/g, "");
-  const canSave = name && area; // 联系电话选填：不得强制索取手机号
+  const canSave = name && area && phone; // 联系电话为必填：平台需通过电话与您对接
 
   return (
     <div>
@@ -1793,12 +1795,12 @@ function ParentContact({ onBack }: { onBack: () => void }) {
               placeholder="请输入称呼，如：王女士"
             />
           </Field>
-          <Field label="联系电话（选填）">
+          <Field label="联系电话（必填）">
             <TextInput
               value={phone}
               onChange={(e) => setPhone(onlyDigits(e.target.value))}
               inputMode="tel"
-              placeholder="选填：请输入手机号"
+              placeholder="请输入 11 位手机号"
             />
           </Field>
           <Field label="微信号（选填）">
@@ -1816,7 +1818,7 @@ function ParentContact({ onBack }: { onBack: () => void }) {
             />
           </Field>
         </div>
-        <RiskNote>⚠ 联系方式仅用于平台代理人对接，不会在广场公开展示，请放心填写。</RiskNote>
+        <RiskNote>⚠ 平台需通过电话与您对接试课安排，联系电话为必填；联系方式仅用于平台代理人对接，不会在广场公开展示。</RiskNote>
         <div className="mt-4">
           <PrimaryButton onClick={() => setSaved(true)} disabled={!canSave}>
             {saved ? "已保存" : "保存联系方式"}
@@ -1839,7 +1841,7 @@ function TeacherContact({ onBack }: { onBack: () => void }) {
   const [name, setName] = useState("张同学");
   const [area, setArea] = useState("");
   const onlyDigits = (v: string) => v.replace(/\D/g, "");
-  const canSave = area; // 联系电话选填，所在区域用于判断上门距离（必填）
+  const canSave = name && area && phone; // 联系电话为必填：平台需通过电话与您对接接单事宜
 
   return (
     <div>
@@ -1856,12 +1858,12 @@ function TeacherContact({ onBack }: { onBack: () => void }) {
               placeholder="请输入称呼，如：张同学"
             />
           </Field>
-          <Field label="联系电话（选填）">
+          <Field label="联系电话（必填）">
             <TextInput
               value={phone}
               onChange={(e) => setPhone(onlyDigits(e.target.value))}
               inputMode="tel"
-              placeholder="选填：请输入手机号"
+              placeholder="请输入 11 位手机号"
             />
           </Field>
           <Field label="微信号（选填）">
@@ -1879,7 +1881,7 @@ function TeacherContact({ onBack }: { onBack: () => void }) {
             />
           </Field>
         </div>
-        <RiskNote>所在区域用于代理人判断上门距离（必填）；联系电话为选填，未填写时代理人会通过微信与您确认。联系方式仅用于平台代理人对接，不会公开展示。</RiskNote>
+        <RiskNote>联系电话为必填，用于代理人与您对接接单与试课安排；所在区域用于判断上门距离（必填）。联系方式仅用于平台代理人对接，不会公开展示。</RiskNote>
         <div className="mt-4">
           <PrimaryButton onClick={() => setSaved(true)} disabled={!canSave}>
             {saved ? "已保存" : "保存联系方式"}

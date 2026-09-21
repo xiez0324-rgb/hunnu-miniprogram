@@ -11,41 +11,37 @@ export const districts = [
   '长沙县',
 ]
 
-// 需求广场可展开的全部科目（覆盖语数外及副科 + 兴趣课）
-export const allSubjects = [
-  '语文',
-  '数学',
-  '英语',
-  '物理',
-  '化学',
-  '生物',
-  '历史',
-  '地理',
-  '政治',
-  '音乐',
-  '美术',
-  '少儿编程',
-  '羽毛球',
-  '篮球',
-  '足球',
-  '钢琴',
+// 需求广场 / 简历可选内容（学科 + 大量课外/兴趣/陪伴类）
+const academicSubjects = ['语文', '数学', '英语', '物理', '化学', '生物', '历史', '地理', '政治']
+
+// 课外 / 兴趣 / 陪伴类（大幅扩充：乐器、舞蹈、美术书法、棋类、科技、体育、口才与生活陪伴）
+const interestSubjects = [
+  // 器乐 · 声乐
+  '钢琴', '小提琴', '吉他', '尤克里里', '古筝', '长笛', '葫芦丝', '声乐/唱歌',
+  // 舞蹈 · 形体
+  '中国舞', '街舞', '拉丁舞', '芭蕾形体',
+  // 美术 · 书法
+  '素描', '水彩画', '儿童创意画', '硬笔书法', '软笔书法',
+  // 棋类 · 思维
+  '围棋', '中国象棋', '国际象棋', '五子棋',
+  // 科技 · 编程
+  '少儿编程', 'Scratch 编程', '机器人搭建', '无人机航模',
+  // 体育 · 运动
+  '羽毛球', '篮球', '足球', '乒乓球', '网球', '游泳', '跆拳道', '轮滑', '跳绳', '田径体能',
+  // 口才 · 综合素养
+  '演讲口才', '播音主持', '绘本阅读',
+  // 生活陪伴 · 照护
+  '作业陪伴', '放学接送', '手工/DIY', '科学小实验', '专注力训练', '习惯养成', '幼小衔接', '户外活动陪伴',
 ]
+
+// 需求广场可展开的全部内容（课外/陪伴类在前，教学科目置后）
+export const allSubjects = [...interestSubjects, ...academicSubjects]
 
 // 老师端快速分类（顺序固定：体育 / 艺术 / 编程 / 全部）
 export const quickChips = ['体育', '艺术', '编程', '全部']
 
-// 简历可授课科目（覆盖高中全科）
-export const resumeSubjects = [
-  '语文',
-  '数学',
-  '英语',
-  '物理',
-  '化学',
-  '生物',
-  '历史',
-  '地理',
-  '政治',
-]
+// 简历可选内容（服务科目）：课外/陪伴类在前，教学科目置后
+export const resumeSubjects = [...interestSubjects, ...academicSubjects]
 
 // 偏好老师性别
 export const genders = ['不限', '男', '女']
@@ -78,6 +74,8 @@ export const demands: Demand[] = [
     recommended: 1,
     status: '进行中',
     createTime: '2026-08-30 10:24',
+    confirmedTeacherId: 't1',
+    confirmedTeacherName: '王晨',
   },
   {
     _id: 'd1025',
@@ -180,6 +178,8 @@ export const teachers: Teacher[] = [
   {
     id: 't1',
     name: '王晨',
+    gender: '男',
+    teacherNo: '10001',
     school: '湖南师范大学',
     college: '数学与统计学院',
     major: '数学与应用数学',
@@ -192,6 +192,8 @@ export const teachers: Teacher[] = [
   {
     id: 't2',
     name: '李思',
+    gender: '女',
+    teacherNo: '10002',
     school: '湖南师范大学',
     college: '外国语学院',
     major: '英语',
@@ -204,6 +206,8 @@ export const teachers: Teacher[] = [
   {
     id: 't3',
     name: '刘洋',
+    gender: '男',
+    teacherNo: '10003',
     school: '湖南师范大学',
     college: '信息科学与工程学院',
     major: '计算机科学与技术',
@@ -216,6 +220,8 @@ export const teachers: Teacher[] = [
   {
     id: 't4',
     name: '赵敏',
+    gender: '女',
+    teacherNo: '10004',
     school: '湖南师范大学',
     college: '体育学院',
     major: '体育教育',
@@ -228,6 +234,8 @@ export const teachers: Teacher[] = [
   {
     id: 't5',
     name: '陈晨',
+    gender: '女',
+    teacherNo: '10005',
     school: '湖南师范大学',
     college: '音乐学院',
     major: '音乐表演',
@@ -240,6 +248,8 @@ export const teachers: Teacher[] = [
   {
     id: 't6',
     name: '周杰',
+    gender: '男',
+    teacherNo: '10006',
     school: '湖南师范大学',
     college: '数学与统计学院',
     major: '数学与应用数学',
@@ -278,6 +288,11 @@ export const applicantsByDemand: Record<string, Applicant[]> = {
   '1029': [
     { ...teachers[4]!, recommended: false },
   ],
+}
+
+// 各需求单已确认的老师（家长端「查看报名进度」回显，持久化状态）
+export const confirmedByDemand: Record<string, string> = {
+  '1024': 't1',
 }
 
 // 老师端我的报名
@@ -329,6 +344,9 @@ export const teacherResumes: Record<string, Resume> = {
     rate: '120 元/时',
     rateByStage: { 初中: '110-130', 高中: '130-150' },
     districts: ['岳麓区', '芙蓉区'],
+    teachingYears: '3-5 年',
+    experience: '2023 年至今带初三中考冲刺班，累计辅导 12 名学生，平均提分 20+；2022 年带小学奥数培优。',
+    certificates: ['教师资格证（中学数学）', '普通话二级甲等'],
     intro: '数学与应用数学专业大三，带过 3 届中考冲刺，学员平均提分 20+，擅长基础薄弱学生的查漏补缺，讲解耐心有方法。',
   },
   t2: {
@@ -337,7 +355,10 @@ export const teacherResumes: Record<string, Resume> = {
     timeSlots: ['周六', '周末'],
     rate: '110 元/时',
     districts: ['岳麓区', '开福区'],
-    intro: '英语专业大四，英语专八，辅导英语阅读与写作提分明显，曾带初三学生从 70 分提至 105 分。',
+    teachingYears: '1-3 年',
+    experience: '英语专业大四，带过初中英语阅读与写作专项辅导，曾带初三学生从 70 分提至 105 分。',
+    certificates: ['英语专业八级', '英语专业四级'],
+    intro: '英语专业大四，英语专八，陪伴式带练英语阅读与写作提分明显，曾带初三学生从 70 分提至 105 分。',
   },
   t3: {
     subjects: ['少儿编程'],
@@ -345,6 +366,9 @@ export const teacherResumes: Record<string, Resume> = {
     timeSlots: ['周一至周五', '周六'],
     rate: '130 元/时',
     districts: ['岳麓区', '开福区', '芙蓉区'],
+    teachingYears: '1-3 年',
+    experience: 'Scratch/Python 少儿编程教学 2 年，带孩子完成多个小项目，注重逻辑思维培养。',
+    certificates: ['计算机二级', '蓝桥杯省赛三等奖'],
     intro: '计算机科学与技术专业，Scratch/Python 少儿编程教学 2 年，带孩子完成多个小项目，注重逻辑思维培养。',
   },
   t4: {
@@ -361,6 +385,9 @@ export const teacherResumes: Record<string, Resume> = {
     timeSlots: ['周六', '周末'],
     rate: '140 元/时',
     districts: ['芙蓉区', '岳麓区'],
+    teachingYears: '3-5 年',
+    experience: '3 年钢琴陪练启蒙经验，擅长识谱与基础指法教学，孩子喜欢、家长放心。',
+    certificates: ['钢琴十级'],
     intro: '音乐表演专业（钢琴方向），钢琴十级，3 年陪练启蒙经验，擅长识谱与基础指法教学，孩子喜欢、家长放心。',
   },
   t6: {

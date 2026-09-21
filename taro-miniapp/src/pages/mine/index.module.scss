@@ -37,11 +37,27 @@
   min-width: 0;
 }
 
+.nameRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+}
+
 .name {
   display: block;
   font-size: $font-size-xl;
   font-weight: $font-weight-bold;
   color: $color-text-primary;
+}
+
+.teacherNoTag {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-pine;
+  background-color: $color-mint;
+  padding: 4rpx $spacing-xs;
+  border-radius: $radius-xs;
 }
 
 .desc {

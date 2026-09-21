@@ -1,0 +1,74 @@
+@use '@/styles/variables.scss' as *;
+
+.identity {
+  margin-top: $spacing-xs;
+}
+
+.materialGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+  margin-top: $spacing-sm;
+}
+
+.materialThumb {
+  position: relative;
+  width: 216rpx;
+  height: 216rpx;
+  border-radius: $radius-md;
+  overflow: hidden;
+  border: 2rpx solid $color-border;
+  box-sizing: border-box;
+
+  &:active {
+    opacity: 0.85;
+  }
+}
+
+.materialName {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 6rpx 12rpx;
+  background-color: rgba(47, 69, 56, 0.6);
+  color: #fff;
+  font-size: 20rpx;
+  z-index: 2;
+}
+
+.rejectReason {
+  margin-top: $spacing-xs;
+  color: $color-error;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.textMaterial {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  min-height: 56rpx;
+  padding: 0 16rpx;
+  border-radius: $radius-sm;
+  background-color: $color-bg-page;
+  color: $color-text-secondary;
+  font-size: 22rpx;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 6rpx;
+  margin-top: $spacing-sm;
+  margin-right: 16rpx;
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.hint {
+  display: block;
+  margin-top: 16rpx;
+  color: $color-text-tertiary;
+  font-size: 20rpx;
+  line-height: 1.6;
+}

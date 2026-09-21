@@ -1,0 +1,141 @@
+@use '@/styles/variables.scss' as *;
+
+// 列表视图：一行紧凑展示，整行可点按拨打
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+  margin-top: $spacing-xs;
+  padding: 14rpx 20rpx;
+  border-radius: $radius-md;
+  background-color: $color-mint;
+  border: 2rpx solid rgba(45, 122, 84, 0.22);
+  box-sizing: border-box;
+
+  &:active {
+    opacity: 0.85;
+  }
+}
+
+.barLeft {
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-xs;
+  min-width: 0;
+  flex: 1;
+}
+
+.barLabel {
+  flex-shrink: 0;
+  font-size: 24rpx;
+  font-weight: $font-weight-semibold;
+  color: $color-pine;
+}
+
+.barPhone {
+  font-size: 30rpx;
+  font-weight: $font-weight-bold;
+  color: $color-pine;
+  letter-spacing: 1rpx;
+}
+
+.barEmpty {
+  font-size: 24rpx;
+  color: $color-text-tertiary;
+}
+
+.barAction {
+  flex-shrink: 0;
+  font-size: 24rpx;
+  font-weight: $font-weight-semibold;
+  color: $color-primary-dark;
+}
+
+// 详情视图：完整区块
+.card {
+  padding: $spacing-md;
+  border-radius: $radius-lg;
+  background-color: $color-mint;
+  border: 2rpx solid rgba(45, 122, 84, 0.22);
+  box-sizing: border-box;
+  margin-bottom: $spacing-sm;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-xs;
+}
+
+.cardTitle {
+  font-size: 28rpx;
+  font-weight: $font-weight-bold;
+  color: $color-pine;
+}
+
+.cardTag {
+  padding: 2rpx 14rpx;
+  border-radius: $radius-round;
+  background-color: rgba(45, 122, 84, 0.12);
+  color: $color-primary-dark;
+  font-size: 20rpx;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-md;
+  padding: 12rpx 0;
+  border-bottom: 2rpx dashed rgba(45, 122, 84, 0.18);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.rowKey {
+  flex-shrink: 0;
+  font-size: 26rpx;
+  color: $color-text-secondary;
+  line-height: 1.5;
+}
+
+.rowVal {
+  flex: 1;
+  font-size: 26rpx;
+  color: $color-text-primary;
+  text-align: right;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+.rowPhone {
+  flex: 1;
+  font-size: 32rpx;
+  font-weight: $font-weight-bold;
+  color: $color-pine;
+  text-align: right;
+  letter-spacing: 1rpx;
+}
+
+.rowEmpty {
+  flex: 1;
+  font-size: 26rpx;
+  color: $color-text-tertiary;
+  text-align: right;
+}
+
+.actions {
+  display: flex;
+  gap: $spacing-xs;
+  margin-top: $spacing-md;
+}
+
+.actionBtn {
+  flex: 1;
+  height: 76rpx;
+}

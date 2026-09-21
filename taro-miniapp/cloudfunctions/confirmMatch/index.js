@@ -9,6 +9,34 @@ exports.main = async (event, context) => {
     const wxContext = cloud.getWXContext()
     const openid = wxContext.OPENID
 
+    // ===== 归属校验（数据隔离）=====
+    // 仅需求发布者本人可确认人选。否则任何人拿到 demandId 即可替别的家长确认老师，
+    // 且会把 matches.parentOpenid 写成调用者 openid，造成跨账号数据混淆。
+    if (!demandId || !teacherId) {
+      return { code: -1, message: '参数不完整', data: null }
+    }
+    const demandRes = await db.collection('demands').where({ id: demandId }).limit(1).get()
+    let demand = demandRes.data[0] || null
+    if (!demand) {
+      try {
+        const docRes = await db.collection('demands').doc(demandId).get()
+        demand = docRes.data || null
+      } catch (e) {
+        demand = null
+      }
+    }
+    if (!demand) return { code: -1, message: '需求不存在或已下架', data: null }
+    if (demand._openid !== openid) return { code: -1, message: '无权操作该需求', data: null }
+
+    // 只能确认「已报名 / 已推荐 / 已确认」的活跃报名老师，避免确认一个从未报名的老师
+    const appRes = await db.collection('applications')
+      .where({ demandId, teacherId, status: _.in(['已报名', '已推荐', '已确认']) })
+      .limit(1)
+      .get()
+    if (appRes.data.length === 0) {
+      return { code: -1, message: '该老师未报名此需求，无法确认', data: null }
+    }
+
     // ===== 幂等确认：同一需求只允许一条有效确认 =====
     // 1. 回退该需求下其它已确认老师的报名状态（A/B 同时确认的漏洞修复）
     await db.collection('applications').where({

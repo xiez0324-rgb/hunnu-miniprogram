@@ -12,7 +12,7 @@ export default function PublishSuccessPage() {
   const [subscribed, setSubscribed] = useState(false)
   const [busy, setBusy] = useState(false)
 
-  // 发布成功：向家长申请「有人报名」「已推荐人选」的订阅授权
+  // 提交成功：向家长申请「有人报名」「已推荐人选」的订阅授权
   const enableNotify = async () => {
     if (process.env.TARO_ENV !== 'weapp') {
       setSubscribed(true)
@@ -47,8 +47,8 @@ export default function PublishSuccessPage() {
   return (
     <View className={styles.page}>
       <Text className={styles.icon}>✅</Text>
-      <Text className={styles.title}>需求发布成功！</Text>
-      <Text className={styles.desc}>需求已上架，符合条件的老师会陆续报名</Text>
+      <Text className={styles.title}>信息已提交！</Text>
+      <Text className={styles.desc}>您填写的信息将由平台工作人员录入核验，核验通过后由平台统一发布，符合条件的老师可查看并等待平台推荐</Text>
 
       <View className={styles.card}>
         <PrimaryButton onClick={enableNotify} disabled={subscribed || busy}>
@@ -56,7 +56,7 @@ export default function PublishSuccessPage() {
         </PrimaryButton>
         <View className={styles.secondary}>
           <GhostButton onClick={() => Taro.switchTab({ url: '/pages/progress/index' })}>
-            查看我的需求
+            查看登记记录
           </GhostButton>
         </View>
       </View>

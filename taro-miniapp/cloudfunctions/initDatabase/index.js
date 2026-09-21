@@ -14,6 +14,8 @@ const COLLECTIONS = [
   'inquiries',
   'fee_records',
   'teachers',
+  'counters',
+  'notices',
 ]
 
 // ===== 种子数据（与 src/data/shared.ts 对齐，扁平字段）=====
@@ -32,21 +34,21 @@ const demands = [
 
 // 平台唯一合作院校：老师 school 固定湖南师范大学；家长可见身份统一展示 college/major（前端不展示学校名）
 const teachers = [
-  { id: 't1', name: '王晨', school: '湖南师范大学', college: '数学与统计学院', major: '数学与应用数学', subject: '数学', rate: '120 元/时', meta: '初三 · 一对一', quote: '讲解特别有耐心，孩子进步明显。', verified: true },
-  { id: 't2', name: '李思', school: '湖南师范大学', college: '外国语学院', major: '英语', subject: '英语', rate: '110 元/时', meta: '初三 · 小班', quote: '阅读方法讲得很系统。', verified: true },
-  { id: 't3', name: '刘洋', school: '湖南师范大学', college: '信息科学与工程学院', major: '计算机科学与技术', subject: '少儿编程', rate: '130 元/时', meta: '四年级 · 一对一', quote: '带孩子做项目很有方法。', verified: true },
-  { id: 't4', name: '赵敏', school: '湖南师范大学', college: '体育学院', major: '体育教育', subject: '羽毛球', rate: '100 元/时', meta: '六年级 · 一对二', quote: '羽毛球国家二级运动员。', verified: false },
-  { id: 't5', name: '陈晨', school: '湖南师范大学', college: '音乐学院', major: '音乐表演', subject: '钢琴', rate: '140 元/时', meta: '三年级 · 上门', quote: '钢琴十级，擅长陪练启蒙。', verified: true },
-  { id: 't6', name: '周杰', school: '湖南师范大学', college: '数学与统计学院', major: '数学与应用数学', subject: '数学', rate: '110 元/时', meta: '初三 · 一对一', quote: '带过两届中考冲刺。', verified: false },
+  { id: 't1', name: '王晨', gender: '男', teacherNo: '10001', school: '湖南师范大学', college: '数学与统计学院', major: '数学与应用数学', subject: '数学', rate: '120 元/时', meta: '初三 · 一对一', quote: '讲解特别有耐心，孩子进步明显。', verified: true },
+  { id: 't2', name: '李思', gender: '女', teacherNo: '10002', school: '湖南师范大学', college: '外国语学院', major: '英语', subject: '英语', rate: '110 元/时', meta: '初三 · 小班', quote: '阅读方法讲得很系统。', verified: true },
+  { id: 't3', name: '刘洋', gender: '男', teacherNo: '10003', school: '湖南师范大学', college: '信息科学与工程学院', major: '计算机科学与技术', subject: '少儿编程', rate: '130 元/时', meta: '四年级 · 一对一', quote: '带孩子做项目很有方法。', verified: true },
+  { id: 't4', name: '赵敏', gender: '女', teacherNo: '10004', school: '湖南师范大学', college: '体育学院', major: '体育教育', subject: '羽毛球', rate: '100 元/时', meta: '六年级 · 一对二', quote: '羽毛球国家二级运动员。', verified: false },
+  { id: 't5', name: '陈晨', gender: '女', teacherNo: '10005', school: '湖南师范大学', college: '音乐学院', major: '音乐表演', subject: '钢琴', rate: '140 元/时', meta: '三年级 · 上门', quote: '钢琴十级，擅长陪练启蒙。', verified: true },
+  { id: 't6', name: '周杰', gender: '男', teacherNo: '10006', school: '湖南师范大学', college: '数学与统计学院', major: '数学与应用数学', subject: '数学', rate: '110 元/时', meta: '初三 · 一对一', quote: '带过两届中考冲刺。', verified: false },
 ]
 
 const resumes = [
-  { teacherId: 't1', subjects: ['数学'], grades: ['初中', '高中'], timeSlots: ['周一至周五', '周六', '周末'], rate: '120 元/时', districts: ['岳麓区', '芙蓉区'], intro: '数学与应用数学专业大三，带过 3 届中考冲刺，学员平均提分 20+，擅长基础薄弱学生的查漏补缺，讲解耐心有方法。' },
-  { teacherId: 't2', subjects: ['英语'], grades: ['小学', '初中', '高中'], timeSlots: ['周六', '周末'], rate: '110 元/时', districts: ['岳麓区', '开福区'], intro: '英语专业大四，英语专八，辅导英语阅读与写作提分明显，曾带初三学生从 70 分提至 105 分。' },
-  { teacherId: 't3', subjects: ['少儿编程'], grades: ['小学', '初中'], timeSlots: ['周一至周五', '周六'], rate: '130 元/时', districts: ['岳麓区', '开福区', '芙蓉区'], intro: '计算机科学与技术专业，Scratch/Python 少儿编程教学 2 年，带孩子完成多个小项目，注重逻辑思维培养。' },
-  { teacherId: 't4', subjects: ['羽毛球'], grades: ['小学', '初中'], timeSlots: ['周六', '周末'], rate: '100 元/时', districts: ['岳麓区'], intro: '体育教育专业，国家二级运动员，擅长羽毛球零基础教学与步法训练，带过校队青少年队员。' },
-  { teacherId: 't5', subjects: ['钢琴'], grades: ['小学'], timeSlots: ['周六', '周末'], rate: '140 元/时', districts: ['芙蓉区', '岳麓区'], intro: '音乐表演专业（钢琴方向），钢琴十级，3 年陪练启蒙经验，擅长识谱与基础指法教学，孩子喜欢、家长放心。' },
-  { teacherId: 't6', subjects: ['数学'], grades: ['初中', '高中'], timeSlots: ['周一至周五', '周末'], rate: '110 元/时', districts: ['岳麓区', '天心区'], intro: '数学与应用数学专业研究生，带过两届中考冲刺与高一衔接，逻辑清晰，能帮助学生建立数学思维体系。' },
+  { teacherId: 't1', subjects: ['数学'], grades: ['初中', '高中'], timeSlots: ['周一至周五', '周六', '周末'], rate: '120 元/时', rateByStage: { 初中: '110-130', 高中: '130-150' }, districts: ['岳麓区', '芙蓉区'], teachingYears: '3-5 年', experience: '2023 年至今带初三中考冲刺班，累计辅导 12 名学生，平均提分 20+；2022 年带小学奥数培优。', certificates: ['教师资格证（中学数学）', '普通话二级甲等'], intro: '数学与应用数学专业大三，带过 3 届中考冲刺，学员平均提分 20+，擅长基础薄弱学生的查漏补缺，讲解耐心有方法。' },
+  { teacherId: 't2', subjects: ['英语'], grades: ['小学', '初中', '高中'], timeSlots: ['周六', '周末'], rate: '110 元/时', districts: ['岳麓区', '开福区'], teachingYears: '1-3 年', experience: '英语专业大四，带过初中英语阅读与写作专项辅导，曾带初三学生从 70 分提至 105 分。', certificates: ['英语专业八级', '英语专业四级'], intro: '英语专业大四，英语专八，辅导英语阅读与写作提分明显，曾带初三学生从 70 分提至 105 分。' },
+  { teacherId: 't3', subjects: ['少儿编程'], grades: ['小学', '初中'], timeSlots: ['周一至周五', '周六'], rate: '130 元/时', districts: ['岳麓区', '开福区', '芙蓉区'], teachingYears: '1-3 年', experience: 'Scratch/Python 少儿编程教学 2 年，带孩子完成多个小项目，注重逻辑思维培养。', certificates: ['计算机二级', '蓝桥杯省赛三等奖'], intro: '计算机科学与技术专业，Scratch/Python 少儿编程教学 2 年，带孩子完成多个小项目，注重逻辑思维培养。' },
+  { teacherId: 't4', subjects: ['羽毛球'], grades: ['小学', '初中'], timeSlots: ['周六', '周末'], rate: '100 元/时', districts: ['岳麓区'], teachingYears: '1-3 年', experience: '体育教育专业，带过校队青少年队员，擅长羽毛球零基础教学与步法训练。', certificates: ['羽毛球国家二级运动员'], intro: '体育教育专业，国家二级运动员，擅长羽毛球零基础教学与步法训练，带过校队青少年队员。' },
+  { teacherId: 't5', subjects: ['钢琴'], grades: ['小学'], timeSlots: ['周六', '周末'], rate: '140 元/时', districts: ['芙蓉区', '岳麓区'], teachingYears: '3-5 年', experience: '3 年钢琴陪练启蒙经验，擅长识谱与基础指法教学，孩子喜欢、家长放心。', certificates: ['钢琴十级'], intro: '音乐表演专业（钢琴方向），钢琴十级，3 年陪练启蒙经验，擅长识谱与基础指法教学，孩子喜欢、家长放心。' },
+  { teacherId: 't6', subjects: ['数学'], grades: ['初中', '高中'], timeSlots: ['周一至周五', '周末'], rate: '110 元/时', districts: ['岳麓区', '天心区'], teachingYears: '1-3 年', experience: '带过两届中考冲刺与高一衔接，擅长帮助学生建立数学思维体系。', certificates: ['教师资格证（中学数学）'], intro: '数学与应用数学专业研究生，带过两届中考冲刺与高一衔接，逻辑清晰，能帮助学生建立数学思维体系。' },
 ]
 
 const feeRecords = [

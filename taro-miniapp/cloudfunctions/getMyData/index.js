@@ -10,11 +10,63 @@ exports.main = async (event, context) => {
     const { role, status = '全部' } = event
 
     if (role === 'parent') {
-      // 家长：我的需求
-      const res = await db.collection('demands').where({ _openid: openid }).orderBy('createTime', 'desc').get()
+      // 家长：我的需求（仅本人 + 排除被管理员撤回下架的需求）
+      const res = await db.collection('demands')
+        .where({ _openid: openid, status: _.neq('已下架') })
+        .orderBy('createTime', 'desc')
+        .get()
       // 兼容无业务 id 字段的旧数据：回填 _id，保证列表点击跳详情可用
       const list = res.data.map((d) => (d.id ? d : { ...d, id: d._id }))
-      return { code: 0, message: 'success', data: { list } }
+
+      // 已确认人选（持久化状态）：applications 中状态为「已确认」的记录，按需求单聚合
+      const demandIds = [...new Set(list.map((d) => d.id).filter(Boolean))]
+      const confirmMap = {}
+      if (demandIds.length) {
+        const appRes = await db.collection('applications')
+          .where({ demandId: _.in(demandIds), status: '已确认' })
+          .limit(200)
+          .get()
+          .catch(() => ({ data: [] }))
+        appRes.data.forEach((a) => {
+          if (!confirmMap[a.demandId]) {
+            confirmMap[a.demandId] = {
+              teacherId: a.teacherId || '',
+              name: a.name || '',
+              openid: a._openid || '',
+              time: a.confirmTime || null,
+            }
+          }
+        })
+
+        // 已确认老师姓名实时化：报名记录里的 name 是快照，实名信息若被管理员合规修正，
+        // 家长端「我的需求」也必须同步展示最新实名，避免与老师端/简历页不一致
+        const confirmOpenids = [...new Set(Object.values(confirmMap).map((c) => c.openid).filter(Boolean))]
+        if (confirmOpenids.length) {
+          const vRes = await db.collection('verifications')
+            .where({ _openid: _.in(confirmOpenids), status: '已通过' })
+            .limit(200)
+            .get()
+            .catch(() => ({ data: [] }))
+          // 每个账号取「已颁发编号的正式档案」
+          const verifyByOpenid = {}
+          ;(vRes.data || []).forEach((v) => {
+            const cur = verifyByOpenid[v._openid]
+            if (!cur || (!cur.teacherNo && v.teacherNo)) verifyByOpenid[v._openid] = v
+          })
+          Object.keys(confirmMap).forEach((k) => {
+            const c = confirmMap[k]
+            const v = verifyByOpenid[c.openid]
+            if (v && v.name && v.name !== '同学') c.name = v.name
+          })
+        }
+      }
+      const withConfirm = list.map((d) => {
+        const c = confirmMap[d.id]
+        return c
+          ? { ...d, confirmedTeacherId: c.teacherId, confirmedTeacherName: c.name, confirmedTime: c.time }
+          : d
+      })
+      return { code: 0, message: 'success', data: { list: withConfirm } }
     }
 
     // 老师：我的报名。status 过滤由前端传参决定（'全部' 表示不筛）

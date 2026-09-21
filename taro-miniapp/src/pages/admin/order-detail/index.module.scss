@@ -1,0 +1,15 @@
+@use '@/styles/variables.scss' as *;
+
+.headRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.orderId {
+  font-size: 26rpx;
+  color: $color-text-tertiary;
+  word-break: break-all;
+}

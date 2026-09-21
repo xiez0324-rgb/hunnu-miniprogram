@@ -85,33 +85,67 @@ exports.main = async (event, context) => {
     const status = body.status || '待审核'
     const cond = status && status !== '全部' ? { status } : {}
 
-    const res = await db.collection('verifications').where(cond).orderBy('createTime', 'desc').limit(100).get()
+    // 服务端分页：审核记录会随规模持续增长，采用 skip/limit 分页避免一次拉全量，
+    // 同时返回 total / hasMore 供管理端上拉加载，保证大量数据下审核队列不丢失记录
+    const skip = Math.max(0, Number(body.skip) || 0)
+    const limit = Math.min(200, Math.max(1, Number(body.limit) || 100))
+
+    const [res, countRes] = await Promise.all([
+      db.collection('verifications').where(cond).orderBy('createTime', 'desc').skip(skip).limit(limit).get(),
+      db.collection('verifications').where(cond).count().catch(() => ({ total: 0 })),
+    ])
+    const total = countRes.total || 0
+
+    // 关联老师账号联系方式：审核时若材料存疑，管理员需能直接联系申请人核实
+    const openids = [...new Set(res.data.map((v) => v._openid).filter(Boolean))]
+    const userMap = {}
+    if (openids.length) {
+      const uRes = await db
+        .collection('teacher_users')
+        .where({ _openid: db.command.in(openids) })
+        .limit(200)
+        .get()
+        .catch(() => ({ data: [] }))
+      uRes.data.forEach((u) => { userMap[u._openid] = u })
+    }
 
     // 收集全部 fileID，统一换取临时可预览 URL（管理端 web 无法直读 cloud:// 路径）
     const all = res.data.map((v) => normalizeMaterials(v))
     const fileIDs = [...new Set(all.flat().map((m) => m.fileID).filter(Boolean))]
     const urlMap = await batchGetTempFileURL(fileIDs)
 
-    const list = res.data.map((v, i) => ({
-      id: v._id,
-      openid: v._openid || '',
-      name: v.name || '',
-      school: v.school || '',
-      college: v.college || '',
-      major: v.major || '',
-      authorized: !!v.authorized,
-      materials: all[i].map((m) => ({
-        name: m.name || '材料图片',
-        fileID: m.fileID || '',
-        url: m.fileID ? urlMap[m.fileID] || '' : '',
-        text: m.raw || '',
-      })),
-      status: v.status,
-      rejectReason: v.rejectReason || '',
-      createTime: v.createTime || null,
-    }))
+    const list = res.data.map((v, i) => {
+      const u = userMap[v._openid] || {}
+      return {
+        id: v._id,
+        openid: v._openid || '',
+        name: v.name || '',
+        school: v.school || '',
+        college: v.college || '',
+        major: v.major || '',
+        authorized: !!v.authorized,
+        // 申请人联系方式（仅管理员可见）：便于审核存疑时核实材料
+        phone: u.phone || '',
+        // 专属编号：通过后固化的正式档案编号
+        teacherNo: v.teacherNo || u.teacherNo || '',
+        archived: !!v.archived,
+        materials: all[i].map((m) => ({
+          name: m.name || '材料图片',
+          fileID: m.fileID || '',
+          url: m.fileID ? urlMap[m.fileID] || '' : '',
+          text: m.raw || '',
+        })),
+        status: v.status,
+        rejectReason: v.rejectReason || '',
+        createTime: v.createTime || null,
+      }
+    })
 
-    return { code: 0, message: 'success', data: { list } }
+    return {
+      code: 0,
+      message: 'success',
+      data: { list, total, skip, limit, hasMore: skip + list.length < total },
+    }
   } catch (err) {
     console.error('[adminListVerifications] error:', err)
     if (err.code === 'FORBIDDEN') return { code: -1, message: '无管理员权限', data: null }

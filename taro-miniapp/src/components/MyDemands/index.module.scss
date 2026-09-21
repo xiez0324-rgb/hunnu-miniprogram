@@ -45,3 +45,29 @@
 .cardFoot {
   margin-top: $spacing-md;
 }
+
+// 审核状态标签（先审后发）
+.auditTag,
+.auditTagReject,
+.confirmTag {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  padding: 4rpx $spacing-xs;
+  border-radius: $radius-xs;
+}
+
+.auditTag {
+  color: $color-amber;
+  background-color: $color-amber-bg;
+}
+
+.auditTagReject {
+  color: #c0392b;
+  background-color: #fdecea;
+}
+
+// 已确认老师状态标识
+.confirmTag {
+  color: $color-pine;
+  background-color: $color-mint;
+}

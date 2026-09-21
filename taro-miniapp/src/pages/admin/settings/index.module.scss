@@ -1,0 +1,29 @@
+@use '@/styles/variables.scss' as *;
+
+.formGroup {
+  margin-bottom: $spacing-md;
+}
+
+.label {
+  display: block;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+  margin-bottom: 12rpx;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 88rpx;
+  padding: 0 24rpx;
+  border-radius: $radius-md;
+  background-color: $color-bg-page;
+  border: 2rpx solid $color-border;
+  font-size: 28rpx;
+  color: $color-text-primary;
+}
+
+.logoutRow {
+  margin-top: $spacing-lg;
+}

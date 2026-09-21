@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react'
 import { callFunction } from '@/services/cloud'
 import { useUser } from '@/store/user'
 import { onlyDigits, parentGenderLabel } from '@/utils'
+import { isPlaceholderNickname } from '@/utils/nickname'
 import type { Profile, UserGender } from '@/types'
 import NavBar from '@/components/NavBar'
 import FieldLabel from '@/components/FieldLabel'
 import PrimaryButton from '@/components/PrimaryButton'
 import RiskNote from '@/components/RiskNote'
+import PlatformRecordNotice from '@/components/PlatformRecordNotice'
 import styles from './index.module.scss'
 
 const GENDERS: Array<{ value: UserGender; label: string }> = [
@@ -20,7 +22,8 @@ export default function ProfilePage() {
   const { role, refreshProfile } = useUser()
   const isTeacher = role === 'teacher'
 
-  const [nickname, setNickname] = useState(isTeacher ? '张同学' : '')
+  // 未命名时不预填占位名（老师需填写真实姓名），统一由 placeholder 提示
+  const [nickname, setNickname] = useState('')
   const [gender, setGender] = useState<UserGender | ''>('')
   const [phone, setPhone] = useState('')
   const [wechat, setWechat] = useState('')
@@ -33,7 +36,7 @@ export default function ProfilePage() {
       .then((res) => {
         const p = res.profile
         if (p) {
-          setNickname(p.nickname || (isTeacher ? '张同学' : ''))
+          setNickname(isPlaceholderNickname(p.nickname) ? '' : p.nickname || '')
           setGender((p.gender as UserGender) || '')
           setPhone(p.phone || '')
           setWechat(p.wechat || '')
@@ -49,17 +52,17 @@ export default function ProfilePage() {
   const validate = (): string | null => {
     if (isTeacher && !nickname.trim()) return '作为老师，请填写真实姓名'
     if (nickname.trim().length > 20) return '姓名不能超过 20 个字符'
+    // 老师：性别会展示在简历「基础信息」中，与家长端展示对齐，必须填写
+    if (isTeacher && !gender) return '请选择性别（将展示在您的简历中，供家长参考）'
     // 家长不填姓名时，必须选择性别，页面会用「女士/男士」前缀作为默认称呼
     if (!isTeacher && !nickname.trim() && !gender) return '请填写称呼，或选择性别（默认展示为「女士/男士」）'
 
-    if (phone) {
-      if (!/^1\d{10}$/.test(phone)) return '手机号需为 11 位数字且以 1 开头'
-    }
-    // 联系电话为选填：微信审核要求不得强制索取手机号；未填时代理人将通过微信与用户确认联系方式
+    if (!phone) return '请填写联系电话，便于平台工作人员与您对接'
+    if (!/^1\d{10}$/.test(phone)) return '手机号需为 11 位数字且以 1 开头'
 
     if (wechat.trim().length > 50) return '微信号过长（不超过 50 个字符）'
 
-    if (isTeacher && !area.trim()) return '作为老师，所在区域为必填项'
+    if (isTeacher && !area.trim()) return '请填写所在区域'
     if (area.trim().length > 50) return '所在区域过长（不超过 50 个字符）'
     return null
   }
@@ -95,8 +98,8 @@ export default function ProfilePage() {
 
   const pickGender = (g: UserGender) => {
     setGender(g)
-    // 昵称为空或仍为「女士/男士」这类性别前缀（非用户自定义姓名）时，
-    // 切换性别后默认称呼随之更新，保证「我的」页两处展示一致
+    // 老师填的是真实姓名，不随性别改写；家长未自定义称呼时才用性别前缀兜底
+    if (isTeacher) return
     const cur = nickname.trim()
     if (!cur || cur === '女士' || cur === '男士') {
       setNickname(g === '男' ? '男士' : '女士')
@@ -109,12 +112,15 @@ export default function ProfilePage() {
 
       <View className={styles.card}>
         <Text className={styles.note}>
-          平台代理人会通过以下信息与您对接，请确保真实有效；除平台代理人外不会向任何人展示。
+          平台工作人员会通过以下信息与您对接，请确保真实有效；除平台工作人员外不会向任何人展示。
         </Text>
+
+        {/* 合规提示：平台为信息的唯一收集者与发布者 */}
+        <PlatformRecordNotice desc="您填写的信息由平台统一录入、核验后用于为您对接服务；您不会直接对外发布任何内容，联系方式也不会公开展示。" />
 
         <FieldLabel label="身份标识">
           <View className={styles.identityRow}>
-            <Text className={styles.identityValue}>{isTeacher ? '老师（我来接单）' : '家长（我找家教）'}</Text>
+            <Text className={styles.identityValue}>{isTeacher ? '老师（我来接单）' : '家长（我有需求）'}</Text>
             <Text className={styles.identityHint}>身份在登录时选择，可在「我的」页切换</Text>
           </View>
         </FieldLabel>
@@ -129,34 +135,41 @@ export default function ProfilePage() {
           />
         </FieldLabel>
 
-        {!isTeacher ? (
-          <FieldLabel label="性别" hint="用于匹配默认称呼「女士 / 男士」，不会对外展示">
-            <View className={styles.genderRow}>
-              {GENDERS.map((g) => (
-                <View
-                  key={g.value}
-                  className={`${styles.genderChip} ${gender === g.value ? styles.genderActive : ''}`}
-                  onClick={() => pickGender(g.value)}
-                >
-                  {g.label}
-                </View>
-              ))}
-            </View>
-          </FieldLabel>
-        ) : null}
+        <FieldLabel
+          label="性别"
+          required={isTeacher}
+          hint={
+            isTeacher
+              ? '会展示在您的简历「基础信息」中，供家长参考'
+              : '用于匹配默认称呼「女士 / 男士」，不会对外展示'
+          }
+        >
+          <View className={styles.genderRow}>
+            {GENDERS.map((g) => (
+              <View
+                key={g.value}
+                className={`${styles.genderChip} ${gender === g.value ? styles.genderActive : ''}`}
+                onClick={() => pickGender(g.value)}
+              >
+                {g.label}
+              </View>
+            ))}
+          </View>
+        </FieldLabel>
 
-        <FieldLabel label="联系电话（选填）" hint="建议填写常用手机号，便于代理人快速与您对接；未填写也可保存，代理人与您联系时会通过微信确认">
+        <FieldLabel label="联系电话" hint="便于平台工作人员与您电话对接；由平台录入保管，不会公开展示">
           <Input
             className={styles.input}
             value={phone}
             type="number"
-            placeholder="选填：请输入 11 位手机号"
+            maxlength={11}
+            placeholder="请输入 11 位手机号"
             placeholderClass={styles.placeholder}
             onInput={(e) => setPhone(onlyDigits(e.detail.value))}
           />
         </FieldLabel>
 
-        <FieldLabel label="微信号（选填）" hint="便于代理人添加您，不会公开展示">
+        <FieldLabel label="微信号（选填）" hint="便于平台工作人员添加您，不会公开展示">
           <Input
             className={styles.input}
             value={wechat}
@@ -166,7 +179,7 @@ export default function ProfilePage() {
           />
         </FieldLabel>
 
-        <FieldLabel label={isTeacher ? '所在区域（必填）' : '所在区域'} required={isTeacher}>
+        <FieldLabel label="所在区域" required={isTeacher}>
           <Input
             className={styles.input}
             value={area}
@@ -177,7 +190,7 @@ export default function ProfilePage() {
         </FieldLabel>
 
         <RiskNote>
-          姓名与联系方式仅用于平台代理人对接、核验与通知，不会在广场公开展示。如填写虚假信息导致无法对接，平台不承担由此产生的损失。
+          姓名与联系方式仅用于平台工作人员对接、核验与通知，不会在广场公开展示。如填写虚假信息导致无法对接，平台不承担由此产生的损失。
         </RiskNote>
 
         <View className={styles.footer}>
@@ -189,7 +202,7 @@ export default function ProfilePage() {
 
       <View className={styles.tipCard}>
         <Text className={styles.tipText}>
-          修改个人信息后，平台将使用最新信息与您对接。若长时间未接到代理人电话，请检查联系电话是否填写正确。
+          修改个人信息后，平台将使用最新信息与您对接。若长时间未接到平台工作人员电话，请检查联系电话是否填写正确。
         </Text>
       </View>
     </View>

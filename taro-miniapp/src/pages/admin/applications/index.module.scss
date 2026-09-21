@@ -1,0 +1,8 @@
+@use '@/styles/variables.scss' as *;
+
+.meta {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: $color-text-tertiary;
+  line-height: 1.6;
+}

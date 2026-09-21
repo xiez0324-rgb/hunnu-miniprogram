@@ -1,3 +1,5 @@
 export default definePageConfig({
-  navigationBarTitleText: '发布成功',
+  enableShareAppMessage: false,
+  enableShareTimeline: false,
+  navigationBarTitleText: '提交成功',
 })

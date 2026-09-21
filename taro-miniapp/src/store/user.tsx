@@ -8,7 +8,7 @@ interface UserContextValue {
   role: Role | null
   unread: number
   setUnread: (n: number) => void
-  login: (role: Role, nickname?: string) => Promise<void>
+  login: (role: Role, nickname?: string, code?: string) => Promise<void>
   logout: () => void
   switchRole: (role: Role) => void
   refreshProfile: (role?: Role) => Promise<void>
@@ -44,9 +44,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [unread, setUnreadState] = useState<number>(() => {
     try {
       const n = Taro.getStorageSync('unread')
-      return typeof n === 'number' ? n : 3
+      return typeof n === 'number' ? n : 0
     } catch (err) {
-      return 3
+      return 0
     }
   })
 
@@ -88,6 +88,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           gender: (p.gender as UserGender) || undefined,
           phone: p.phone || '',
           area: p.area || '',
+          teacherNo: p.teacherNo || '',
         })
       )
     } catch (err) {
@@ -107,7 +108,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       // 降级：本地登录
       const fallback: UserInfo = {
         openid: `openid_${Date.now()}`,
-        nickname: nickname || (role === 'parent' ? '家长用户' : '老师用户'),
+        nickname: nickname || (role === 'parent' ? '家长用户' : '同学'),
         avatar: '',
         role,
         phone: '',

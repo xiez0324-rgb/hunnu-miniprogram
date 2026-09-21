@@ -1,0 +1,392 @@
+// 管理后台全局样式（在 app.tsx 中全局引入）
+// 命名统一前缀 adm + 驼峰，避免与业务页面 CSS Modules 冲突
+@use '@/styles/variables.scss' as *;
+
+.admPage {
+  min-height: 100vh;
+  padding: 24rpx $page-padding 96rpx;
+  box-sizing: border-box;
+}
+
+// 顶部行：说明 / 刷新 / 计数
+.admHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-sm;
+}
+
+.admHint {
+  display: block;
+  color: $color-text-tertiary;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+// 卡片（撕纸风：暖白底 + 虚线边框 + 错位厚阴影）
+.admCard {
+  position: relative;
+  background-color: $color-bg-card;
+  border: 2rpx dashed rgba(47, 69, 56, 0.22);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-paper-sm;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+  box-sizing: border-box;
+}
+
+.admCardLink {
+  &:active {
+    transform: scale(0.985);
+  }
+}
+
+.admCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-xs;
+}
+
+.admCardTitle {
+  font-size: 30rpx;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.admCardSub {
+  display: block;
+  font-size: 24rpx;
+  color: $color-text-tertiary;
+  line-height: 1.5;
+  margin-top: 4rpx;
+}
+
+// 区块小标题（贴纸横条）
+.admSectionTitle {
+  display: inline-block;
+  padding: 6rpx 20rpx;
+  background-color: $color-mint;
+  color: $color-pine;
+  font-size: 24rpx;
+  font-weight: $font-weight-semibold;
+  border-radius: $radius-sm;
+  margin-bottom: $spacing-sm;
+}
+
+// 字段行（详情 / 明细用）
+.admField {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-md;
+  padding: 14rpx 0;
+  border-bottom: 2rpx dashed $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.admFieldKey {
+  flex-shrink: 0;
+  max-width: 240rpx;
+  font-size: 26rpx;
+  color: $color-text-tertiary;
+  line-height: 1.5;
+}
+
+.admFieldVal {
+  flex: 1;
+  font-size: 26rpx;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  text-align: right;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+// 状态/标签胶囊
+.admTag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  padding: 4rpx 16rpx;
+  border-radius: $radius-round;
+  font-size: 22rpx;
+  font-weight: $font-weight-semibold;
+  box-sizing: border-box;
+}
+
+.admTagAmber {
+  background-color: #fdeccd;
+  color: #b97a12;
+}
+
+.admTagGreen {
+  background-color: $color-mint;
+  color: $color-primary-dark;
+}
+
+.admTagBlue {
+  background-color: $color-sky;
+  color: $color-skydeep;
+}
+
+.admTagRed {
+  background-color: #fde0de;
+  color: #c93a33;
+}
+
+.admTagGray {
+  background-color: #e9e7df;
+  color: $color-text-tertiary;
+}
+
+// 筛选胶囊条（粘性，便于长列表切换）
+.admFilterBar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  gap: $spacing-xs;
+  padding: 16rpx 0;
+  background-color: $color-bg-page;
+}
+
+.admChip {
+  @include button-reset;
+  flex-shrink: 0;
+  height: 64rpx;
+  padding: 0 28rpx;
+  border-radius: $radius-round;
+  font-size: 26rpx;
+  color: $color-text-secondary;
+  background-color: $color-bg-card;
+  border: 2rpx solid $color-border;
+
+  &:active {
+    opacity: 0.85;
+  }
+}
+
+.admChipOn {
+  background-color: $color-pine;
+  border-color: $color-pine;
+  color: $color-text-white;
+}
+
+// 小型操作按钮
+.admBtn {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  min-width: 128rpx;
+  height: 60rpx;
+  padding: 0 24rpx;
+  border-radius: $radius-button;
+  font-size: 24rpx;
+  font-weight: $font-weight-semibold;
+  box-sizing: border-box;
+
+  &:active {
+    opacity: 0.85;
+    transform: scale(0.98);
+  }
+
+  &[disabled] {
+    opacity: 0.45;
+  }
+}
+
+.admBtnPrimary {
+  background-color: $color-pine;
+  color: $color-text-white;
+  border: none;
+}
+
+.admBtnGhost {
+  background-color: $color-bg-card;
+  color: $color-text-secondary;
+  border: 2rpx solid $color-border;
+}
+
+.admBtnGreen {
+  background-color: $color-primary;
+  color: $color-text-white;
+  border: none;
+}
+
+.admBtnAmber {
+  background-color: #fdeccd;
+  color: #b97a12;
+  border: 2rpx solid rgba(185, 122, 18, 0.35);
+}
+
+.admBtnRed {
+  background-color: $color-bg-card;
+  color: $color-error;
+  border: 2rpx solid rgba(245, 82, 74, 0.5);
+}
+
+.admBtnDanger {
+  background-color: $color-error;
+  color: $color-text-white;
+  border: none;
+}
+
+// 输入框 / 文本域（表单弹层内）
+.admInput {
+  width: 100%;
+  box-sizing: border-box;
+  height: 80rpx;
+  padding: 0 24rpx;
+  border-radius: $radius-md;
+  background-color: $color-bg-page;
+  border: 2rpx solid $color-border;
+  font-size: 28rpx;
+  color: $color-text-primary;
+}
+
+.admTextarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 160rpx;
+  padding: 16rpx 24rpx;
+  border-radius: $radius-md;
+  background-color: $color-bg-page;
+  border: 2rpx solid $color-border;
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: $color-text-primary;
+}
+
+.admLabel {
+  display: block;
+  font-size: 24rpx;
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+  margin-bottom: 12rpx;
+}
+
+.admFormGroup {
+  margin-bottom: $spacing-md;
+}
+
+// 弹层（底部表单 / 详情浮层通用）
+.admModalMask {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background-color: rgba(20, 30, 24, 0.55);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.admModalCenter {
+  align-items: center;
+}
+
+.admModal {
+  width: 100%;
+  max-height: 82vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  background-color: $color-bg-card;
+  border-radius: $radius-xl $radius-xl 0 0;
+  padding: $spacing-md $spacing-lg calc(#{$spacing-md} + env(safe-area-inset-bottom));
+}
+
+.admModalRound {
+  border-radius: $radius-xl;
+  margin: 0 $spacing-md;
+  padding: $spacing-md $spacing-lg;
+}
+
+.admModalTitle {
+  display: block;
+  font-size: 34rpx;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-sm;
+}
+
+.admModalActions {
+  display: flex;
+  gap: $spacing-xs;
+  margin-top: $spacing-lg;
+
+  .admActionBtn {
+    flex: 1;
+  }
+}
+
+.admLoadingBlock,
+.admEmptyBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 80rpx 0;
+  color: $color-text-tertiary;
+  font-size: 26rpx;
+}
+
+.admErrorText {
+  display: block;
+  color: $color-error;
+  font-size: 26rpx;
+  margin-bottom: $spacing-xs;
+}
+
+// 页面主操作按钮（底部通栏）
+.admFooter {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  padding: 16rpx $page-padding calc(16rpx + env(safe-area-inset-bottom));
+  background-color: rgba(244, 236, 217, 0.96);
+}
+
+.admPrimaryBtn {
+  @include button-reset;
+  width: 100%;
+  height: $button-height-md;
+  border-radius: $radius-button;
+  background-color: $color-pine;
+  color: $color-text-white;
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.99);
+  }
+
+  &[disabled] {
+    opacity: 0.5;
+  }
+}
+
+.admTextBtn {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  min-height: 60rpx;
+  padding: 0 12rpx;
+  font-size: 24rpx;
+  color: $color-text-tertiary;
+
+  &:active {
+    color: $color-primary;
+  }
+}

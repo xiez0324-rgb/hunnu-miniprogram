@@ -29,6 +29,36 @@ exports.main = async (event, context) => {
       }).update({ data: { recommended: flag } })
     }
 
+    // 标记为平台推荐时，向该老师推送站内信（消息通知）
+    if (flag) {
+      try {
+        const [appRes, dRes] = await Promise.all([
+          db.collection('applications').where({ demandId, teacherId }).orderBy('createTime', 'desc').limit(1).get(),
+          db.collection('demands').where({ id: demandId }).limit(1).get(),
+        ])
+        const app = appRes.data[0] || null
+        const d = dRes.data[0] || null
+        if (app && app._openid) {
+          const label = [d && d.grade, d && d.subject].filter(Boolean).join(' · ')
+          await db.collection('notices').add({
+            data: {
+              _openid: app._openid,
+              role: 'teacher',
+              type: 'recommend',
+              title: '已被平台推荐',
+              content: `您报名的「${label || '家教需求'}」已被平台推荐给家长，请留意后续确认通知。`,
+              demandId,
+              teacherId,
+              read: false,
+              createTime: db.serverDate(),
+            },
+          })
+        }
+      } catch (e) {
+        console.warn('[adminRecommend] 写入站内信失败', e)
+      }
+    }
+
     await db.collection('audit_logs').add({
       data: {
         operator: admin.username,

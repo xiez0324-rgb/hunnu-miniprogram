@@ -64,3 +64,26 @@
   margin-top: $spacing-xs;
   font-family: $font-hand;
 }
+
+// 管理后台隐藏入口：低调置于底部，避免干扰家长/老师主流程
+.adminEntry {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: $spacing-xl;
+  padding: 12rpx 0;
+  border-top: 2rpx dashed $color-divider;
+  opacity: 0.8;
+
+  &:active {
+    opacity: 1;
+  }
+}
+
+.adminEntryText {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  text-decoration: underline;
+  text-underline-offset: 6rpx;
+  text-decoration-color: rgba(138, 149, 136, 0.5);
+}

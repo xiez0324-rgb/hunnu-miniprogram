@@ -3,6 +3,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
 const _ = db.command
 const { requireAdmin } = require('./requireAdmin')
+const { safeGet } = require('./safeQuery')
 
 exports.main = async (event, context) => {
   try {
@@ -35,7 +36,12 @@ exports.main = async (event, context) => {
         ? db.collection('demands').where({ id: _.in(demandIds) }).limit(100).get()
         : Promise.resolve({ data: [] }),
       parentOpenids.length
-        ? db.collection('parent_users').where({ _openid: _.in(parentOpenids) }).limit(100).get()
+        ? safeGet(
+            db,
+            'parent_users',
+            () => db.collection('parent_users').where({ _openid: _.in(parentOpenids) }).limit(100).get(),
+            'adminListOrders',
+          )
         : Promise.resolve({ data: [] }),
       teacherIds.length
         ? db.collection('applications').where({ teacherId: _.in(teacherIds) }).limit(500).get()
@@ -57,16 +63,63 @@ exports.main = async (event, context) => {
     const userMap = {}
     uRes.data.forEach((u) => { userMap[u._openid] = u })
 
+    // 兼容历史数据：早期 matches 未写 parentOpenid，用需求单发布者 _openid 兜底补查家长档案，
+    // 保证订单列表 / 订单详情始终能展示家长联系电话
+    const extraParentOpenids = [...new Set(
+      matches
+        .filter((m) => !m.parentOpenid)
+        .map((m) => (demandMap[m.demandId] || {})._openid)
+        .filter(Boolean),
+    )].filter((oid) => !userMap[oid])
+    if (extraParentOpenids.length) {
+      const extra = await safeGet(
+        db,
+        'parent_users',
+        () => db.collection('parent_users').where({ _openid: _.in(extraParentOpenids) }).limit(100).get(),
+        'adminListOrders',
+      )
+      extra.data.forEach((u) => { userMap[u._openid] = u })
+    }
+
     const appMap = {}
     aRes.data.forEach((a) => {
       const key = `${a.demandId}::${a.teacherId}`
       if (!appMap[key]) appMap[key] = a
     })
 
+    // 老师完整联系方式（仅管理员可见）：applications 的 _openid → teacher_users / verifications
+    const teacherOpenids = [...new Set(aRes.data.map((a) => a.openid || a._openid).filter(Boolean))]
+    const contactMap = {}
+    if (teacherOpenids.length) {
+      const [tuRes, tvRes] = await Promise.all([
+        safeGet(
+          db,
+          'teacher_users',
+          () => db.collection('teacher_users').where({ _openid: _.in(teacherOpenids) }).limit(200).get(),
+          'adminListOrders',
+        ),
+        db.collection('verifications')
+          .where({ _openid: _.in(teacherOpenids) })
+          .limit(200)
+          .get()
+          .catch(() => ({ data: [] })),
+      ])
+      tuRes.data.forEach((u) => {
+        contactMap[u._openid] = { phone: u.phone || '', teacherNo: u.teacherNo || '' }
+      })
+      // 认证通过记录兜底补编号（teacher_users 尚未回写时也能展示）
+      tvRes.data.forEach((v) => {
+        if (v.status !== '已通过' || !v.teacherNo) return
+        const cur = contactMap[v._openid] || {}
+        contactMap[v._openid] = { phone: cur.phone || '', teacherNo: cur.teacherNo || v.teacherNo }
+      })
+    }
+
     const list = matches.map((m) => {
       const d = demandMap[m.demandId] || {}
-      const u = userMap[m.parentOpenid] || {}
+      const u = userMap[m.parentOpenid || d._openid] || {}
       const app = appMap[`${m.demandId}::${m.teacherId}`] || {}
+      const contact = contactMap[app.openid || app._openid] || {}
       return {
         id: m._id,
         demandId: m.demandId,
@@ -93,11 +146,15 @@ exports.main = async (event, context) => {
           subject: app.subject || '',
           rate: app.rate || '',
           verified: !!app.verified,
+          phone: contact.phone || '',
+          teacherNo: contact.teacherNo || '',
         },
         parent: {
           nickname: u.nickname || '',
-          phone: u.phone || '',
+          // 家长档案手机号优先，缺失时用需求单发布时填写的联系电话兜底
+          phone: u.phone || d.phone || '',
           area: u.area || '',
+          wechat: u.wechat || '',
         },
       }
     })

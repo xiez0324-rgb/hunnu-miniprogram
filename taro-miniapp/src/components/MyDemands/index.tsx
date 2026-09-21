@@ -41,11 +41,11 @@ export default function MyDemands() {
   return (
     <View className={styles.page}>
       <View className={styles.header}>
-        <Text className={styles.title}>我的需求</Text>
+        <Text className={styles.title}>我的需求登记</Text>
       </View>
 
       {list.length === 0 ? (
-        <EmptyState icon="📌" title="还没有发布需求" />
+        <EmptyState icon="📌" title="还没有登记需求" />
       ) : (
         list.map((d) => (
           <View key={d.id} className={styles.card}>
@@ -53,13 +53,24 @@ export default function MyDemands() {
               <Text className={styles.cardTitle}>
                 {d.grade} · {d.subject} {d.title}
               </Text>
+              {d.auditStatus === '待审核' ? <Text className={styles.auditTag}>平台审核中</Text> : null}
+              {d.auditStatus === '已驳回' ? <Text className={styles.auditTagReject}>审核未通过</Text> : null}
+              {d.confirmedTeacherName ? <Text className={styles.confirmTag}>已确认老师</Text> : null}
               <StatusTag status={d.status} />
             </View>
             <Text className={styles.cardMeta}>
-              {d.applicants} 位老师报名 · {d.recommended} 位已推荐
+              {d.auditStatus === '待审核'
+                ? '平台工作人员正在录入核验，核验通过后由平台统一发布'
+                : d.auditStatus === '已驳回'
+                  ? d.rejectReason || '内容不符合平台录入规范，请修改后重新提交'
+                  : d.confirmedTeacherName
+                    ? `已确认老师：${d.confirmedTeacherName} · 共 ${d.applicants} 位老师报名`
+                    : `${d.applicants} 位老师报名 · ${d.recommended} 位已推荐`}
             </Text>
             <View className={styles.cardFoot}>
-              {d.recommended > 0 ? (
+              {d.confirmedTeacherName ? (
+                <GhostButton onClick={() => openDetail(d.id)}>查看报名进度</GhostButton>
+              ) : d.recommended > 0 ? (
                 <PrimaryButton onClick={() => openDetail(d.id)}>去确认人选</PrimaryButton>
               ) : (
                 <GhostButton onClick={() => openDetail(d.id)}>查看报名进度</GhostButton>

@@ -1,0 +1,9 @@
+{
+  "name": "adminQueryOrder",
+  "version": "1.0.0",
+  "description": "管理员订单全局检索（需求单号 / 老师编号）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

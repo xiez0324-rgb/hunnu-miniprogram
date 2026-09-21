@@ -19,13 +19,13 @@ export default function PrivacyPage() {
           <View className={styles.section}>
             <Text className={styles.sectionTitle}>一、信息收集范围</Text>
             <Text className={styles.paragraph}>
-              1.1 老师端：为完成身份核验与信息展示，我们会收集您的姓名、学院、专业、可授课科目与时段、期望时薪、可服务区域、自我介绍，以及用于学籍/学历证明的学生证、学信网截图等证明材料。
+              1.1 老师端：为完成身份核验与信息展示，我们会收集您的姓名、学院、专业、可服务科目与时段、期望时薪、可服务区域、自我介绍，以及用于学籍/学历证明的学生证、学信网截图等证明材料。
             </Text>
             <Text className={styles.paragraph}>
-              1.2 家长端：为完成需求发布与对接，我们会收集您的称呼、联系电话、上课地址（可能精确至小区及楼栋）及需求描述等信息。
+              1.2 家长端：为完成需求信息登记与对接，我们会收集您的称呼、联系电话、服务地址（可能精确至小区及楼栋）及需求描述等信息。
             </Text>
             <Text className={styles.paragraph}>
-              1.3 我们仅收集您主动填写或上传、且与提供服务相关的必要信息，不超出上述范围收集与服务无关的信息。其中「联系电话」为选填项：您可以先浏览或发布需求而不填写，平台仅会在需要与您对接时通过微信征询；我们不会在您首次使用时强制索取手机号等个人信息。
+              1.3 我们仅收集您主动填写或上传、且与提供服务直接相关的必要信息，不超出上述范围收集与服务无关的信息。您首次进入小程序及浏览广场时，我们不会收集任何个人信息；「联系电话」属于平台与您对接所必需的信息，仅在您主动执行需要对接的功能（如登记需求信息、完善个人资料）时请您填写，不会在登录、浏览等环节索取或强制弹出。
             </Text>
           </View>
 
@@ -35,10 +35,10 @@ export default function PrivacyPage() {
               2.1 学籍/学历证明材料仅用于对老师身份与资质的核验，并在获得您明确授权后，以「已认证」标签等形式在平台范围内展示。
             </Text>
             <Text className={styles.paragraph}>
-              2.2 联系方式（电话、微信号等）仅用于平台代理人与您对接沟通，不会在需求广场等公开页面展示。
+              2.2 联系方式（电话、微信号等）仅用于平台工作人员与您对接沟通，不会在需求广场等公开页面展示。
             </Text>
             <Text className={styles.paragraph}>
-              2.3 家长住址信息仅用于匹配老师判断通勤距离及线下授课安排，不会向无关第三方披露。
+              2.3 家长住址信息仅用于匹配老师判断通勤距离及线下服务安排，不会向无关第三方披露。
             </Text>
           </View>
 
@@ -50,19 +50,19 @@ export default function PrivacyPage() {
           </View>
 
           <View className={styles.section}>
-            <Text className={styles.sectionTitle}>四、信息撮合免责声明</Text>
+            <Text className={styles.sectionTitle}>四、平台信息服务与免责声明</Text>
             <Text className={styles.paragraph}>
-              4.1 本平台仅提供家教信息撮合服务，不提供教学服务、不代收课时费。老师与家长的授课安排、费用结算等均由双方线下自行商定。
+              4.1 本平台仅提供信息收集、录入、核验与对接协助服务，不提供教学服务、不代收服务费。平台是信息的唯一收集者与发布者，用户不直接对外发布任何信息。老师与家长的服务安排、费用结算等均由双方线下自行商定。
             </Text>
             <Text className={styles.paragraph}>
-              4.2 双方在对接过程中应自行核实与本次授课相关的资质、能力及其他必要信息。因双方线下交易产生的争议与纠纷，平台在法律允许范围内不承担责任。
+              4.2 双方在对接过程中应自行核实与本次服务相关的资质、能力及其他必要信息。因双方线下交易产生的争议与纠纷，平台在法律允许范围内不承担责任。
             </Text>
           </View>
 
           <View className={styles.section}>
             <Text className={styles.sectionTitle}>五、家长信息准确性</Text>
             <Text className={styles.paragraph}>
-              家长应确保所填写的联系电话、上课地址等信息真实、准确、完整。因家长误填、漏填或提供虚假信息导致的无法对接、延误或相关纠纷，由家长自行承担，平台在法律允许范围内不承担责任。
+              家长应确保所填写的联系电话、服务地址等信息真实、准确、完整。因家长误填、漏填或提供虚假信息导致的无法对接、延误或相关纠纷，由家长自行承担，平台在法律允许范围内不承担责任。
             </Text>
           </View>
 
@@ -86,7 +86,7 @@ export default function PrivacyPage() {
           <View className={styles.section}>
             <Text className={styles.sectionTitle}>八、其他</Text>
             <Text className={styles.paragraph}>
-              8.1 如对本声明或个人信息保护有任何疑问、意见或投诉，请联系平台代理人 Kiki。
+              8.1 如对本声明或个人信息保护有任何疑问、意见或投诉，请联系平台客服 Kiki。
             </Text>
             <Text className={styles.paragraph}>
               8.2 我们可能根据法律法规或业务调整适时更新本声明，更新后将在平台内公示。

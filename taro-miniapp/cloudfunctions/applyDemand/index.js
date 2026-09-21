@@ -19,11 +19,62 @@ async function changeDemandApplicants(demandId, delta) {
   }
 }
 
+// 报名成功站内信：写一条通知给报名老师（消息通知页展示）
+async function writeApplyNotice(openid, demandId, teacherId, demand) {
+  try {
+    const label = [demand && demand.grade, demand && demand.subject].filter(Boolean).join(' · ')
+    await db.collection('notices').add({
+      data: {
+        _openid: openid,
+        role: 'teacher',
+        type: 'apply',
+        title: '报名成功',
+        content: `您已成功报名「${label || '家教需求'}」，等待家长查看与确认。`,
+        demandId,
+        teacherId,
+        read: false,
+        createTime: db.serverDate(),
+      },
+    })
+  } catch (e) {
+    console.warn('[applyDemand] 写入站内信失败', e)
+  }
+}
+
+// 同一账号可能有多条「已通过」认证记录（重新认证后历史记录被置空并标记 superseded）：
+// 必须取「已颁发编号的正式档案」，否则会把历史占位姓名（如「同学」）快照给家长端
+function pickCanonicalVerify(records) {
+  const list = (records || []).slice().sort((a, b) => {
+    const ta = Date.parse((a && a.reviewTime) || 0) || 0
+    const tb = Date.parse((b && b.reviewTime) || 0) || 0
+    return tb - ta
+  })
+  if (!list.length) return null
+  return list.find((v) => v.teacherNo) || list.find((v) => !v.superseded) || list[0]
+}
+
 exports.main = async (event, context) => {
   try {
     const wxContext = cloud.getWXContext()
     const openid = wxContext.OPENID
     const { demandId } = event
+
+    // 先审后发：仅允许报名管理员审核通过、且仍在进行中的需求
+    const demandRes = await db.collection('demands').where({ id: demandId }).get()
+    const demand = demandRes.data[0] || null
+    if (!demand) {
+      return { code: -1, message: '该需求不存在或已下架', data: null }
+    }
+    if (demand.withdrawn === true || demand.status === '已下架') {
+      return { code: -1, message: '该需求已被平台撤回，暂不可报名', data: null }
+    }
+    // 对外招募已关闭：已成交或管理员已标记「已联系」（recruiting=false）
+    if (demand.status === '已成交' || demand.recruiting === false) {
+      return { code: -1, message: '该需求已停止招募，暂不可报名', data: null }
+    }
+    if (demand.auditStatus && demand.auditStatus !== '已通过') {
+      return { code: -1, message: '该需求正在审核中，暂不可报名', data: null }
+    }
 
     // 同需求同老师只允许一条「有效」报名：存在活跃记录（非已取消）则拦截；
     // 若只剩「已取消」历史记录，则在下方复用该条恢复报名，避免集合里堆积相同老师（家长端出现重复老师）
@@ -41,9 +92,9 @@ exports.main = async (event, context) => {
     }
 
     // 组装老师资料快照（认证 + 简历，缺省用占位），供家长确认页展示完整老师卡片
-    const verifyRes = await db.collection('verifications').where({ _openid: openid, status: '已通过' }).get()
+    const verifyRes = await db.collection('verifications').where({ _openid: openid, status: '已通过' }).limit(10).get()
     const resumeRes = await db.collection('resumes').where({ _openid: openid }).get()
-    const verify = verifyRes.data[0] || null
+    const verify = pickCanonicalVerify(verifyRes.data)
     const resume = resumeRes.data[0] || null
     const teacherId = 't_' + openid.slice(-6)
 
@@ -81,6 +132,7 @@ exports.main = async (event, context) => {
       })
       // 复用后重新占用名额：计数 +1（与 cancelApplication 的 -1 保持平衡）
       await changeDemandApplicants(demandId, 1)
+      await writeApplyNotice(openid, demandId, teacherId, demand)
       return { code: 0, message: 'success', data: { applicationId: cancelled._id } }
     }
 
@@ -106,6 +158,7 @@ exports.main = async (event, context) => {
 
     // 新增报名占用名额：计数 +1
     await changeDemandApplicants(demandId, 1)
+    await writeApplyNotice(openid, demandId, teacherId, demand)
 
     return { code: 0, message: 'success', data: { applicationId: res._id } }
   } catch (err) {

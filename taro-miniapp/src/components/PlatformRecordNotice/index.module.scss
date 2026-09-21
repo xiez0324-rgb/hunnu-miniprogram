@@ -1,0 +1,35 @@
+@use '@/styles/variables.scss' as *;
+
+// 信息录入合规提示：醒目但不刺眼，位于表单顶部
+.notice {
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+  border-radius: $radius-lg;
+  background-color: $color-amber-bg;
+  border: 3rpx dashed $color-warning;
+  box-sizing: border-box;
+}
+
+.title {
+  display: block;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-xs;
+}
+
+.main {
+  display: block;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-primary-dark;
+  line-height: $line-height-normal;
+  margin-bottom: $spacing-xs;
+}
+
+.desc {
+  display: block;
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  line-height: $line-height-normal;
+}

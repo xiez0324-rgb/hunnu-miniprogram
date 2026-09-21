@@ -1,0 +1,53 @@
+@use '@/styles/variables.scss' as *;
+
+.orderCard {
+  background-color: $color-bg-card;
+  border: 2rpx dashed rgba(47, 69, 56, 0.2);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-paper-sm;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+  box-sizing: border-box;
+
+  &:active {
+    transform: scale(0.99);
+  }
+}
+
+.rowTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-xs;
+}
+
+.rowTitle {
+  font-size: 28rpx;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  @include text-ellipsis;
+}
+
+.rowTime {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  color: $color-text-tertiary;
+}
+
+.rowLine {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: $color-text-secondary;
+  line-height: 1.6;
+  margin-top: 4rpx;
+  @include text-ellipsis;
+}
+
+.rowActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: $spacing-sm;
+}

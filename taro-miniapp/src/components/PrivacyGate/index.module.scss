@@ -34,12 +34,47 @@
   color: $color-text-secondary;
 }
 
-.link {
-  margin-top: $spacing-sm;
+// 协议勾选：默认不勾选，需用户主动勾选后才能同意
+.agreeRow {
+  display: flex;
+  align-items: flex-start;
+  margin-top: $spacing-md;
+}
+
+.checkbox {
+  flex-shrink: 0;
+  width: 34rpx;
+  height: 34rpx;
+  margin-top: 4rpx;
+  margin-right: $spacing-xs;
+  border: 2rpx solid $color-border;
+  border-radius: 8rpx;
+  background-color: $color-bg-card;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkboxChecked {
+  border-color: $color-primary;
+  background-color: $color-primary;
+}
+
+.checkboxMark {
+  font-size: 22rpx;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.agreeText {
+  flex: 1;
+  font-size: $font-size-xs;
+  line-height: $line-height-normal;
+  color: $color-text-secondary;
 }
 
 .linkText {
-  font-size: $font-size-sm;
+  font-size: $font-size-xs;
   font-weight: $font-weight-semibold;
   color: $color-primary;
   text-decoration: underline;

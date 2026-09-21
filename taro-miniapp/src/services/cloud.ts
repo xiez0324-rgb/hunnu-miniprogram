@@ -9,22 +9,26 @@ import getDemandDetail from '@/data/getDemandDetail'
 import getDemands from '@/data/getDemands'
 import getMyData from '@/data/getMyData'
 import getMyResume from '@/data/getMyResume'
+import getMyVerification from '@/data/getMyVerification'
+import getNotices from '@/data/getNotices'
 import getProfile from '@/data/getProfile'
 import getTeacherDetail from '@/data/getTeacherDetail'
-import getTeachers from '@/data/getTeachers'
 import login from '@/data/login'
 import requestTeacherInfo from '@/data/requestTeacherInfo'
 import saveResume from '@/data/saveResume'
 import submitVerification from '@/data/submitVerification'
 import updateProfile from '@/data/updateProfile'
+import adminMocks from '@/data/adminMocks'
 
 const isWeapp = process.env.TARO_ENV === 'weapp'
 
 // 静态引入所有 mock（仅非小程序环境 / H5 预览使用）
 const mockModules: Record<string, (data?: any) => any> = {
+  // 管理后台 admin* 云函数（对象展开注册：adminLogin/adminDashboard/adminList* 等）
+  ...adminMocks,
   applyDemand, cancelApplication, cancelConfirm, confirmMatch, createDemand,
   getApplicants, getDemandDetail, getDemands, getMyData,
-  getMyResume, getProfile, getTeacherDetail, getTeachers, login, requestTeacherInfo, saveResume,
+  getMyResume, getMyVerification, getNotices, getProfile, getTeacherDetail, login, requestTeacherInfo, saveResume,
   submitVerification, updateProfile,
 }
 

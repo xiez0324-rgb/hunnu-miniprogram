@@ -8,7 +8,7 @@
 
 export type SubscribeEventKey =
   // 家长侧
-  | 'parent_demand_published' // 需求发布成功
+  | 'parent_demand_published' // 信息提交成功
   | 'parent_new_applicant' // 有人报名
   | 'parent_recommended' // 已推荐人选
   // 老师侧
@@ -27,9 +27,9 @@ export const SUBSCRIBE_CONFIG: Record<'parent' | 'teacher', SubscribeEventDef[]>
   parent: [
     {
       key: 'parent_demand_published',
-      title: '需求发布成功',
-      desc: '需求成功上架时提醒',
-      tmplId: '', // TODO: 从公众平台复制家长「需求发布成功」模板 ID
+      title: '信息提交成功',
+      desc: '平台完成录入发布时提醒',
+      tmplId: '', // TODO: 从公众平台复制家长「信息提交成功」模板 ID
     },
     {
       key: 'parent_new_applicant',
@@ -40,7 +40,7 @@ export const SUBSCRIBE_CONFIG: Record<'parent' | 'teacher', SubscribeEventDef[]>
     {
       key: 'parent_recommended',
       title: '已推荐人选',
-      desc: '代理人推荐合适人选时提醒',
+      desc: '平台推荐合适人选时提醒',
       tmplId: '', // TODO: 复制家长「已推荐人选」模板 ID
     },
   ],

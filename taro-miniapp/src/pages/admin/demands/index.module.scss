@@ -1,0 +1,23 @@
+@use '@/styles/variables.scss' as *;
+
+.demandTitle {
+  flex: 1;
+  min-width: 0;
+}
+
+.demandMeta {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: $color-text-tertiary;
+  line-height: 1.6;
+  @include text-ellipsis;
+}
+
+.descText {
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: $color-text-primary;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

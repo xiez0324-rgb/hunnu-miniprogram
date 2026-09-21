@@ -4,17 +4,16 @@ import { useState } from 'react'
 import { useUser } from '@/store/user'
 import { callFunction } from '@/services/cloud'
 import ConfirmDialog from '@/components/ConfirmDialog'
+import { isPlaceholderNickname } from '@/utils/nickname'
 import type { Profile } from '@/types'
 import styles from './index.module.scss'
 
 // 家长基础信息是否完备：
-// 「张同学」是老师角色登录时的历史演示默认名，不作为家长已完善的依据；
+// 「同学」是老师角色未命名时的默认称呼，不作为家长已完善的依据；
 // 家长需至少设置了性别 / 自定义称呼 / 电话 / 区域 之一，才算完善过
 function isProfileComplete(p: Profile | null): boolean {
   if (!p) return false
-  const nickname = (p.nickname || '').trim()
-  const hasRealNick = Boolean(nickname) && nickname !== '张同学' && nickname !== '王女士'
-  return Boolean(hasRealNick || p.gender || (p.phone || '').trim() || (p.area || '').trim())
+  return Boolean(!isPlaceholderNickname(p.nickname) || p.gender || (p.phone || '').trim() || (p.area || '').trim())
 }
 
 export default function RoleSelectPage() {
@@ -77,7 +76,7 @@ export default function RoleSelectPage() {
         <View className={styles.roleCard} onClick={() => pick('parent')}>
           <Text className={styles.roleIcon}>🏠</Text>
           <Text className={styles.roleName}>我是家长</Text>
-          <Text className={styles.roleDesc}>找家教</Text>
+          <Text className={styles.roleDesc}>有需求</Text>
         </View>
         <View className={styles.roleCard} onClick={() => pick('teacher')}>
           <Text className={styles.roleIcon}>🎓</Text>
@@ -86,10 +85,14 @@ export default function RoleSelectPage() {
         </View>
       </View>
 
+      <View className={styles.adminEntry} onClick={() => Taro.navigateTo({ url: '/pages/admin/login/index' })}>
+        <Text className={styles.adminEntryText}>管理后台入口（仅限管理员）</Text>
+      </View>
+
       <ConfirmDialog
         visible={guideVisible}
         title="完善个人资料"
-        content="欢迎使用小小陪伴帮！为方便代理人尽快为您匹配合适老师，建议先进入「我的」页完善称呼、性别等基础信息（联系电话可在需要对接时再补充，非必填）。"
+        content="欢迎使用小小陪伴帮！为方便平台工作人员尽快为您匹配合适老师，建议先进入「我的」页完善称呼、性别、联系电话等基础信息（进入小程序不会索取任何信息，仅在与您对接时使用）。"
         confirmText="去完善资料"
         cancelText="稍后再说"
         onConfirm={goGuide}

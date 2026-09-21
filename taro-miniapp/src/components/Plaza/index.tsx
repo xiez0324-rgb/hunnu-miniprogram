@@ -1,9 +1,11 @@
 import { View, Text, ScrollView, RootPortal } from '@tarojs/components'
-import Taro, { useDidShow } from '@tarojs/taro'
+import Taro, { useDidShow, usePullDownRefresh } from '@tarojs/taro'
 import classnames from 'classnames'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { allSubjects, districts } from '@/data/shared'
 import { callFunction } from '@/services/cloud'
+import { useUser } from '@/store/user'
+import { displayNickname } from '@/utils/nickname'
 import type { Demand } from '@/types'
 import DemandCard from '@/components/DemandCard'
 import styles from './index.module.scss'
@@ -23,6 +25,7 @@ function parseBudgetAvg(budget: string): number {
 }
 
 export default function Plaza() {
+  const { user } = useUser()
   const [subject, setSubject] = useState('全部')
   const [grade, setGrade] = useState('不限')
   const [gender, setGender] = useState('不限')
@@ -32,8 +35,8 @@ export default function Plaza() {
   const [demands, setDemands] = useState<Demand[]>([])
 
   const fetchDemands = useCallback(() => {
-    callFunction<{ demands: Demand[] }>('getDemands', { filter: '全部' }).then((res) => {
-      setDemands(res.demands)
+    return callFunction<{ demands: Demand[] }>('getDemands', { filter: '全部' }).then((res) => {
+      setDemands(res.demands || [])
     }).catch((err) => {
       console.error('[Plaza] 获取需求失败', err)
     })
@@ -54,7 +57,25 @@ export default function Plaza() {
     fetchDemands()
   })
 
-  const stats = { active: 2, applied: 3, recommended: 2, done: 1 }
+  // 下拉刷新：老师端手动拉取「平台最新审核通过」的需求
+  usePullDownRefresh(async () => {
+    await fetchDemands()
+    Taro.stopPullDownRefresh()
+  })
+
+  // 今日新增需求：按云端返回的 createTime 实时统计，避免演示数字残留
+  const todayNew = useMemo(() => {
+    const start = new Date()
+    start.setHours(0, 0, 0, 0)
+    return demands.filter((d) => {
+      if (!d.createTime) return false
+      const t = new Date(d.createTime).getTime()
+      return !Number.isNaN(t) && t >= start.getTime()
+    }).length
+  }, [demands])
+
+  // 未命名时统一称呼为「同学」（历史演示名同样视为未命名）
+  const greetName = displayNickname(user?.nickname)
 
   const filterTabs: { key: FilterKey; label: string; value: string; options: string[]; state: string; setState: (v: string) => void }[] = [
     { key: 'sort', label: '排序', value: sort, options: sortOptions, state: sort, setState: setSort },
@@ -103,26 +124,12 @@ export default function Plaza() {
 
   return (
     <View className={styles.page}>
-      {/* 问候 + 统计 */}
+      {/* 问候 + 今日新增需求推送 */}
       <View className={styles.headerCard}>
-        <Text className={styles.greet}>您好，张同学</Text>
+        <Text className={styles.greet}>您好，{greetName}</Text>
         <Text className={styles.today}>
-          今日新增 <Text className={styles.todayNum}>6</Text> 条需求，报名中 {stats.active} / 5
+          今日新增 <Text className={styles.todayNum}>{todayNew}</Text> 条需求
         </Text>
-        <View className={styles.stats}>
-          <View className={classnames(styles.statItem, styles.statMint)}>
-            <Text className={styles.statNum}>{stats.applied}</Text>
-            <Text className={styles.statLabel}>已报名</Text>
-          </View>
-          <View className={classnames(styles.statItem, styles.statSky)}>
-            <Text className={styles.statNum}>{stats.recommended}</Text>
-            <Text className={styles.statLabel}>已推荐</Text>
-          </View>
-          <View className={classnames(styles.statItem, styles.statAmber)}>
-            <Text className={styles.statNum}>{stats.done}</Text>
-            <Text className={styles.statLabel}>已成交</Text>
-          </View>
-        </View>
       </View>
 
       {/* 筛选栏 */}

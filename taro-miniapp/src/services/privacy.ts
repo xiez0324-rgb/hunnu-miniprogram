@@ -72,3 +72,50 @@ export function ensureWechatPrivacy(): void {
     console.warn('[Privacy] 隐私授权检查异常：', err)
   }
 }
+
+/**
+ * 可等待版隐私授权：调用隐私接口（相册/摄像头等）前先 await，
+ * 确保「用户已同意」后再继续，避免真机上因授权未完成导致接口直接失败。
+ * 返回 true 表示可以继续；false 表示用户拒绝或后台未配置指引。
+ */
+export function ensureWechatPrivacyAsync(): Promise<boolean> {
+  if (process.env.TARO_ENV !== 'weapp') return Promise.resolve(true)
+  return new Promise((resolve) => {
+    try {
+      const getSetting = Wx.getPrivacySetting
+      const requireAuthorize = Wx.requirePrivacyAuthorize
+      if (!getSetting || !requireAuthorize) {
+        console.warn('[Privacy] 当前环境不支持 getPrivacySetting/requirePrivacyAuthorize（需基础库 ≥2.32.3），已跳过官方授权检查')
+        resolve(true)
+        return
+      }
+      getSetting({
+        success(res) {
+          console.warn('[Privacy] getPrivacySetting 返回：', res)
+          if (res && res.needAuthorization) {
+            requireAuthorize({
+              success() {
+                console.warn('[Privacy] 用户已同意隐私授权')
+                resolve(true)
+              },
+              fail(err) {
+                // 常见原因：用户点了「拒绝」，或后台《用户隐私保护指引》尚未审核通过/生效
+                console.warn('[Privacy] 隐私授权未完成，原始错误：', err?.errMsg || err)
+                resolve(false)
+              },
+            })
+          } else {
+            resolve(true)
+          }
+        },
+        fail(err) {
+          console.warn('[Privacy] getPrivacySetting 调用失败，按放行处理：', err)
+          resolve(true)
+        },
+      })
+    } catch (err) {
+      console.warn('[Privacy] 隐私授权等待异常：', err)
+      resolve(true)
+    }
+  })
+}

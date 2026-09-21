@@ -40,7 +40,7 @@ export function eventById(role: 'parent' | 'teacher', key: string): SubscribeEve
 
 // 事件文案映射（供站内信展示用）
 export const EVENT_TITLES: Record<string, string> = {
-  parent_demand_published: '需求发布成功',
+  parent_demand_published: '信息提交成功',
   parent_new_applicant: '有人报名',
   parent_recommended: '已推荐人选',
   teacher_new_demand: '新需求上架',

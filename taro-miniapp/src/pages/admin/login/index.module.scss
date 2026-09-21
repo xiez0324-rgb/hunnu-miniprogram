@@ -1,0 +1,96 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $page-padding;
+  box-sizing: border-box;
+}
+
+.brand {
+  text-align: center;
+  margin-bottom: $spacing-xl;
+}
+
+.brandTag {
+  display: inline-block;
+  padding: 8rpx 28rpx;
+  background-color: $color-pine;
+  color: $color-text-white;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-sm;
+}
+
+.brandTitle {
+  display: block;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  font-family: $font-hand;
+}
+
+.brandSub {
+  display: block;
+  margin-top: $spacing-xs;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.card {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: $color-bg-card;
+  border: 2rpx dashed rgba(47, 69, 56, 0.22);
+  border-radius: $radius-xl;
+  box-shadow: $shadow-paper;
+  padding: $spacing-lg $spacing-md;
+}
+
+.fieldBlock {
+  margin-bottom: $spacing-md;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+  margin-bottom: 12rpx;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 96rpx;
+  padding: 0 28rpx;
+  border-radius: $radius-md;
+  background-color: $color-bg-page;
+  border: 2rpx solid $color-border;
+  font-size: 30rpx;
+  color: $color-text-primary;
+}
+
+.error {
+  display: block;
+  color: $color-error;
+  font-size: $font-size-xs;
+  margin-bottom: $spacing-xs;
+  line-height: 1.5;
+}
+
+.loginBtn {
+  margin-top: $spacing-xs;
+}
+
+.note {
+  display: block;
+  margin-top: $spacing-md;
+  font-size: 22rpx;
+  line-height: 1.7;
+  color: $color-text-tertiary;
+}

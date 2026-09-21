@@ -180,10 +180,33 @@
   color: $color-primary;
 }
 
+.checkboxChecked {
+  background-color: $color-primary;
+
+  .checkboxMark {
+    color: #ffffff;
+  }
+}
+
 .agreeText {
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
   color: $color-text-tertiary;
   flex: 1;
   line-height: $line-height-normal;
+}
+
+.link {
+  color: $color-primary;
+  font-weight: $font-weight-bold;
+  text-decoration: underline;
+}
+
+// 提交前实时提示「还差什么」，避免按钮静默失效被误认为 bug
+.pendingHint {
+  display: block;
+  margin-bottom: $spacing-sm;
+  font-size: $font-size-xs;
+  color: $color-amber;
+  text-align: center;
 }

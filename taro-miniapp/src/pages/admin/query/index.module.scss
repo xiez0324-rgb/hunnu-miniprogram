@@ -1,0 +1,66 @@
+@use '@/styles/variables.scss' as *;
+
+.searchCard {
+  background-color: $color-bg-card;
+  border: 2rpx dashed rgba(47, 69, 56, 0.2);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-paper-sm;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+  box-sizing: border-box;
+}
+
+.modeRow {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: $spacing-sm;
+}
+
+.inputRow {
+  display: flex;
+  gap: 16rpx;
+  align-items: center;
+}
+
+.searchInput {
+  flex: 1;
+  height: 80rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: $color-text-primary;
+  background-color: $color-bg-page;
+  border: 2rpx solid rgba(47, 69, 56, 0.12);
+  border-radius: $radius-md;
+  box-sizing: border-box;
+}
+
+.placeholder {
+  color: #b8c0b6;
+}
+
+.searchBtn {
+  flex-shrink: 0;
+  height: 80rpx;
+  padding: 0 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $color-primary;
+  border-radius: $radius-md;
+
+  &:active {
+    opacity: 0.85;
+  }
+}
+
+.searchBtnText {
+  font-size: 28rpx;
+  font-weight: $font-weight-bold;
+  color: #ffffff;
+}
+
+.phoneValue {
+  font-size: 26rpx;
+  font-weight: $font-weight-bold;
+  color: $color-primary-dark;
+}

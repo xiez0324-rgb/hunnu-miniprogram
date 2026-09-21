@@ -11,6 +11,20 @@
   box-shadow: $shadow-paper;
 }
 
+.baseInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  padding-bottom: $spacing-md;
+  margin-bottom: $spacing-md;
+  border-bottom: 2rpx dashed $color-border;
+}
+
+.baseInfoItem {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
 .input {
   width: 100%;
   height: 96rpx;
@@ -69,4 +83,54 @@
 .stageSep {
   color: $color-text-tertiary;
   flex-shrink: 0;
+}
+
+// 两端同步自检：资料待补齐提示
+.completeness {
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+  border-radius: $radius-md;
+  background-color: $color-amber-bg;
+  border: 3rpx dashed $color-warning;
+}
+
+.completenessTitle {
+  display: block;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-sm;
+}
+
+.completenessChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-sm;
+}
+
+.completenessChip {
+  font-size: $font-size-xs;
+  color: $color-text-primary;
+  background-color: $color-bg-card;
+  border-radius: $radius-round;
+  padding: 6rpx $spacing-sm;
+}
+
+.completenessHint {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  line-height: $line-height-normal;
+}
+
+.completenessOk {
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+  border-radius: $radius-md;
+  background-color: $color-mint;
+}
+
+.completenessOkText {
+  font-size: $font-size-xs;
+  color: $color-primary-dark;
 }

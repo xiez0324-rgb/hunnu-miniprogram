@@ -67,21 +67,79 @@ exports.main = async (event, context) => {
     const appCol = db.collection('applications')
     const whereKey = { demandId: match.demandId, teacherId: match.teacherId }
 
-    // 2) 业务侧联动（尽力可逆，保证端上状态一致）
+    // 2) 需求单「对外招募」联动：仅「待联系」阶段保持对外招募，
+    //    进入「已联系」即停止招募（广场隐藏 + 禁止再报名），「已成交」再叠加需求状态收单；
+    //    回退时同步还原，保证可逆。
+    const demandPatch = {}
     if (status === '已成交') {
-      // 成交：老师报名记录置已成交 + 需求单收单
-      await appCol.where({ ...whereKey, status: '已确认' }).update({ data: { status: '已成交', dealTime: db.serverDate() } })
-      await updateDemandStatus(match.demandId, { status: '已成交' })
+      demandPatch.status = '已成交'
     } else if (from === '已成交') {
-      // 从成交回退：该单老师回「已确认」，需求恢复进行中
+      demandPatch.status = '进行中'
+    }
+    if (status === '待联系') {
+      demandPatch.recruiting = true
+    } else if (status === '已联系' || status === '已成交') {
+      demandPatch.recruiting = false
+    }
+
+    // 3) 报名记录联动（尽力可逆，保证端上状态一致）
+    if (status === '已成交') {
+      // 成交：老师报名记录置已成交
+      await appCol.where({ ...whereKey, status: '已确认' }).update({ data: { status: '已成交', dealTime: db.serverDate() } })
+    } else if (from === '已成交') {
+      // 从成交回退：该单老师回「已确认」
       await appCol.where({ ...whereKey, status: '已成交' }).update({ data: { status: '已确认' } })
-      await updateDemandStatus(match.demandId, { status: '进行中' })
     } else if (status === '已取消') {
       // 取消订单：释放该老师回备选池
       await appCol.where({ ...whereKey, status: '已确认' }).update({ data: { status: '已推荐' } })
     } else if (from === '已取消' && status !== '已取消') {
       // 取消后恢复：老师重新占用为「已确认」
       await appCol.where({ ...whereKey, status: '已推荐' }).update({ data: { status: '已确认' } })
+    }
+
+    // 取消订单后：若该需求下已无其它活跃订单，恢复对外招募（避免需求卡在「进行中但不再招募」的死角）
+    if (status === '已取消') {
+      const others = await db.collection('matches').where({
+        demandId: match.demandId,
+        _id: _.neq(orderId),
+        status: _.in(['待联系', '已联系', '已成交']),
+      }).count()
+      demandPatch.recruiting = others.total === 0
+    }
+
+    if (Object.keys(demandPatch).length > 0) {
+      demandPatch.updateTime = db.serverDate()
+      await updateDemandStatus(match.demandId, demandPatch)
+    }
+
+    // 成交时向该老师推送站内信（消息通知）
+    if (status === '已成交') {
+      try {
+        const [appRes, dRes] = await Promise.all([
+          appCol.where(whereKey).orderBy('createTime', 'desc').limit(1).get(),
+          db.collection('demands').where({ id: match.demandId }).limit(1).get(),
+        ])
+        const app = appRes.data[0] || null
+        const d = dRes.data[0] || null
+        if (app && app._openid) {
+          const label = [d && d.grade, d && d.subject].filter(Boolean).join(' · ')
+          await db.collection('notices').add({
+            data: {
+              _openid: app._openid,
+              role: 'teacher',
+              type: 'deal',
+              title: '恭喜，已成交',
+              content: `您报名的「${label || '家教需求'}」已确认成交，请与家长保持联系，按约定开展服务。`,
+              demandId: match.demandId,
+              teacherId: match.teacherId,
+              read: false,
+              createTime: db.serverDate(),
+            },
+          })
+        }
+      } catch (e) {
+        console.warn('[adminUpdateOrder] 写入站内信失败', e)
+      }
     }
 
     await writeAudit(admin, 'update_order', { orderId, demandId: match.demandId, teacherId: match.teacherId, from, to: status })

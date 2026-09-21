@@ -1,0 +1,9 @@
+{
+  "name": "getNotices",
+  "version": "1.0.0",
+  "description": "站内信（消息通知）读取与已读标记",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

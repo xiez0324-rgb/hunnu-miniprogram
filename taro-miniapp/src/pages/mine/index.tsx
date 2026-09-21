@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useUser } from '@/store/user'
 import { useRequireLogin } from '@/hooks/useRequireLogin'
 import { parentFallbackName } from '@/utils'
+import { displayNickname, isPlaceholderNickname } from '@/utils/nickname'
 import styles from './index.module.scss'
 
 export default function MinePage() {
@@ -21,15 +22,15 @@ export default function MinePage() {
   })
 
   // 顶部昵称：有自定义昵称用昵称；家长未填时默认按性别显示「女士/男士」。
-  // 「张同学」是老师角色的历史演示默认名，切到家长身份后不作为家长昵称展示
+  // 「同学」是未命名时的默认称呼，切到家长身份后不作为家长昵称展示
   const rawNick = (user?.nickname || '').trim()
-  const customNick = rawNick && rawNick !== '张同学' ? rawNick : ''
+  const customNick = isPlaceholderNickname(rawNick) ? '' : rawNick
   const displayName = isTeacher
-    ? rawNick || '张同学'
+    ? displayNickname(rawNick)
     : customNick || parentFallbackName(user?.gender)
 
   // 头像文字取昵称首字；无昵称时按角色兜底
-  const avatarText = displayName ? displayName.slice(0, 1) : isTeacher ? '张' : '家'
+  const avatarText = displayName ? displayName.slice(0, 1) : isTeacher ? '同' : '家'
   const area = (user?.area || '').trim()
 
   const desc = isTeacher
@@ -58,7 +59,12 @@ export default function MinePage() {
           <Text className={styles.avatarText}>{syncing ? '…' : avatarText}</Text>
         </View>
         <View className={styles.profileInfo}>
-          <Text className={styles.name}>{syncing ? '…' : displayName}</Text>
+          <View className={styles.nameRow}>
+            <Text className={styles.name}>{syncing ? '…' : displayName}</Text>
+            {isTeacher && user?.teacherNo ? (
+              <Text className={styles.teacherNoTag}>编号 {user.teacherNo}</Text>
+            ) : null}
+          </View>
           <Text className={styles.desc}>{desc}</Text>
         </View>
       </View>
@@ -90,10 +96,6 @@ export default function MinePage() {
         </View>
       ) : (
         <View className={styles.group}>
-          <View className={styles.menuItem} onClick={() => go('/pages/teacher-list/index')}>
-            <Text className={styles.menuLabel}>浏览认证老师</Text>
-            <Text className={styles.menuArrow}>›</Text>
-          </View>
           <View className={styles.menuItem} onClick={() => go('/pages/contact/index')}>
             <Text className={styles.menuLabel}>个人信息</Text>
             <View className={styles.menuRight}>
@@ -112,12 +114,16 @@ export default function MinePage() {
       )}
 
       <View className={styles.group}>
+        <View className={styles.menuItem} onClick={() => go('/pages/agreement/index')}>
+          <Text className={styles.menuLabel}>用户服务协议</Text>
+          <Text className={styles.menuArrow}>›</Text>
+        </View>
         <View className={styles.menuItem} onClick={() => go('/pages/privacy/index')}>
           <Text className={styles.menuLabel}>隐私与风险说明</Text>
           <Text className={styles.menuArrow}>›</Text>
         </View>
         <View className={styles.menuItem} onClick={switchIdentity}>
-          <Text className={styles.menuLabel}>{isTeacher ? '切换身份（我找家教）' : '切换身份（我来接单）'}</Text>
+          <Text className={styles.menuLabel}>{isTeacher ? '切换身份（我有需求）' : '切换身份（我来接单）'}</Text>
           <Text className={styles.menuArrow}>›</Text>
         </View>
       </View>

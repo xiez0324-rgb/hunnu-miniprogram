@@ -48,7 +48,7 @@ export default function ApplySuccessPage() {
     <View className={styles.page}>
       <Text className={styles.icon}>✅</Text>
       <Text className={styles.title}>报名成功！</Text>
-      <Text className={styles.desc}>代理人会尽快核验并推荐给家长，请保持通知开启</Text>
+      <Text className={styles.desc}>平台工作人员会尽快核验并推荐给家长，请保持通知开启</Text>
 
       <View className={styles.card}>
         <PrimaryButton onClick={enableNotify} disabled={subscribed || busy}>

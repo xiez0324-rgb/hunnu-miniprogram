@@ -10,6 +10,8 @@ export interface UserInfo {
   phone: string
   gender?: UserGender
   area?: string
+  // 老师专属 5 位编号（认证通过后颁发，暂无为空）
+  teacherNo?: string
 }
 
 // 用户性别（个人信息档案专用：仅 男/女 两态）
@@ -23,6 +25,9 @@ export interface Profile {
   wechat: string
   area: string
   role: Role
+  // 老师专属 5 位编号与认证状态
+  teacherNo?: string
+  verified?: boolean
 }
 
 // 需求状态
@@ -52,8 +57,15 @@ export interface Demand {
   applicants: number
   recommended: number
   status: DemandStatus
+  /** 内容审核状态（先审后发）：待审核 / 已通过 / 已驳回 */
+  auditStatus?: '待审核' | '已通过' | '已驳回'
+  rejectReason?: string
   createTime: string
   applied?: boolean
+  /** 家长已确认的老师（持久化状态，用于「查看报名进度」回显与禁用重复确认） */
+  confirmedTeacherId?: string
+  confirmedTeacherName?: string
+  confirmedTime?: string
 }
 
 // 报名状态
@@ -84,11 +96,17 @@ export interface Teacher {
   meta: string
   quote: string
   verified: boolean
+  // 性别（简历基础信息板块展示，与年龄/籍贯等身份信息同排版）
+  gender?: string
+  // 实名学籍认证通过后颁发的唯一 5 位数字编号（家长端简历可见）
+  teacherNo?: string
 }
 
 // 报名人选（确认人选页）
 export interface Applicant extends Teacher {
   recommended: boolean
+  // 该老师在该需求下的报名状态（用于识别「已确认」人选）
+  status?: ApplicationStatus
 }
 
 // 分学段时薪区间（键为学段：小学/初中/高中，值为 'min-max' 字符串）
@@ -108,6 +126,12 @@ export interface Resume {
   rateByStage?: StageRates
   districts: string[]
   intro: string
+  // 教龄（如「1-3 年」）：老师端简历页录入，家长端「教学经历」展示
+  teachingYears?: string
+  // 家教/工作经历（自由文本）：老师端简历页录入，家长端「教学经历」展示
+  experience?: string
+  // 资质证书（如「英语专八」「教师资格证」）：老师端简历页录入，家长端以标签展示
+  certificates?: string[]
 }
 
 // 认证

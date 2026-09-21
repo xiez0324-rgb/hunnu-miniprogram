@@ -32,13 +32,16 @@ exports.main = async (event, context) => {
     // 2) 若 teacherId 本身就是 openid 形态，直接作为兜底
     if (!openids.length && (teacherId.length > 20)) openids.push(teacherId)
 
-    // 3) 并行读取简历 / 认证 / 种子老师（按 id 或 _id 双通道）
-    const [resumeRes, veriRes, teacherRes] = await Promise.all([
+    // 3) 并行读取简历 / 认证 / 老师账号档案 / 种子老师（按 id 或 _id 双通道）
+    const [resumeRes, veriRes, userRes, teacherRes] = await Promise.all([
       openids.length
         ? db.collection('resumes').where({ _openid: _.in(openids) }).limit(5).get()
         : Promise.resolve({ data: [] }),
       openids.length
         ? db.collection('verifications').where({ _openid: _.in(openids) }).limit(5).get()
+        : Promise.resolve({ data: [] }),
+      openids.length
+        ? db.collection('teacher_users').where({ _openid: _.in(openids) }).limit(5).get().catch(() => ({ data: [] }))
         : Promise.resolve({ data: [] }),
       Promise.allSettled([
         db.collection('teachers').where({ id: teacherId }).limit(1).get().catch(() => ({ data: [] })),
@@ -55,10 +58,11 @@ exports.main = async (event, context) => {
 
     const resume = resumeRes.data[0] || {}
     const verification = veriRes.data[0] || {}
+    const userDoc = userRes.data[0] || {}
     const seed = teacherRes.data[0] || {}
 
     // 4) 组装（resume / verification / snapshot 优先级递减；种子仅补默认信息）
-    const base = { ...snapshot, ...verification, ...resume }
+    const base = { ...snapshot, ...verification, ...userDoc, ...resume }
     const teacher = {
       id: teacherId,
       openid: openids[0] || '',
@@ -72,6 +76,10 @@ exports.main = async (event, context) => {
       verified: !!(verification.authorized || snapshot.verified || seed.verified),
       verificationStatus: verification.status || (verification._id ? '已认证' : ''),
       authorized: !!verification.authorized,
+      // 管理员可见的完整联系方式与专属编号（老师/家长端接口均不下发）
+      phone: userDoc.phone || '',
+      teacherNo: userDoc.teacherNo || verification.teacherNo || seed.teacherNo || '',
+      realNameLocked: !!(userDoc.realNameLocked || verification.archived),
       subjects: resume.subjects || [],
       grades: resume.grades || [],
       timeSlots: resume.timeSlots || [],

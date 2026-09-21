@@ -8,6 +8,24 @@ exports.main = async (event, context) => {
     const wxContext = cloud.getWXContext()
     const openid = wxContext.OPENID
 
+    // 归属校验（数据隔离）：仅需求发布者本人可发起「了解该老师」咨询，
+    // 避免他人凭 demandId 往平台咨询队列写入无关记录、污染后台待办。
+    if (!demandId || !teacherId) {
+      return { code: -1, message: '参数不完整', data: null }
+    }
+    const demandRes = await db.collection('demands').where({ id: demandId }).limit(1).get()
+    let demand = demandRes.data[0] || null
+    if (!demand) {
+      try {
+        const docRes = await db.collection('demands').doc(demandId).get()
+        demand = docRes.data || null
+      } catch (e) {
+        demand = null
+      }
+    }
+    if (!demand) return { code: -1, message: '需求不存在或已下架', data: null }
+    if (demand._openid !== openid) return { code: -1, message: '无权操作该需求', data: null }
+
     // 家长「想进一步了解该老师」：写入咨询队列，管理员后台收到消息并处理
     await db.collection('inquiries').add({
       data: {

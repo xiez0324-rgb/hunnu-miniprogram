@@ -1,0 +1,9 @@
+{
+  "name": "getMyVerification",
+  "version": "1.0.0",
+  "description": "读取当前老师最近一次实名学籍认证状态（用于认证页锁定）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

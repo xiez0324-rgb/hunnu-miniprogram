@@ -1,0 +1,117 @@
+@use '@/styles/variables.scss' as *;
+
+// 页面内自绘工具条（撕纸贴纸样式）
+.headerCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-xs;
+  padding: $spacing-md $spacing-lg;
+  margin-bottom: $spacing-md;
+  background-color: $color-pine;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-paper;
+  box-sizing: border-box;
+}
+
+.headerLeft {
+  flex: 1;
+  min-width: 0;
+}
+
+.headerTitle {
+  display: block;
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: $font-weight-bold;
+}
+
+.headerSub {
+  display: block;
+  margin-top: 8rpx;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 22rpx;
+  @include text-ellipsis;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.iconBtn {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 56rpx;
+  padding: 0 20rpx;
+  border-radius: $radius-round;
+  background-color: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 22rpx;
+
+  &:active {
+    opacity: 0.85;
+  }
+}
+
+// 统计卡栅格
+.statGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.statCard {
+  width: calc((100% - #{$spacing-sm}) / 2);
+  box-sizing: border-box;
+  @include button-reset;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: $color-bg-card;
+  border: 2rpx dashed rgba(47, 69, 56, 0.2);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-paper-sm;
+  padding: $spacing-sm $spacing-md;
+  text-align: left;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.statLabel {
+  display: block;
+  font-size: 24rpx;
+  color: $color-text-secondary;
+  white-space: nowrap;
+}
+
+.statValue {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 52rpx;
+  font-weight: $font-weight-bold;
+  color: $color-pine;
+  line-height: 1.1;
+}
+
+.statHint {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 20rpx;
+  color: $color-text-tertiary;
+  white-space: nowrap;
+  @include text-ellipsis;
+}
+
+.footerNote {
+  display: block;
+  margin-top: $spacing-md;
+  font-size: 22rpx;
+  line-height: 1.7;
+  color: $color-text-tertiary;
+  text-align: center;
+}

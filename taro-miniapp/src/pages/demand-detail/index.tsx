@@ -56,7 +56,17 @@ export default function DemandDetailPage() {
     }
   }
 
-  if (!demand) return <View />
+  // 需求不存在 / 未通过平台审核时，仅发布者可见，其他老师看到友好提示
+  if (!demand) {
+    return (
+      <View className={styles.page}>
+        <NavBar title="需求详情" onBack={() => Taro.navigateBack()} />
+        <View className={styles.card}>
+          <Text className={styles.rowValue}>该需求暂不可查看，可能正在平台审核中或已下架。</Text>
+        </View>
+      </View>
+    )
+  }
 
   return (
     <View className={styles.page}>
@@ -68,17 +78,17 @@ export default function DemandDetailPage() {
           <Text className={styles.demandNo}>需求单 #{demand.id}</Text>
         </View>
         <View className={styles.row}>
-          <Text className={styles.rowLabel}>年级/科目</Text>
+          <Text className={styles.rowLabel}>年级/需求</Text>
           <Text className={styles.rowValue}>
             {demand.grade} · {demand.subject}
           </Text>
         </View>
         <View className={styles.row}>
-          <Text className={styles.rowLabel}>辅导目标</Text>
+          <Text className={styles.rowLabel}>需求类型</Text>
           <Text className={styles.rowValue}>{demand.goal}</Text>
         </View>
         <View className={styles.row}>
-          <Text className={styles.rowLabel}>授课时段</Text>
+          <Text className={styles.rowLabel}>服务时段</Text>
           <Text className={styles.rowValue}>{demand.time}</Text>
         </View>
         <View className={styles.row}>
@@ -115,7 +125,7 @@ export default function DemandDetailPage() {
       <ConfirmDialog
         visible={asking}
         title="确认报名？"
-        content={`确认报名「${demand.grade} · ${demand.subject}」需求单？报名后代理人将核验并推荐给家长。`}
+        content={`确认报名「${demand.grade} · ${demand.subject}」需求单？提交后平台工作人员将核验并推荐给家长。`}
         confirmText="确认报名"
         onCancel={() => setAsking(false)}
         onConfirm={confirmApply}

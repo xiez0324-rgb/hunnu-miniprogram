@@ -183,3 +183,26 @@
   border-radius: $radius-button;
   padding: 8rpx 28rpx;
 }
+
+/* ===== 站内信空态 ===== */
+.empty {
+  @include torn-card(0.6deg);
+  padding: $spacing-xl $spacing-lg;
+  box-shadow: $shadow-paper-sm;
+  text-align: center;
+}
+
+.emptyText {
+  display: block;
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-text-secondary;
+}
+
+.emptyHint {
+  display: block;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  line-height: $line-height-normal;
+  margin-top: $spacing-xs;
+}

@@ -3,6 +3,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
 const _ = db.command
 const { requireAdmin } = require('./requireAdmin')
+const { safeGet } = require('./safeQuery')
 
 exports.main = async (event, context) => {
   try {
@@ -27,7 +28,12 @@ exports.main = async (event, context) => {
         ? db.collection('demands').where({ id: _.in(demandIds) }).limit(100).get()
         : Promise.resolve({ data: [] }),
       parentOpenids.length
-        ? db.collection('parent_users').where({ _openid: _.in(parentOpenids) }).limit(100).get()
+        ? safeGet(
+            db,
+            'parent_users',
+            () => db.collection('parent_users').where({ _openid: _.in(parentOpenids) }).limit(100).get(),
+            'adminListDeliveries',
+          )
         : Promise.resolve({ data: [] }),
       teacherIds.length
         ? db.collection('applications').where({ teacherId: _.in(teacherIds) }).limit(500).get()
@@ -55,6 +61,23 @@ exports.main = async (event, context) => {
     const userMap = {}
     uRes.data.forEach((u) => { userMap[u._openid] = u })
 
+    // 兼容历史数据：早期 inquiries 未写 parentOpenid，用需求单发布者 _openid 兜底补查家长档案
+    const extraParentOpenids = [...new Set(
+      inquiries
+        .filter((q) => !q.parentOpenid)
+        .map((q) => (demandMap[q.demandId] || {})._openid)
+        .filter(Boolean),
+    )].filter((oid) => !userMap[oid])
+    if (extraParentOpenids.length) {
+      const extra = await safeGet(
+        db,
+        'parent_users',
+        () => db.collection('parent_users').where({ _openid: _.in(extraParentOpenids) }).limit(100).get(),
+        'adminListDeliveries',
+      )
+      extra.data.forEach((u) => { userMap[u._openid] = u })
+    }
+
     // join 老师快照（报名记录）与风控提示（该老师历史取消次数）
     const appMap = {}
     const cancelStat = {}
@@ -64,6 +87,33 @@ exports.main = async (event, context) => {
       if (a.status === '已取消') cancelStat[a.teacherId] = (cancelStat[a.teacherId] || 0) + 1
     })
 
+    // 老师完整联系方式（仅管理员可见）：applications 的 _openid → teacher_users / verifications
+    const teacherOpenids = [...new Set(aRes.data.map((a) => a.openid || a._openid).filter(Boolean))]
+    const contactMap = {}
+    if (teacherOpenids.length) {
+      const [tuRes, tvRes] = await Promise.all([
+        safeGet(
+          db,
+          'teacher_users',
+          () => db.collection('teacher_users').where({ _openid: _.in(teacherOpenids) }).limit(200).get(),
+          'adminListDeliveries',
+        ),
+        db.collection('verifications')
+          .where({ _openid: _.in(teacherOpenids) })
+          .limit(200)
+          .get()
+          .catch(() => ({ data: [] })),
+      ])
+      tuRes.data.forEach((u) => {
+        contactMap[u._openid] = { phone: u.phone || '', teacherNo: u.teacherNo || '' }
+      })
+      tvRes.data.forEach((v) => {
+        if (v.status !== '已通过' || !v.teacherNo) return
+        const cur = contactMap[v._openid] || {}
+        contactMap[v._openid] = { phone: cur.phone || '', teacherNo: cur.teacherNo || v.teacherNo }
+      })
+    }
+
     // 订单状态（该组合是否有待联系/已联系/已成交单）
     const orderMap = {}
     oRes.data.forEach((m) => {
@@ -72,8 +122,9 @@ exports.main = async (event, context) => {
 
     const list = inquiries.map((q) => {
       const d = demandMap[q.demandId] || {}
-      const u = userMap[q.parentOpenid] || {}
+      const u = userMap[q.parentOpenid || d._openid] || {}
       const app = appMap[`${q.demandId}::${q.teacherId}`] || {}
+      const contact = contactMap[app.openid || app._openid] || {}
       const cancelCount = cancelStat[q.teacherId] || 0
       const riskNote =
         cancelCount >= 3
@@ -110,8 +161,15 @@ exports.main = async (event, context) => {
           subject: app.subject || '',
           rate: app.rate || '',
           verified: !!app.verified,
+          phone: contact.phone || '',
+          teacherNo: contact.teacherNo || '',
         },
-        parent: { nickname: u.nickname || '', phone: u.phone || '' },
+        parent: {
+          nickname: u.nickname || '',
+          // 家长档案手机号优先，缺失时用需求单发布时填写的联系电话兜底
+          phone: u.phone || d.phone || '',
+          wechat: u.wechat || '',
+        },
         riskNote,
       }
     })

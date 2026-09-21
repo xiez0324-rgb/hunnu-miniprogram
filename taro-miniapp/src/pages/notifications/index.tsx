@@ -1,5 +1,5 @@
 import { View, Text } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
 import classnames from 'classnames'
 import { useCallback, useEffect, useState } from 'react'
 import { useUser } from '@/store/user'
@@ -10,28 +10,26 @@ import type { SubscribeEventDef } from '@/constants/subscribe'
 import styles from './index.module.scss'
 
 interface Notice {
+  id: string
   t: string
   d: string
   time: string
   unread: boolean
 }
 
-const PARENT_NOTICES: Notice[] = [
-  { t: '有人报名', d: '你的需求已有老师报名，代理人正在核验，请留意后续推荐', time: '10 分钟前', unread: true },
-  { t: '已推荐人选', d: '平台已为你推荐合适老师，请进入「我的需求」确认人选', time: '2 小时前', unread: true },
-  { t: '需求发布成功', d: '你的需求已上架，符合条件的老师会陆续报名', time: '昨天', unread: true },
-]
-
-const TEACHER_NOTICES: Notice[] = [
-  { t: '报名被推荐', d: '你的报名已被代理人推荐给家长，请留意电话', time: '10 分钟前', unread: true },
-  { t: '家长确认成交', d: '家长已确认你为「初三 · 数学」老师，代理人将尽快联系你', time: '2 小时前', unread: true },
-  { t: '新需求上架', d: '新增 6 条符合你条件的需求，快去广场看看吧', time: '昨天', unread: true },
-]
+// 服务端时间 → 'MM-DD HH:mm'
+function fmtTime(t?: string | null): string {
+  if (!t) return ''
+  const d = new Date(t)
+  if (isNaN(d.getTime())) return ''
+  const p = (n: number) => (n < 10 ? `0${n}` : `${n}`)
+  return `${d.getMonth() + 1}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`
+}
 
 export default function NotificationsPage() {
   const { role, setUnread } = useUser()
   const isTeacher = role === 'teacher'
-  const [list, setList] = useState<Notice[]>(isTeacher ? TEACHER_NOTICES : PARENT_NOTICES)
+  const [list, setList] = useState<Notice[]>([])
   // 系统通知（订阅）授权绑定：哪些事件已开启
   const [boundEvents, setBoundEvents] = useState<string[]>([])
   const [busy, setBusy] = useState<string>('')
@@ -39,8 +37,30 @@ export default function NotificationsPage() {
   const unreadCount = list.filter((n) => n.unread).length
   const roleKey = (isTeacher ? 'teacher' : 'parent') as 'teacher' | 'parent'
   const guide = isTeacher
-    ? '重要节点通过微信订阅消息触达，站内信仅作记录备份。开启订阅后，新需求、报名被推荐、家长确认成交等都会及时提醒你。'
-    : '重要节点通过微信订阅消息触达，站内信仅作记录备份。开启订阅后，有人报名、已推荐人选、需求发布成功等都会及时提醒你。'
+    ? '报名成功、被平台推荐、成交等节点会在这里推送提醒；也可开启微信订阅消息，第一时间触达。'
+    : '有人报名、已推荐人选、信息提交成功等节点会在这里推送提醒；也可开启微信订阅消息，第一时间触达。'
+
+  // 读取站内信（按当前账号隔离，云端 notices 集合）
+  const loadNotices = useCallback(() => {
+    callFunction<{
+      list: Array<{ id: string; title: string; content: string; read: boolean; createTime: string | null }>
+      unread: number
+    }>('getNotices')
+      .then((res) => {
+        const rows: Notice[] = (res.list || []).map((n) => ({
+          id: n.id,
+          t: n.title,
+          d: n.content,
+          time: fmtTime(n.createTime),
+          unread: !n.read,
+        }))
+        setList(rows)
+        setUnread(rows.filter((n) => n.unread).length)
+      })
+      .catch((err) => {
+        console.warn('[Notify] 读取站内信失败', err)
+      })
+  }, [setUnread])
 
   // 读取云端授权绑定（本人当前身份的 notifyPrefs，随 parent/teacher 分表）
   const loadBindings = useCallback(() => {
@@ -53,8 +73,14 @@ export default function NotificationsPage() {
   }, [roleKey])
 
   useEffect(() => {
+    loadNotices()
     loadBindings()
-  }, [loadBindings])
+  }, [loadNotices, loadBindings])
+
+  // 每次切回页面刷新站内信（后台推送到站内信后，返回即可看到）
+  useDidShow(() => {
+    loadNotices()
+  })
 
   const persist = async (next: string[]) => {
     setBoundEvents(next)
@@ -127,15 +153,23 @@ export default function NotificationsPage() {
   }
 
   const markRead = (index: number) => {
+    const target = list[index]
+    if (!target || !target.unread) return
     const next = list.map((n, i) => (i === index ? { ...n, unread: false } : n))
     setList(next)
     setUnread(next.filter((n) => n.unread).length)
+    callFunction('getNotices', { action: 'markRead', id: target.id }).catch((err) => {
+      console.warn('[Notify] 标记已读失败', err)
+    })
   }
 
   const markAllRead = () => {
     const next = list.map((n) => ({ ...n, unread: false }))
     setList(next)
     setUnread(0)
+    callFunction('getNotices', { action: 'markAllRead' }).catch((err) => {
+      console.warn('[Notify] 全部已读失败', err)
+    })
   }
 
   const events = getRoleEvents(roleKey)
@@ -190,7 +224,7 @@ export default function NotificationsPage() {
 
       {list.map((n, i) => (
         <View
-          key={i}
+          key={n.id}
           className={classnames(styles.item, !n.unread && styles.itemRead)}
           onClick={() => markRead(i)}
         >
@@ -204,6 +238,13 @@ export default function NotificationsPage() {
           </View>
         </View>
       ))}
+
+      {list.length === 0 ? (
+        <View className={styles.empty}>
+          <Text className={styles.emptyText}>暂无消息通知</Text>
+          <Text className={styles.emptyHint}>报名成功、被平台推荐、成交等节点会在这里推送；也可开启上方「系统通知」通过微信订阅消息触达。</Text>
+        </View>
+      ) : null}
     </View>
   )
 }
